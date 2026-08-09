@@ -1,0 +1,2 @@
+# Keep vendored upstream bytes exactly as imported on every platform.
+third_party/** -text

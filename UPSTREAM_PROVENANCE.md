@@ -27,6 +27,7 @@ SHA-256 of each file at import time:
 
 | File | SHA-256 |
 |---|---|
+| `LICENSE` | `c9d5afaceca4ff60ea0073381aa89b9189be3e3821578ba49d4a8a84f53a6e10` |
 | `core/operations/canonical.js` | `fa3fd8f7ec8033bb91c0acc048a2740d5ebcf1b573b95e95457f11eb53278b55` |
 | `core/operations/constants.js` | `f942943d20600b3244e05221a8bef4e8a36479094db74697c054e591644d7833` |
 | `core/operations/validation.js` | `b1d1093c0e98fbcc549c40ebdbf36d119bc9bf833f2c2644650087687fa26073` |
