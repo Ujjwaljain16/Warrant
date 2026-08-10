@@ -52,6 +52,11 @@ copy is always visible.
 
 ## Material changes and new components
 
-_Filled in as work lands. Each entry names the derived file, the upstream file
-it derives from, and what changed._
+Each entry names the derived file, the upstream file it derives from, and what changed.
+
+### Derived from upstream
+
+| Derived file | Upstream file | What was kept | What changed |
+|---|---|---|---|
+| `src/log/runlog.js` | `core/operations/journal.js` | Contiguous sequence numbers; `prev`-hash chaining over canonical JSON (via the vendored `canonical.js`); fail-closed validation of every entry on read; field allow-list at the boundary | Arbitrary allow-listed event types instead of the fixed idempotency-checkpoint schema. **Defect fix:** upstream creates `.append.lock` around every append and never reclaims it after a crash (AUDIT.md F2); this log holds one writer lock for the handle's lifetime and reclaims it when the owning process is dead. Single JSONL file with a tolerated torn final line instead of one file per entry. An in-memory implementation with identical chain semantics. |
 
