@@ -4,9 +4,11 @@
   "private": true,
   "description": "Evidence-gated execution of bounded AI work, with a reproducible fault-injection benchmark",
   "license": "MIT",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test --test-reporter=spec \"test/**/*.test.js\"",
     "test:upstream-parity": "node third_party/citadel/scripts/test-operation-recovery.js && node third_party/citadel/scripts/test-operation-chaos.js"
   }
 }
