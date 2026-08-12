@@ -9,6 +9,11 @@
   },
   "scripts": {
     "test": "node --test --test-reporter=spec \"test/**/*.test.js\"",
-    "test:upstream-parity": "node third_party/citadel/scripts/test-operation-recovery.js && node third_party/citadel/scripts/test-operation-chaos.js"
+    "test:upstream-parity": "node third_party/citadel/scripts/test-operation-recovery.js && node third_party/citadel/scripts/test-operation-chaos.js",
+    "example": "node bin/warrant.js run examples/pipeline/spec.json --dir .warrant",
+    "example:lying": "node bin/warrant.js run examples/pipeline/spec-lying.json --dir .warrant"
+  },
+  "bin": {
+    "warrant": "bin/warrant.js"
   }
 }

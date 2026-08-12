@@ -1,0 +1,101 @@
+{
+  "spec_version": "1",
+  "run_id": "run-pipeline",
+  "max_concurrency": 2,
+  "tasks": [
+    {
+      "id": "fetch",
+      "deps": [],
+      "effect": "external-idempotent",
+      "deadline_ms": 10000,
+      "max_attempts": 2,
+      "outputs": [
+        "out"
+      ],
+      "exec": {
+        "argv": [
+          "node",
+          "./scripts/fetch.js"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "exact",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "3f0ab5f73d8834fe84458f4e68912ae36c7d28298f16168a90956b05b44fd620"
+        },
+        {
+          "id": "shape",
+          "kind": "artifact_json",
+          "artifact": "out",
+          "shape": {
+            "rows": "array"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sort",
+      "deps": [
+        "fetch"
+      ],
+      "effect": "pure",
+      "deadline_ms": 10000,
+      "max_attempts": 2,
+      "outputs": [
+        "out"
+      ],
+      "exec": {
+        "argv": [
+          "node",
+          "./scripts/sort.js"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "exact",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "bc1b389eb635a38e459a6b4b41d0df309b02d18af0c03d581c0f59a2ae81a17b"
+        },
+        {
+          "id": "is-sorted",
+          "kind": "command",
+          "argv": [
+            "node",
+            "-e",
+            "const r=JSON.parse(require('fs').readFileSync('out','utf8')).rows;process.exit(r.every((x,i)=>i===0||r[i-1]<=x)?0:1)"
+          ],
+          "timeout_ms": 5000
+        }
+      ]
+    },
+    {
+      "id": "summarize",
+      "deps": [
+        "sort"
+      ],
+      "effect": "pure",
+      "deadline_ms": 10000,
+      "max_attempts": 2,
+      "outputs": [
+        "out"
+      ],
+      "exec": {
+        "argv": [
+          "node",
+          "./scripts/summarize.js"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "exact",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "5e12ead482406944b925b46b7cd995d57d161ff254e417765a6f1814555d6d24"
+        }
+      ]
+    }
+  ]
+}
