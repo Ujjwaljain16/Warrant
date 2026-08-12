@@ -1,2 +1,5 @@
 # Keep vendored upstream bytes exactly as imported on every platform.
 third_party/** -text
+
+# Everything else: LF in the repository and in the working tree, on every platform.
+* text=auto eol=lf
