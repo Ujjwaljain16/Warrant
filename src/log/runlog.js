@@ -59,7 +59,7 @@ function entryBody(entry) {
   return body;
 }
 
-function validateEntry(entry, expectedSeq, expectedPrev) {
+function validateEntry(entry, expectedSeq, expectedPrev, { verifyHash = true } = {}) {
   const errors = [];
   if (!isPlainObject(entry)) return ['entry must be a plain object'];
   for (const key of Object.keys(entry)) if (!ENTRY_FIELDS.includes(key)) errors.push(`unknown field "${key}"`);
@@ -75,7 +75,7 @@ function validateEntry(entry, expectedSeq, expectedPrev) {
   if (entry.prev !== expectedPrev) errors.push('hash chain is broken');
   if (entry.prev !== null && !DIGEST.test(entry.prev)) errors.push('prev must be null or a sha256 digest');
   if (typeof entry.hash !== 'string' || !DIGEST.test(entry.hash)) errors.push('hash must be a sha256 digest');
-  else if (errors.length === 0 && entry.hash !== sha256Digest(entryBody(entry))) errors.push('hash does not match entry content');
+  else if (verifyHash && errors.length === 0 && entry.hash !== sha256Digest(entryBody(entry))) errors.push('hash does not match entry content');
   return errors;
 }
 
@@ -83,8 +83,8 @@ function buildEntry(seq, prev, type, fields, t) {
   const entry = { v: LOG_VERSION, seq, t, type, data: fields.data || {}, prev };
   if (fields.task !== undefined) entry.task = fields.task;
   if (fields.attempt !== undefined) entry.attempt = fields.attempt;
-  const errors = validateEntry({ ...entry, hash: `sha256:${'0'.repeat(64)}` }, seq, prev)
-    .filter((e) => !e.startsWith('hash does not match'));
+  // The hash does not exist yet; validate everything else, then compute it exactly once.
+  const errors = validateEntry({ ...entry, hash: `sha256:${'0'.repeat(64)}` }, seq, prev, { verifyHash: false });
   if (errors.length) throw new TypeError(`invalid log event: ${errors.join('; ')}`);
   return Object.freeze({ ...entry, hash: sha256Digest(entryBody(entry)) });
 }

@@ -129,7 +129,14 @@ function deepFreeze(value) {
   return value;
 }
 
+// Specs produced by validateRunSpec are deep-frozen and therefore immutable, so re-validating one (or re-hashing it)
+// can only repeat an answer that cannot have changed. Anything not minted here, including a clone or a mutated
+// copy, is validated from scratch.
+const validatedSpecs = new WeakSet();
+const digests = new WeakMap();
+
 function validateRunSpec(input) {
+  if (input !== null && typeof input === 'object' && validatedSpecs.has(input)) return { ok: true, errors: [], spec: input };
   const errors = [];
   if (!isPlainObject(input)) return { ok: false, errors: ['spec must be a plain object'] };
   const forbidden = findForbiddenKey(input);
@@ -157,6 +164,7 @@ function validateRunSpec(input) {
   }
   if (errors.length) return { ok: false, errors };
   const spec = deepFreeze(JSON.parse(JSON.stringify(input)));
+  validatedSpecs.add(spec);
   return { ok: true, errors: [], spec };
 }
 
@@ -167,7 +175,9 @@ function assertRunSpec(input) {
 }
 
 function specDigest(spec) {
-  return sha256Digest(spec);
+  if (!validatedSpecs.has(spec)) return sha256Digest(spec);
+  if (!digests.has(spec)) digests.set(spec, sha256Digest(spec));
+  return digests.get(spec);
 }
 
 module.exports = Object.freeze({

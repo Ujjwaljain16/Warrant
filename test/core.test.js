@@ -238,3 +238,18 @@ test('gate: command requirement runs from argv without a shell and treats timeou
   assert.equal(missing.status, 'indeterminate');
   assert.equal(missing.results[0].code, 'SPAWN_ERROR');
 });
+
+test('spec: a validated spec is recognised as validated, but a clone or mutated copy is validated from scratch', () => {
+  const first = assertRunSpec(spec([task('a')]));
+  assert.equal(assertRunSpec(first), first, 'already-validated frozen specs are returned as is');
+  const clone = JSON.parse(JSON.stringify(first));
+  assert.notEqual(assertRunSpec(clone), clone, 'a clone gets its own validated, frozen copy');
+  clone.tasks[0].deps = ['ghost'];
+  assert.throws(() => assertRunSpec(clone), SpecError, 'a mutated clone is not trusted');
+  assert.throws(() => { first.tasks[0].deps.push('ghost'); }, TypeError, 'validated specs cannot be mutated, which is what makes caching sound');
+  const { specDigest } = require('../src/core/spec');
+  const { sha256Digest } = require('../third_party/citadel/core/operations/canonical');
+  assert.equal(specDigest(first), sha256Digest(first));
+  assert.equal(specDigest(first), specDigest(first));
+  assert.equal(specDigest(clone), sha256Digest(clone), 'unvalidated specs are hashed fresh, never from a cache');
+});
