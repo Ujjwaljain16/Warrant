@@ -8,13 +8,16 @@ const { FakeWorker } = require('../src/sim/fake-worker');
 const { ScriptedPlan } = require('../src/sim/faultplan');
 const { World } = require('../src/sim/world');
 const { compileWorkload } = require('../src/bench/workloads');
+const { assertRunSpec } = require('../src/core/spec');
 
 // Draft task: 100 simulated ms nominal, so the gated deadline is 300.
 const d = (id, deps = [], effect = 'pure') => ({ id, deps, effect, nominal_ms: 100 });
 
 async function simulate(draft, script = {}, options = {}) {
-  const { reconcile = true, cancelAt = null, maxConcurrency = 4, engineOpts = {}, workerFactory = null } = options;
-  const workload = compileWorkload('mini', draft, { maxConcurrency });
+  const { reconcile = true, cancelAt = null, maxConcurrency = 4, engineOpts = {}, workerFactory = null, specTransform = null } = options;
+  const compiled = compileWorkload('mini', draft, { maxConcurrency });
+  // Lets a test add requirements that compileWorkload does not generate (for example host-side predicates).
+  const workload = specTransform ? { ...compiled, spec: assertRunSpec(specTransform(JSON.parse(JSON.stringify(compiled.spec)))) } : compiled;
   const clock = new VirtualClock();
   const world = new World(workload.spec.tasks);
   const plan = new ScriptedPlan(script, { reconcileAvailable: reconcile });

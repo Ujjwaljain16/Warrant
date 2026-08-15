@@ -333,3 +333,42 @@ test('REGRESSION: a result recovered via reconcile after a deadline is verified 
   assert.deepEqual(verdict.data.not_verified, []);
   assert.deepEqual(violations, []);
 });
+
+const withPredicate = (taskId, name) => (spec) => {
+  spec.tasks.find((t) => t.id === taskId).requirements.push({ id: 'host-check', kind: 'predicate', name });
+  return spec;
+};
+
+test('an unevaluable requirement leaves the task UNKNOWN: it names what is unverified, is not retried, and never succeeds', async () => {
+  const cases = [
+    ['predicate not registered', {}, 'not-registered'],
+    ['predicate throws', { boom() { throw new Error('verifier crashed'); } }, 'boom'],
+    ['predicate returns a non-boolean', { vague() { return 'probably'; } }, 'vague'],
+  ];
+  for (const [label, predicates, name] of cases) {
+    const { report, world, entries, violations } = await simulate([d('a'), d('b', ['a'])], {}, { specTransform: withPredicate('a', name), engineOpts: { predicates } });
+    assert.equal(report.tasks.a.status, 'unknown', label);
+    assert.equal(report.tasks.a.code, 'UNVERIFIED', label);
+    assert.deepEqual(report.tasks.a.verification.not_verified, ['host-check'], `${label}: names the requirement that could not be evaluated`);
+    assert.ok(report.tasks.a.verification.passed.includes('digest'), `${label}: the requirements that did pass are still reported`);
+    assert.equal(report.tasks.a.attempts, 1, `${label}: a verifier problem is not the worker's fault, so it is not retried`);
+    assert.equal(world.effectCount('a'), 1);
+    assert.equal(report.tasks.b.status, 'blocked', label);
+    assert.equal(report.status, 'unknown', label);
+    assert.equal(types(entries, 'task_settled', 'a')[0].data.status, 'unknown');
+    assert.deepEqual(violations, [], label);
+  }
+});
+
+test('a host-side predicate that holds lets the task succeed; one that does not hold fails the gate and is retried', async () => {
+  let calls = 0;
+  const flaky = { flaky() { calls++; return calls >= 2; } }; // false on the first evaluation, true afterwards
+  const ok = await simulate([d('a')], {}, { specTransform: withPredicate('a', 'flaky'), engineOpts: { predicates: flaky } });
+  assert.equal(ok.report.tasks.a.status, 'succeeded');
+  assert.equal(ok.report.tasks.a.attempts, 2, 'the first attempt failed the predicate, the second passed');
+  assert.deepEqual(types(ok.entries, 'gate_verdict', 'a').map((e) => e.data.status), ['fail', 'pass']);
+  const never = await simulate([d('a')], {}, { specTransform: withPredicate('a', 'no'), engineOpts: { predicates: { no: () => false } } });
+  assert.equal(never.report.tasks.a.status, 'failed');
+  assert.equal(never.report.tasks.a.code, 'GATE_FAILED');
+  assert.equal(never.report.tasks.a.attempts, 3);
+});
