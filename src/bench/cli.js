@@ -13,6 +13,8 @@ const { DATASET_VERSION, SHAPE_NAMES, buildWorkload } = require('./workloads');
 // run once after the protocol is committed.
 const SEED_SETS = Object.freeze({ dev: { first: 0, count: 100 }, final: { first: 10000, count: 500 } });
 
+const REPO_ROOT = path.resolve(__dirname, '..', '..');
+
 function git(cwd, ...args) {
   try { return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); } catch (_error) { return null; }
 }
@@ -37,6 +39,9 @@ async function runBench(flags, io) {
   const workloadIds = pick(SHAPE_NAMES, flags['--workloads'], 'workload');
   const profiles = pick(PROFILE_NAMES, flags['--profiles'], 'profile');
   const outDir = path.resolve(io.cwd, flags['--out'] || path.join('results', seedSet));
+  // Provenance must describe the code that produced the results, so capture it BEFORE writing any output: results
+  // directories usually live inside the repository and would otherwise make a clean tree look dirty.
+  const git = gitInfo(REPO_ROOT);
   fs.mkdirSync(outDir, { recursive: true });
 
   const started = Date.now();
@@ -64,7 +69,7 @@ async function runBench(flags, io) {
     label: `${seedSet} seeds`,
     protocol_version: PARAMS.protocol_version,
     dataset_version: DATASET_VERSION,
-    git: gitInfo(path.resolve(__dirname, '..', '..')),
+    git,
     seeds: { label: seedSet, first, last: first + count - 1, count },
     workloads: workloadIds,
     profiles,
@@ -103,4 +108,4 @@ async function run(command, rest, flags, io) {
   return runReport(rest, io);
 }
 
-module.exports = Object.freeze({ SEED_SETS, run, runBench, writeReport });
+module.exports = Object.freeze({ REPO_ROOT, SEED_SETS, gitInfo, run, runBench, writeReport });

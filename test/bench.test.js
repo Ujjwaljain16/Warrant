@@ -243,6 +243,21 @@ test('report: generated purely from the summary; shows n/a for missing values an
   }
 });
 
+test('bench provenance is captured before outputs are written, so output inside the repo cannot make the tree look dirty', async () => {
+  const { REPO_ROOT, gitInfo } = require('../src/bench/cli');
+  const before = gitInfo(REPO_ROOT);
+  const out = fs.mkdtempSync(path.join(REPO_ROOT, 'results-test-'));
+  try {
+    const code = await main(['bench', '--seeds', 'dev', '--workloads', 'chain-8', '--profiles', 'none', '--out', out], { cwd: REPO_ROOT, stdout: () => {}, stderr: () => {} });
+    assert.equal(code, 0);
+    const meta = JSON.parse(fs.readFileSync(path.join(out, 'meta.json'), 'utf8'));
+    assert.equal(meta.git.commit, before.commit);
+    assert.equal(meta.git.dirty, before.dirty, 'dirty flag reflects the tree before the run, not the run\'s own output files');
+  } finally {
+    fs.rmSync(out, { recursive: true, force: true });
+  }
+});
+
 test('CLI bench: writes raw results, summary, meta and a report; `report` regenerates the same report', async () => {
   const out = fs.mkdtempSync(path.join(os.tmpdir(), 'warrant-bench-'));
   let stderr = '';
