@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: node 22 on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+
+      # No dependencies to install: the project has none.
+      - name: Syntax, hygiene, secret patterns, vendored-file provenance
+        run: npm run check
+
+      - name: Unit, integration, fault-injection and chaos tests
+        run: npm test
+
+      - name: Inherited upstream tests still pass against the vendored files
+        run: npm run test:upstream-parity
+
+  reproducibility:
+    name: dataset and report reproducibility
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+
+      - name: Stored workload dataset equals regeneration
+        run: |
+          npm run gen:workloads
+          git diff --exit-code -- bench/data
+
+      - name: Committed benchmark report equals regeneration from its committed summary
+        run: |
+          node bin/warrant.js report results/final
+          git diff --exit-code -- results/final/REPORT.md results/final/charts
+
+      - name: Benchmark harness smoke run (development seeds, reduced grid)
+        run: node bin/warrant.js bench --seeds dev --workloads chain-8,fanout-fanin-12 --profiles none,crash,false_claim --out "$RUNNER_TEMP/bench-smoke"

@@ -60,3 +60,27 @@ Each entry names the derived file, the upstream file it derives from, and what c
 |---|---|---|---|
 | `src/log/runlog.js` | `core/operations/journal.js` | Contiguous sequence numbers; `prev`-hash chaining over canonical JSON (via the vendored `canonical.js`); fail-closed validation of every entry on read; field allow-list at the boundary | Arbitrary allow-listed event types instead of the fixed idempotency-checkpoint schema. **Defect fix:** upstream creates `.append.lock` around every append and never reclaims it after a crash (AUDIT.md F2); this log holds one writer lock for the handle's lifetime and reclaims it when the owning process is dead. Single JSONL file with a tolerated torn final line instead of one file per entry. An in-memory implementation with identical chain semantics. |
 
+### Design reused without copying code
+
+| Where | Idea taken from upstream | What this repository does |
+|---|---|---|
+| `src/core/spec.js` | The four effect classes (`pure`, `workspace-reversible`, `external-idempotent`, `external-nonrepeatable`) and the identifier syntax | Imports `EFFECT_CLASSES` from the vendored `journal.js` and `canonical.js` for digests; the rest is new |
+| `src/engine/engine.js` (`_lost`, `_reconcile`) | The recovery decision table in `recovery.js`: re-run safe classes, never blindly repeat `external-nonrepeatable` effects, require evidence to resolve them | Re-implemented as asynchronous, evidence-based reconcile with a quiescence precondition; not a port of the code |
+| `src/engine/replay.js` | Fail-closed handling of a corrupt journal (`planRecovery` returns blocked) | New replay, audit and restore code over a different log format |
+
+### New components (original to this repository)
+
+Everything not listed above or in the vendored table is new work here, notably: the run-spec validator, the task state
+machine, the `GateVerdict` capability and verifiers, the O(degree) dependency scheduler, the asynchronous engine
+(deadlines, classified retries, per-attempt deduplication, cancellation, worker quiescence, write-ahead logging),
+`replay`/`auditLog`/`resume`, the subprocess worker and CLI, the virtual clock, seeded fault plans, ground-truth
+world and fake worker, the two baseline policies plus the timeout variant, the workload generator, metrics,
+statistics, aggregation and report generator, the test suite (unit, integration, fault-injection, chaos, fuzz),
+`scripts/check.js`, and the documentation.
+
+### Intentional incompatibilities with upstream
+
+- The run-log format differs from upstream's per-entry journal files; logs are not interchangeable.
+- No graph contracts, loops, conditional edges, quorum joins, receipts or intents: upstream's graph and
+  operation-spec formats are not supported.
+- None of upstream's skills, hooks, runtime adapters, installers, dashboards or benchmarks are included.

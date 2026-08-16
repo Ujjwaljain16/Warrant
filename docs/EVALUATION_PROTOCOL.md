@@ -87,8 +87,13 @@ Computed per run, then aggregated per (workload, profile, policy) cell.
 | `dependency_order_violations` | count of tasks dispatched before every dependency succeeded | never null |
 | `effects_after_cancel` | count of effects begun after the cancel request | null outside the `cancel` profile |
 | `makespan_ms` | simulated time until the policy ends the run (flagged `incomplete` when capped) | |
+| `recovery_rate` | among tasks that suffered at least one worker crash, the fraction that still ended correct | null when no task crashed |
 | `tokens_per_correct` | total tokens over correct completions | null when zero correct |
 | `attempts` | total attempts dispatched | |
+
+Self-checks recorded per run and reported (not compared between policies): `peak_inflight` and `cap_exceeded` (whether a
+policy ever exceeded its concurrency cap), `audit_violations` (invariants I1-I8 re-checked from the run log of every gated
+run, independently of the engine), and `incomplete` (run ended by the run-level cap).
 
 Aggregation: mean over runs with a 95% percentile-bootstrap CI (2,000 resamples, seeded).
 Latency: P50, P95 and max across runs. Paired comparison: per-seed difference (`gated` minus baseline) with a
@@ -108,5 +113,5 @@ bootstrap CI on the mean difference; a result is called better/worse only when t
 1. The workers are simulated. Fault rates are assumptions, not measurements of any real model.
 2. Baselines are simple by design. Stronger baselines would narrow the gap.
 3. Ground truth is a deterministic function. Real correctness is harder to specify, and the gate is only as good as the requirements its author writes.
-4. Simulated time ignores real scheduling overhead; the engine's CPU overhead is measured separately (`bench:overhead`).
+4. Simulated time ignores real scheduling overhead; the engine's CPU overhead is measured separately (`npm run bench:overhead`, see `docs/PERFORMANCE.md`).
 5. A requirement set that is incomplete lets false successes through the gate. The benchmark's requirements are complete by construction (digest equality); the report includes a `partial-requirements` experiment that relaxes this.

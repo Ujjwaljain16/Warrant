@@ -16,7 +16,9 @@
     "example:lying": "node bin/warrant.js run examples/pipeline/spec-lying.json --dir .warrant",
     "gen:workloads": "node scripts/gen-workloads.js",
     "bench:dev": "node bin/warrant.js bench --seeds dev --out results/dev",
-    "bench:final": "node bin/warrant.js bench --seeds final --out results/final"
+    "bench:final": "node bin/warrant.js bench --seeds final --out results/final",
+    "bench:overhead": "node scripts/bench-overhead.js 9",
+    "profile:bench": "node scripts/profile-bench.js 100"
   },
   "bin": {
     "warrant": "bin/warrant.js"
