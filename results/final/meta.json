@@ -1,0 +1,57 @@
+{
+  "label": "final seeds",
+  "protocol_version": 1,
+  "dataset_version": "workloads-v1",
+  "git": {
+    "commit": "404dc01fe221b4295091ddff93a3202bdc656a52",
+    "dirty": false
+  },
+  "seeds": {
+    "label": "final",
+    "first": 10000,
+    "last": 10499,
+    "count": 500
+  },
+  "workloads": [
+    "chain-8",
+    "fanout-fanin-12",
+    "diamond-lattice-16",
+    "pipeline-24",
+    "random-dag-32"
+  ],
+  "profiles": [
+    "none",
+    "crash",
+    "crash-noreconcile",
+    "delay",
+    "invalid_output",
+    "false_claim",
+    "duplicate_delivery",
+    "dependency_failure",
+    "cancel",
+    "mixed"
+  ],
+  "policies": [
+    "sequential",
+    "naive-parallel",
+    "naive-parallel-timeout",
+    "gated",
+    "gated-sequential"
+  ],
+  "params": {
+    "protocol_version": 1,
+    "retry_budget": 3,
+    "gated_deadline_multiple": 3,
+    "gated_backoff_ms_per_attempt": 20,
+    "gate_cost_ms_per_requirement": 5,
+    "tokens_per_worker_ms": 10,
+    "run_cap_multiple_of_critical_path": 30,
+    "concurrency_cap": 4
+  },
+  "environment": {
+    "node": "v22.19.0",
+    "platform": "win32/x64"
+  },
+  "command": "node bin/warrant.js bench --seeds final --out results/final",
+  "elapsed_seconds": 146.922
+}

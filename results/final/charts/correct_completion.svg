@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 380" font-family="sans-serif" font-size="11">
+<rect width="980" height="380" fill="white"/>
+<text x="56" y="18" font-size="14" font-weight="bold">Correct completion by fault profile (higher is better; bars = mean, whiskers = 95% CI)</text>
+<text x="6" y="163" transform="rotate(-90 6 163)" text-anchor="middle">fraction of tasks</text>
+<line x1="56" y1="290" x2="964" y2="290" stroke="#444"/>
+<line x1="56" y1="36" x2="56" y2="290" stroke="#444"/>
+<text x="52" y="293" text-anchor="end">0.00</text>
+<line x1="56" y1="290" x2="964" y2="290" stroke="#ddd"/>
+<text x="52" y="229.5" text-anchor="end">0.28</text>
+<line x1="56" y1="226.5" x2="964" y2="226.5" stroke="#ddd"/>
+<text x="52" y="166" text-anchor="end">0.55</text>
+<line x1="56" y1="163" x2="964" y2="163" stroke="#ddd"/>
+<text x="52" y="102.5" text-anchor="end">0.83</text>
+<line x1="56" y1="99.5" x2="964" y2="99.5" stroke="#ddd"/>
+<text x="52" y="39" text-anchor="end">1.10</text>
+<line x1="56" y1="36" x2="964" y2="36" stroke="#ddd"/>
+<rect x="61" y="59.09090909090909" width="14.16" height="230.9090909090909" fill="#8da0cb"><title>none / sequential: 1.000</title></rect>
+<line x1="68.08" y1="59.09090909090909" x2="68.08" y2="59.09090909090909" stroke="#222"/>
+<rect x="77.16" y="59.09090909090909" width="14.16" height="230.9090909090909" fill="#fc8d62"><title>none / naive-parallel: 1.000</title></rect>
+<line x1="84.24" y1="59.09090909090909" x2="84.24" y2="59.09090909090909" stroke="#222"/>
+<rect x="93.32" y="59.09090909090909" width="14.16" height="230.9090909090909" fill="#e5c494"><title>none / naive-parallel-timeout: 1.000</title></rect>
+<line x1="100.39999999999999" y1="59.09090909090909" x2="100.39999999999999" y2="59.09090909090909" stroke="#222"/>
+<rect x="109.48" y="59.09090909090909" width="14.16" height="230.9090909090909" fill="#2a7f62"><title>none / gated: 1.000</title></rect>
+<line x1="116.56" y1="59.09090909090909" x2="116.56" y2="59.09090909090909" stroke="#222"/>
+<rect x="125.64" y="59.09090909090909" width="14.16" height="230.9090909090909" fill="#a6d854"><title>none / gated-sequential: 1.000</title></rect>
+<line x1="132.72" y1="59.09090909090909" x2="132.72" y2="59.09090909090909" stroke="#222"/>
+<text x="101.4" y="304" text-anchor="end" transform="rotate(-35 101.4 304)">none</text>
+<rect x="151.8" y="67.19870454545446" width="14.16" height="222.80129545454554" fill="#8da0cb"><title>crash / sequential: 0.965</title></rect>
+<line x1="158.88000000000002" y1="68.29552272727256" x2="158.88000000000002" y2="66.14133333333328" stroke="#222"/>
+<rect x="167.96" y="67.19870454545446" width="14.16" height="222.80129545454554" fill="#fc8d62"><title>crash / naive-parallel: 0.965</title></rect>
+<line x1="175.04000000000002" y1="68.2531893939395" x2="175.04000000000002" y2="66.10477272727283" stroke="#222"/>
+<rect x="184.12" y="67.19870454545446" width="14.16" height="222.80129545454554" fill="#e5c494"><title>crash / naive-parallel-timeout: 0.965</title></rect>
+<line x1="191.20000000000002" y1="68.3724924242425" x2="191.20000000000002" y2="66.12593939393929" stroke="#222"/>
+<rect x="200.28000000000003" y="65.83345454545449" width="14.16" height="224.1665454545455" fill="#2a7f62"><title>crash / gated: 0.971</title></rect>
+<line x1="207.36000000000004" y1="66.8802424242424" x2="207.36000000000004" y2="64.84728030303037" stroke="#222"/>
+<rect x="216.44" y="65.83345454545449" width="14.16" height="224.1665454545455" fill="#a6d854"><title>crash / gated-sequential: 0.971</title></rect>
+<line x1="223.52" y1="66.84464393939402" x2="223.52" y2="64.84343181818178" stroke="#222"/>
+<text x="192.20000000000002" y="304" text-anchor="end" transform="rotate(-35 192.20000000000002 304)">crash</text>
+<rect x="242.6" y="67.19870454545446" width="14.16" height="222.80129545454554" fill="#8da0cb"><title>crash-noreconcile / sequential: 0.965</title></rect>
+<line x1="249.68" y1="68.31765151515168" x2="249.68" y2="66.13556060606044" stroke="#222"/>
+<rect x="258.76" y="67.19870454545446" width="14.16" height="222.80129545454554" fill="#fc8d62"><title>crash-noreconcile / naive-parallel: 0.965</title></rect>
+<line x1="265.84" y1="68.27628030303029" x2="265.84" y2="66.13171212121199" stroke="#222"/>
+<rect x="274.92" y="67.19870454545446" width="14.16" height="222.80129545454554" fill="#e5c494"><title>crash-noreconcile / naive-parallel-timeout: 0.965</title></rect>
+<line x1="282" y1="68.3195757575757" x2="282" y2="66.16827272727272" stroke="#222"/>
+<rect x="291.08" y="98.32909848484775" width="14.16" height="191.67090151515225" fill="#2a7f62"><title>crash-noreconcile / gated: 0.830</title></rect>
+<line x1="298.15999999999997" y1="100.44095454545476" x2="298.15999999999997" y2="96.25284090909122" stroke="#222"/>
+<rect x="307.24" y="98.32909848484775" width="14.16" height="191.67090151515225" fill="#a6d854"><title>crash-noreconcile / gated-sequential: 0.830</title></rect>
+<line x1="314.32" y1="100.61894696969705" x2="314.32" y2="96.06522727272755" stroke="#222"/>
+<text x="283" y="304" text-anchor="end" transform="rotate(-35 283 304)">crash-noreconcile</text>
+<rect x="333.4" y="143.0090454545455" width="14.16" height="146.9909545454545" fill="#8da0cb"><title>delay / sequential: 0.637</title></rect>
+<line x1="340.47999999999996" y1="146.3553030303031" x2="340.47999999999996" y2="139.5790833333332" stroke="#222"/>
+<rect x="349.56" y="102.2276136363632" width="14.16" height="187.7723863636368" fill="#fc8d62"><title>delay / naive-parallel: 0.813</title></rect>
+<line x1="356.64" y1="104.56171969697004" x2="356.64" y2="99.90216666666711" stroke="#222"/>
+<rect x="365.71999999999997" y="67.19870454545446" width="14.16" height="222.80129545454554" fill="#e5c494"><title>delay / naive-parallel-timeout: 0.965</title></rect>
+<line x1="372.79999999999995" y1="68.31284090909097" x2="372.79999999999995" y2="66.10862121212128" stroke="#222"/>
+<rect x="381.88" y="65.7083787878787" width="14.16" height="224.2916212121213" fill="#2a7f62"><title>delay / gated: 0.971</title></rect>
+<line x1="388.96" y1="66.69647727272724" x2="388.96" y2="64.69622727272733" stroke="#222"/>
+<rect x="398.03999999999996" y="65.7083787878787" width="14.16" height="224.2916212121213" fill="#a6d854"><title>delay / gated-sequential: 0.971</title></rect>
+<line x1="405.11999999999995" y1="66.7628636363637" x2="405.11999999999995" y2="64.78666666666672" stroke="#222"/>
+<text x="373.79999999999995" y="304" text-anchor="end" transform="rotate(-35 373.79999999999995 304)">delay</text>
+<rect x="424.2" y="62.24185606060604" width="14.16" height="227.75814393939396" fill="#8da0cb"><title>invalid_output / sequential: 0.986</title></rect>
+<line x1="431.28" y1="62.93650757575759" x2="431.28" y2="61.64341666666667" stroke="#222"/>
+<rect x="440.36" y="62.24185606060604" width="14.16" height="227.75814393939396" fill="#fc8d62"><title>invalid_output / naive-parallel: 0.986</title></rect>
+<line x1="447.44" y1="62.89513636363648" x2="447.44" y2="61.58280303030307" stroke="#222"/>
+<rect x="456.52" y="62.24185606060604" width="14.16" height="227.75814393939396" fill="#e5c494"><title>invalid_output / naive-parallel-timeout: 0.986</title></rect>
+<line x1="463.59999999999997" y1="62.900909090909096" x2="463.59999999999997" y2="61.614553030303114" stroke="#222"/>
+<rect x="472.68" y="61.63475757575756" width="14.16" height="228.36524242424244" fill="#2a7f62"><title>invalid_output / gated: 0.989</title></rect>
+<line x1="479.76" y1="62.2582121212121" x2="479.76" y2="61.063257575757575" stroke="#222"/>
+<rect x="488.84" y="61.63475757575756" width="14.16" height="228.36524242424244" fill="#a6d854"><title>invalid_output / gated-sequential: 0.989</title></rect>
+<line x1="495.91999999999996" y1="62.240893939394" x2="495.91999999999996" y2="61.0594090909091" stroke="#222"/>
+<text x="464.59999999999997" y="304" text-anchor="end" transform="rotate(-35 464.59999999999997 304)">invalid_output</text>
+<rect x="515" y="161.1392575757578" width="14.16" height="128.8607424242422" fill="#8da0cb"><title>false_claim / sequential: 0.558</title></rect>
+<line x1="522.08" y1="163.76681060606066" x2="522.08" y2="158.4482045454544" stroke="#222"/>
+<rect x="531.16" y="161.1392575757578" width="14.16" height="128.8607424242422" fill="#fc8d62"><title>false_claim / naive-parallel: 0.558</title></rect>
+<line x1="538.24" y1="163.7273636363637" x2="538.24" y2="158.27983333333353" stroke="#222"/>
+<rect x="547.32" y="161.1392575757578" width="14.16" height="128.8607424242422" fill="#e5c494"><title>false_claim / naive-parallel-timeout: 0.558</title></rect>
+<line x1="554.4000000000001" y1="163.84281818181813" x2="554.4000000000001" y2="158.49534848484848" stroke="#222"/>
+<rect x="563.48" y="87.63608333333286" width="14.16" height="202.36391666666714" fill="#2a7f62"><title>false_claim / gated: 0.876</title></rect>
+<line x1="570.5600000000001" y1="89.632484848485" x2="570.5600000000001" y2="85.72915909090929" stroke="#222"/>
+<rect x="579.64" y="87.63608333333286" width="14.16" height="202.36391666666714" fill="#a6d854"><title>false_claim / gated-sequential: 0.876</title></rect>
+<line x1="586.72" y1="89.45353030303028" x2="586.72" y2="85.70029545454568" stroke="#222"/>
+<text x="555.4" y="304" text-anchor="end" transform="rotate(-35 555.4 304)">false_claim</text>
+<rect x="605.8" y="59.09090909090909" width="14.16" height="230.9090909090909" fill="#8da0cb"><title>duplicate_delivery / sequential: 1.000</title></rect>
+<line x1="612.88" y1="59.09090909090909" x2="612.88" y2="59.09090909090909" stroke="#222"/>
+<rect x="621.9599999999999" y="82.69366666666821" width="14.16" height="207.3063333333318" fill="#fc8d62"><title>duplicate_delivery / naive-parallel: 0.898</title></rect>
+<line x1="629.04" y1="84.10413636363572" x2="629.04" y2="81.32264393939334" stroke="#222"/>
+<rect x="638.12" y="82.69366666666821" width="14.16" height="207.3063333333318" fill="#e5c494"><title>duplicate_delivery / naive-parallel-timeout: 0.898</title></rect>
+<line x1="645.2" y1="84.0242803030296" x2="645.2" y2="81.28704545454494" stroke="#222"/>
+<rect x="654.28" y="59.09090909090909" width="14.16" height="230.9090909090909" fill="#2a7f62"><title>duplicate_delivery / gated: 1.000</title></rect>
+<line x1="661.36" y1="59.09090909090909" x2="661.36" y2="59.09090909090909" stroke="#222"/>
+<rect x="670.4399999999999" y="59.09090909090909" width="14.16" height="230.9090909090909" fill="#a6d854"><title>duplicate_delivery / gated-sequential: 1.000</title></rect>
+<line x1="677.52" y1="59.09090909090909" x2="677.52" y2="59.09090909090909" stroke="#222"/>
+<text x="646.1999999999999" y="304" text-anchor="end" transform="rotate(-35 646.1999999999999 304)">duplicate_delivery</text>
+<rect x="696.6" y="168.77272727272725" width="14.16" height="121.22727272727275" fill="#8da0cb"><title>dependency_failure / sequential: 0.525</title></rect>
+<line x1="703.6800000000001" y1="171.33581818181818" x2="703.6800000000001" y2="166.22887878787898" stroke="#222"/>
+<rect x="712.76" y="168.77272727272725" width="14.16" height="121.22727272727275" fill="#fc8d62"><title>dependency_failure / naive-parallel: 0.525</title></rect>
+<line x1="719.84" y1="171.2357575757576" x2="719.84" y2="166.101878787879" stroke="#222"/>
+<rect x="728.9200000000001" y="168.77272727272725" width="14.16" height="121.22727272727275" fill="#e5c494"><title>dependency_failure / naive-parallel-timeout: 0.525</title></rect>
+<line x1="736.0000000000001" y1="171.3781515151513" x2="736.0000000000001" y2="166.11342424242423" stroke="#222"/>
+<rect x="745.08" y="168.77272727272725" width="14.16" height="121.22727272727275" fill="#2a7f62"><title>dependency_failure / gated: 0.525</title></rect>
+<line x1="752.1600000000001" y1="171.48590909090927" x2="752.1600000000001" y2="166.048" stroke="#222"/>
+<rect x="761.24" y="168.77272727272725" width="14.16" height="121.22727272727275" fill="#a6d854"><title>dependency_failure / gated-sequential: 0.525</title></rect>
+<line x1="768.32" y1="171.36275757575768" x2="768.32" y2="166.1095757575756" stroke="#222"/>
+<text x="737" y="304" text-anchor="end" transform="rotate(-35 737 304)">dependency_failure</text>
+<rect x="787.4" y="237.08333333333167" width="14.16" height="52.916666666668334" fill="#8da0cb"><title>cancel / sequential: 0.229</title></rect>
+<line x1="794.48" y1="238.39951515151475" x2="794.48" y2="235.88260606060595" stroke="#222"/>
+<rect x="803.56" y="171.17803030302946" width="14.16" height="118.82196969697054" fill="#fc8d62"><title>cancel / naive-parallel: 0.515</title></rect>
+<line x1="810.64" y1="172.0458636363635" x2="810.64" y2="170.34868181818163" stroke="#222"/>
+<rect x="819.72" y="171.17803030302946" width="14.16" height="118.82196969697054" fill="#e5c494"><title>cancel / naive-parallel-timeout: 0.515</title></rect>
+<line x1="826.8000000000001" y1="171.98236363636354" x2="826.8000000000001" y2="170.29095454545427" stroke="#222"/>
+<rect x="835.88" y="221.20833333333292" width="14.16" height="68.79166666666708" fill="#2a7f62"><title>cancel / gated: 0.298</title></rect>
+<line x1="842.96" y1="222.41387121212102" x2="842.96" y2="220.08265151515124" stroke="#222"/>
+<rect x="852.04" y="254.40151515151473" width="14.16" height="35.59848484848527" fill="#a6d854"><title>cancel / gated-sequential: 0.154</title></rect>
+<line x1="859.12" y1="255.3867272727274" x2="859.12" y2="253.32971212121234" stroke="#222"/>
+<text x="827.8" y="304" text-anchor="end" transform="rotate(-35 827.8 304)">cancel</text>
+<rect x="878.1999999999999" y="149.33306818181816" width="14.16" height="140.66693181818184" fill="#8da0cb"><title>mixed / sequential: 0.609</title></rect>
+<line x1="885.28" y1="152.36856060606056" x2="885.28" y2="146.28891666666678" stroke="#222"/>
+<rect x="894.3599999999999" y="138.49862121212135" width="14.16" height="151.50137878787865" fill="#fc8d62"><title>mixed / naive-parallel: 0.656</title></rect>
+<line x1="901.4399999999999" y1="141.082878787879" x2="901.4399999999999" y2="135.9653560606064" stroke="#222"/>
+<rect x="910.52" y="138.01275000000004" width="14.16" height="151.98724999999996" fill="#e5c494"><title>mixed / naive-parallel-timeout: 0.658</title></rect>
+<line x1="917.6" y1="140.5258106060606" x2="917.6" y2="135.3284318181819" stroke="#222"/>
+<rect x="926.68" y="92.42263636363575" width="14.16" height="197.57736363636425" fill="#2a7f62"><title>mixed / gated: 0.856</title></rect>
+<line x1="933.76" y1="94.64802272727295" x2="933.76" y2="90.2925000000003" stroke="#222"/>
+<rect x="942.8399999999999" y="92.42263636363575" width="14.16" height="197.57736363636425" fill="#a6d854"><title>mixed / gated-sequential: 0.856</title></rect>
+<line x1="949.92" y1="94.4652196969698" x2="949.92" y2="90.4214242424244" stroke="#222"/>
+<text x="918.5999999999999" y="304" text-anchor="end" transform="rotate(-35 918.5999999999999 304)">mixed</text>
+<rect x="56" y="366" width="10" height="10" fill="#8da0cb"/>
+<text x="70" y="375">sequential</text>
+<rect x="196" y="366" width="10" height="10" fill="#fc8d62"/>
+<text x="210" y="375">naive-parallel</text>
+<rect x="336" y="366" width="10" height="10" fill="#e5c494"/>
+<text x="350" y="375">naive-parallel-timeout</text>
+<rect x="476" y="366" width="10" height="10" fill="#2a7f62"/>
+<text x="490" y="375">gated</text>
+<rect x="616" y="366" width="10" height="10" fill="#a6d854"/>
+<text x="630" y="375">gated-sequential</text>
+</svg>
