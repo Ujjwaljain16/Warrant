@@ -470,10 +470,6 @@ class Engine {
   }
 }
 
-function runGated(spec, opts) {
-  return new Engine(spec, opts).run();
-}
-
 // Continue an interrupted run from its log. The log must be open for writing (a FileRunLog) and valid.
 // An empty log means the previous process died before recording anything, so nothing has happened: start fresh.
 function resumeGated(spec, opts) {
@@ -483,4 +479,4 @@ function resumeGated(spec, opts) {
   return new Engine(spec, { ...opts, restore }).run();
 }
 
-module.exports = Object.freeze({ Engine, resumeGated, runGated });
+module.exports = Object.freeze({ Engine, resumeGated });

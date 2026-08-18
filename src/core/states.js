@@ -11,7 +11,6 @@ const STATUS = Object.freeze({
   CANCELLED: 'cancelled',
 });
 
-const STATUSES = Object.freeze(Object.values(STATUS));
 const TERMINAL = Object.freeze([STATUS.SUCCEEDED, STATUS.FAILED, STATUS.BLOCKED, STATUS.UNKNOWN, STATUS.CANCELLED]);
 
 // `unknown` is terminal for a run, but a reconcile resolution may move it on. That resolution is
@@ -39,10 +38,6 @@ class InvalidTransitionError extends Error {
   }
 }
 
-function isTerminal(status) {
-  return TERMINAL.includes(status);
-}
-
 function canTransition(from, to) {
   return Object.hasOwn(TRANSITIONS, from) && TRANSITIONS[from].includes(to);
 }
@@ -52,6 +47,6 @@ function assertTransition(taskId, from, to) {
 }
 
 module.exports = Object.freeze({
-  InvalidTransitionError, STATUS, STATUSES, TERMINAL, TRANSITIONS,
-  assertTransition, canTransition, isTerminal,
+  InvalidTransitionError, STATUS, TERMINAL, TRANSITIONS,
+  assertTransition, canTransition,
 });
