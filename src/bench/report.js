@@ -210,4 +210,4 @@ function renderCharts(summary) {
   };
 }
 
-module.exports = Object.freeze({ renderCharts, renderReport });
+module.exports = Object.freeze({ f, renderCharts, renderReport, table, withCI });

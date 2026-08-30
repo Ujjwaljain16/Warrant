@@ -17,6 +17,7 @@
     "gen:workloads": "node scripts/gen-workloads.js",
     "bench:dev": "node bin/warrant.js bench --seeds dev --out results/dev",
     "bench:final": "node bin/warrant.js bench --seeds final --out results/final",
+    "bench:partial": "node bin/warrant.js bench --seeds partial-requirements --out results/partial-requirements",
     "bench:overhead": "node scripts/bench-overhead.js 9",
     "profile:bench": "node scripts/profile-bench.js 100"
   },

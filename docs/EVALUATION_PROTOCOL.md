@@ -115,3 +115,68 @@ bootstrap CI on the mean difference; a result is called better/worse only when t
 3. Ground truth is a deterministic function. Real correctness is harder to specify, and the gate is only as good as the requirements its author writes.
 4. Simulated time ignores real scheduling overhead; the engine's CPU overhead is measured separately (`npm run bench:overhead`, see `docs/PERFORMANCE.md`).
 5. A requirement set that is incomplete lets false successes through the gate. The benchmark's requirements are complete by construction (digest equality); the report includes a `partial-requirements` experiment that relaxes this.
+
+---
+
+# Version 2, extension A: partial requirements
+
+Version 1 above is unchanged and its results (`results/final`) stand as published. This section is an **extension**:
+it adds one experiment and changes no v1 definition, parameter, seed or code path. It addresses threat to validity 5
+above, which v1 only named. Frozen before the run, in the commit that introduces `src/bench/partial.js`.
+
+## Question
+
+v1 gave the gate complete requirements (the output digest is pinned on every task), which is the best case. What
+happens to the false-success guarantee when the requirements are incomplete: does the gated policy still beat the
+closest baseline, and by how much, when the requirement author knows less than the whole answer?
+
+## Design
+
+| Factor | Levels |
+|---|---|
+| Requirement set (`compileWorkload` option `requirements`) | `full` (v1: sha256 of the output on every task, plus a JSON shape check on about half), `digest-only` (the sha256 requirements only), `shape-only` (only the `artifact_json` shape check, on every task: `inputs` object, `n` number, `task` string; no content is pinned) |
+| Fault profile | `false_claim` and `mixed`, exactly as defined in v1 |
+| Policy | `gated` and `naive-parallel-timeout` (the closest baseline). The baseline never reads requirements, so it is the control: its results must be identical under all three sets, and the report checks that |
+| Workloads | the five `workloads-v1` shapes, unchanged |
+
+Seeds: **20000..20499, 500 per cell. These are new**: disjoint from the development seeds (0..99) and from the v1
+held-out seeds (10000..10499). The experiment is **run once**; if a defect is found afterwards, the fix is committed
+and the whole run repeated, and both runs are disclosed (the same rule as v1). 5 workloads x 2 profiles x 3 sets x 2
+policies x 500 seeds = 30,000 runs. Parameters (retry budget, deadlines, gate cost, token proxy, caps) are the v1
+values and no other parameter is introduced. The per-attempt fault fate is `f(seed, task, attempt)`, independent of
+policy and of requirement set, so every comparison is paired.
+
+Metrics and aggregation are v1's (mean with 95% percentile-bootstrap CI; paired differences with verdicts only when the
+CI excludes 0). Two comparisons are reported: gated minus baseline within each requirement set, and gated under
+`digest-only` / `shape-only` minus gated under `full`, paired by workload and seed.
+
+## Predictions, stated before the run
+
+These are what the design implies; they are written down so that the result can contradict them.
+
+1. `digest-only` behaves like `full` on false successes, because the shape checks in `full` are implied by a pinned
+   digest. Both should show a gated false-success rate of 0.
+2. `shape-only` lets well-formed wrong outputs through: a `false_claim` output has the right types and the wrong
+   content, so a shape check cannot reject it. The gated false-success rate under `false_claim` should be
+   statistically indistinguishable from the baseline's, and a wrong output accepted upstream should corrupt dependants.
+3. Under `mixed`, `shape-only` still rejects malformed and missing outputs, so gated may remain somewhat better than
+   the baseline on completion; the false-success rate should be well above 0.
+
+Disclosure: before this section was written, the runner was exercised on a development slice (seeds 0..19, two workloads,
+to check that the report renders). Predictions 1-3 were derived from the design, but they were written after seeing that slice, which
+was consistent with them, so they are not claimed to be blind. No prediction is made about makespan; the report states
+what was measured.
+
+No parameter, requirement set or seed was chosen by looking at these results, and nothing is tuned afterwards to make
+them look better.
+
+## Provenance and limits
+
+`meta.json` records the commit and whether the working tree was dirty, and, when dirty, the list of changed paths.
+Provenance is captured before any output is written. If the run was made from an uncommitted tree the report says so;
+a clean-tree record is made by re-running `npm run bench:partial` from a clean commit (the raw records and summary are
+deterministic, so they are expected to be byte-identical; `meta.json` differs in its git and timing fields).
+
+Not shown by this experiment: how complete real requirements are (three points on one axis, not a sample of real
+requirement quality); anything about real models or providers; any effect on the non-false-claim profiles. Threats 1-4
+above apply unchanged.

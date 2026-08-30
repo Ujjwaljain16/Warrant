@@ -34,7 +34,8 @@ function pick(all, csv, label) {
 
 async function runBench(flags, io) {
   const seedSet = flags['--seeds'] || 'dev';
-  if (!Object.hasOwn(SEED_SETS, seedSet)) throw new Error('--seeds must be "dev" or "final"');
+  if (seedSet === 'partial-requirements') return runBenchPartial(flags, io);
+  if (!Object.hasOwn(SEED_SETS, seedSet)) throw new Error('--seeds must be "dev", "final" or "partial-requirements"');
   const { first, count } = SEED_SETS[seedSet];
   const workloadIds = pick(SHAPE_NAMES, flags['--workloads'], 'workload');
   const profiles = pick(PROFILE_NAMES, flags['--profiles'], 'profile');
@@ -87,6 +88,23 @@ async function runBench(flags, io) {
   return 0;
 }
 
+// Protocol v2, extension A (`bench --seeds partial-requirements`). Seeds, workloads, profiles and policies are fixed by the
+// protocol extension (see partial.js), so only the output directory may be chosen.
+async function runBenchPartial(flags, io) {
+  for (const fixed of ['--workloads', '--profiles']) {
+    if (Object.hasOwn(flags, fixed)) throw new Error(`${fixed} cannot be combined with --seeds partial-requirements: the protocol fixes it`);
+  }
+  const { PARTIAL, runPartial } = require('./partial');
+  const outDir = path.resolve(io.cwd, flags['--out'] || path.join('results', 'partial-requirements'));
+  const result = await runPartial({
+    outDir, first: PARTIAL.first, count: PARTIAL.count, stderr: io.stderr,
+    command: `node bin/warrant.js bench --seeds partial-requirements${flags['--out'] ? ` --out ${flags['--out']}` : ''}`,
+  });
+  io.stdout(`${JSON.stringify(result, null, 2)}
+`);
+  return 0;
+}
+
 function writeReport(dir, summary, meta) {
   fs.mkdirSync(path.join(dir, 'charts'), { recursive: true });
   fs.writeFileSync(path.join(dir, 'REPORT.md'), `${renderReport(summary, meta)}\n`);
@@ -98,7 +116,8 @@ function runReport(rest, io) {
   const dir = path.resolve(io.cwd, rest[0]);
   const summary = JSON.parse(fs.readFileSync(path.join(dir, 'summary.json'), 'utf8'));
   const meta = JSON.parse(fs.readFileSync(path.join(dir, 'meta.json'), 'utf8'));
-  writeReport(dir, summary, meta);
+  // Protocol v2 extension results carry their own report layout; v1 results take the original path.
+  if (meta.experiment) require('./partial').writeReport(dir, summary, meta); else writeReport(dir, summary, meta);
   io.stdout(`wrote ${path.join(dir, 'REPORT.md')}\n`);
   return 0;
 }
