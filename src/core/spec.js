@@ -99,7 +99,10 @@ function validateTask(task, index, errors) {
     });
   }
   if (task.exec !== undefined) {
-    if (exact(task.exec, ['argv'], `${label}.exec`, errors) && !validArgv(task.exec.argv)) errors.push(`${label}.exec.argv must be a non-empty array of non-empty strings`);
+    if (exact(task.exec, ['argv', 'receipt'], `${label}.exec`, errors)) {
+      if (!validArgv(task.exec.argv)) errors.push(`${label}.exec.argv must be a non-empty array of non-empty strings`);
+      if (task.exec.receipt !== undefined && typeof task.exec.receipt !== 'boolean') errors.push(`${label}.exec.receipt must be a boolean`);
+    }
   }
 }
 

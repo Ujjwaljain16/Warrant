@@ -30,7 +30,7 @@ function killTree(child) {
 }
 
 // Runs argv without a shell. Resolves (never rejects) with a description of how the process ended.
-function runProcess({ argv, cwd, timeoutMs = 10_000, maxOutputBytes = 1 << 20, signal, env = scrubbedEnv() }) {
+function runProcess({ argv, cwd, timeoutMs = 10_000, maxOutputBytes = 1 << 20, signal, env = scrubbedEnv(), onSpawn }) {
   return new Promise((resolve) => {
     let child;
     try {
@@ -42,6 +42,8 @@ function runProcess({ argv, cwd, timeoutMs = 10_000, maxOutputBytes = 1 << 20, s
       resolve({ exitCode: null, spawnError: error.code || 'SPAWN_FAILED', stdout: '', stderr: '', timedOut: false, aborted: false, truncated: false });
       return;
     }
+    // Lets a caller record the pid as soon as it exists. A throwing hook never affects the run.
+    if (onSpawn && child.pid !== undefined) { try { onSpawn(child.pid); } catch (_error) { /* informational only */ } }
     const out = { stdout: [], stderr: [] };
     let bytes = 0;
     let truncated = false;

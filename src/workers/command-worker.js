@@ -55,12 +55,14 @@ class CommandWorker {
       // Where each dependency's *accepted* (gate-verified) output lives, so commands can read real upstream data.
       dep_dirs: Object.fromEntries(Object.entries(info.depAttempts || {}).map(([dep, attempt]) => [dep, this.attemptDir(info.runId, attempt)])),
     }));
+    this._prepare(info, dir);
     const result = await runProcess({
       argv: this._resolveArgs(task.exec.argv),
       cwd: dir,
       timeoutMs: (task.deadline_ms || 60_000) + 1000, // backstop only; the engine's own deadline normally fires first
       maxOutputBytes: this.maxOutputBytes,
       signal: ctx.signal,
+      onSpawn: (pid) => this._onSpawn(info, dir, pid),
       env: {
         ...scrubbedEnv(),
         WARRANT_ATTEMPT_DIR: dir,
@@ -79,18 +81,31 @@ class CommandWorker {
       return;
     }
     if (result.timedOut) return; // backstop expired; the engine's deadline will have handled it
+    this._onExit(info, dir, result);
     if (result.exitCode !== 0) {
       // Keep the tail of stderr for humans in the attempt directory, not in the run log.
       fs.writeFileSync(path.join(dir, 'stderr.txt'), redact(result.stderr, 4000));
       ctx.deliver({ attemptId, claim: 'failure', errorCode: 'EXIT_NONZERO', retryable: true });
       return;
     }
+    ctx.deliver({ attemptId, claim: 'success', artifacts: this._collect(info, dir) });
+  }
+
+  // Extension points for subclasses (see receipt-worker.js). The defaults add nothing.
+  _prepare(_info, _dir) {}
+
+  _onSpawn(_info, _dir, _pid) {}
+
+  _onExit(_info, _dir, _result) {} // the process ended by itself: not killed, not timed out, not truncated
+
+  // Declared outputs found in the attempt directory; one that is missing is simply absent, and the engine says why.
+  _collect(info, dir) {
     const artifacts = {};
-    for (const name of task.outputs) {
+    for (const name of info.task.outputs) {
       const body = this._readOutput(dir, name);
       if (body !== null) artifacts[name] = body;
     }
-    ctx.deliver({ attemptId, claim: 'success', artifacts });
+    return artifacts;
   }
 
   _readOutput(dir, name) {

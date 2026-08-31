@@ -35,6 +35,7 @@ spec file. It does not cover the security of any model provider.
 | T11 | Command injection through verifier `command` requirement | argv array, `shell: false`, no interpolation of worker data into argv | `core.test.js` (command requirement with metacharacters in argv) |
 | T12 | Secrets leak into logs | Log events carry digests and short codes, not artifact bodies; error text is redacted by pattern before logging | `redaction.test.js` |
 | T13 | Over-budget execution | Hard attempt and concurrency caps checked at dispatch (I3) | `engine.test.js` (attempt budget, concurrency cap) and the log audit run on every benchmark trial |
+| T14 | A command dies, or the orchestrator dies, between a non-repeatable effect and its recorded result, and the effect is repeated | Receipt protocol: `reconcile` answers "applied" only from a valid receipt, "not applied" only when the process is gone and left no `effect.intent`; everything else is `unknown`. Receipts are digest-checked against the output files, bound to the idempotency key, and size-capped; symlinked outputs are refused. Residual: the command's own honesty about intent/receipt is trusted | `receipt-worker.test.js` (crash after effect with a real subprocess, worker-level and orchestrator-level; died before/after effect; tampered and forged receipts; live process) |
 
 ## Residual risks (explicitly not solved)
 

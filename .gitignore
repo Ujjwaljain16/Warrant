@@ -8,3 +8,4 @@ coverage/
 .DS_Store
 .warrant/
 results/dev/
+examples/receipt/ledger.txt

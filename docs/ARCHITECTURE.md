@@ -15,6 +15,7 @@ flowchart LR
   E <-->|dispatch / deliver| W{{Worker interface}}
   W --- FW[sim/fake-worker<br/>seeded faults]
   W --- CW[workers/command-worker<br/>subprocess]
+  CW --- RW[workers/receipt-worker<br/>+ reconcile from receipts]
   G --> VK[core/verifiers<br/>sha256 / json / command / predicate]
   E --> L[log/runlog<br/>hash-chained events]
   L --- ML[MemoryRunLog]
@@ -41,7 +42,8 @@ flowchart LR
 | `src/engine/engine.js` | Gated policy: bounded concurrency, deadlines, retry classification, idempotent ingestion, cancellation, effect-class recovery. | |
 | `src/engine/replay.js` | Rebuild state from a log; `resume`; `verifyLog`. | |
 | `src/engine/baselines.js` | `sequential` and `naive-parallel` comparison policies. | Intentionally simple. |
-| `src/workers/command-worker.js` | Real path: spawn a command in an attempt directory with deadline, kill, output caps. | |
+| `src/workers/command-worker.js` | Real path: spawn a command in an attempt directory with deadline, kill, output caps. | No `reconcile`. |
+| `src/workers/receipt-worker.js`, `receipt.js` | `CommandWorker` plus `reconcile` for commands that follow the receipt protocol (`exec.receipt: true`). | See "Reconcile from receipts". |
 | `src/sim/*` | Virtual clock, seeded fault plan, ground-truth world ledger, fake worker. | Used by tests and benchmarks. |
 | `src/bench/*` | Workloads, metrics, statistics, runner, report writer. | |
 | `bin/warrant.js` | CLI: `run`, `resume`, `verify-log`, `bench`, `report`. | |
@@ -119,6 +121,34 @@ the decision table inherited from upstream `recovery.js`: `pure` and `workspace-
 `external-idempotent` re-runs with the same idempotency key; `external-nonrepeatable` becomes `unknown` unless the
 worker's `reconcile` returns evidence, in which case the log records the resolution before any further action.
 A corrupt log blocks resume (fail closed).
+
+## Reconcile from receipts (`ReceiptWorker`)
+
+A non-repeatable task whose worker dies after the effect is `unknown` unless the worker can answer "was it applied?" from
+evidence. `ReceiptWorker` extends `CommandWorker` for commands that opt in with `"exec": { "argv": [...], "receipt": true }`
+(any other task runs exactly as under `CommandWorker`). The host and the command leave files in the per-attempt directory:
+
+| File | Written by | When | Meaning |
+|---|---|---|---|
+| `attempt.json` | host | before the process starts; again with the pid; again with the exit code | this attempt got as far as starting; which process; how it ended |
+| `effect.intent` | command | just before the external effect | the effect may have begun |
+| `receipt.json` | command | last, atomically, after the effect and all declared outputs | `{version, idempotency_key, outputs: {name: sha256}}` |
+
+`reconcile` reads only those files and the process table:
+
+- valid receipt whose key matches and whose output digests match the files on disk: **applied**, returning the artifacts.
+  The engine still sends them through the gate, so a receipt is evidence of the effect, not a pass.
+- no receipt, the recorded pid is gone, the command did not exit 0, and `effect.intent` does not exist: **not applied**
+  (the engine may run the task again, with the same idempotency key).
+- anything else (no attempt record, pid unknown or still alive, intent without receipt, exit 0 without receipt, a receipt that
+  is unreadable, for another key, or disagrees with the outputs): reconcile throws, the log records `inconclusive`, and the
+  task ends `unknown`. Nothing is repeated on a guess.
+
+Limits: "not applied" is only as true as the command's promise to write `effect.intent` before the effect (a command that
+breaks it can be repeated). Liveness is `kill(pid, 0)`; pid reuse errs toward `unknown`, but descendants that outlive
+their parent are not tracked. Writes are atomic against a process crash (temp file, fsync, rename), not against power loss.
+The receipt is not authenticated: a command can write a false one. It is not a sandbox. Tested with real subprocesses
+through the real engine in `test/receipt-worker.test.js`; runnable example in `examples/receipt`.
 
 ## Configuration authority
 

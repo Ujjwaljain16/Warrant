@@ -6,7 +6,7 @@ const { Engine, resumeGated } = require('../engine/engine');
 const { auditLog } = require('../engine/replay');
 const { FileRunLog, LogCorruptionError, LogLockedError, readRunLogFile } = require('../log/runlog');
 const { SpecError, assertRunSpec, validateRunSpec } = require('../core/spec');
-const { CommandWorker } = require('../workers/command-worker');
+const { ReceiptWorker } = require('../workers/receipt-worker');
 const { ResumeError } = require('../engine/replay');
 
 const USAGE = `warrant - evidence-gated execution of bounded work
@@ -56,7 +56,7 @@ function concurrencyOption(flags) {
 async function execute(kind, spec, flags, io, specFile) {
   const workDir = path.resolve(io.cwd, flags['--dir'] || '.warrant');
   const logFile = path.resolve(io.cwd, flags['--log'] || path.join(workDir, spec.run_id, 'run.log'));
-  const worker = new CommandWorker({ baseDir: path.join(workDir, 'attempts'), specDir: path.dirname(specFile) });
+  const worker = new ReceiptWorker({ baseDir: path.join(workDir, 'attempts'), specDir: path.dirname(specFile) });
   const log = new FileRunLog(logFile);
   const opts = { worker, log, workDirFor: (a) => worker.workDirFor(a), concurrency: concurrencyOption(flags) };
   let engine;

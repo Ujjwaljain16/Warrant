@@ -1,0 +1,24 @@
+{
+  "spec_version": "1",
+  "run_id": "run-receipt",
+  "max_concurrency": 1,
+  "tasks": [
+    {
+      "id": "charge",
+      "deps": [],
+      "effect": "external-nonrepeatable",
+      "deadline_ms": 10000,
+      "max_attempts": 2,
+      "outputs": ["out"],
+      "exec": { "argv": ["node", "./charge.js", "./ledger.txt"], "receipt": true },
+      "requirements": [
+        {
+          "id": "exact",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "613286dfbb87119411f07a1aed3ca7760cd576251832808cd5f33eb99d6f3450"
+        }
+      ]
+    }
+  ]
+}
