@@ -1,0 +1,31 @@
+{
+  "id": "chunk-array",
+  "title": "Fix a chunking helper that drops the remainder",
+  "split": "toy",
+  "category": "array",
+  "difficulty": "easy",
+  "pitfall": "remainder dropped",
+  "outputs": [
+    "chunk.js"
+  ],
+  "visible_test_argv": [
+    "node",
+    "--test",
+    "chunk.test.js"
+  ],
+  "visible_on_start": "pass",
+  "gate_test_argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "chunk.hidden.test.js"
+  ],
+  "audit_test_argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "chunk.hidden.test.js",
+    "chunk.audit.test.js"
+  ],
+  "naive": true
+}

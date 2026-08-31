@@ -1,0 +1,31 @@
+{
+  "id": "slugify",
+  "title": "Implement slugify from a specification",
+  "split": "toy",
+  "category": "string",
+  "difficulty": "easy",
+  "pitfall": "only lower-cases and replaces spaces",
+  "outputs": [
+    "slugify.js"
+  ],
+  "visible_test_argv": [
+    "node",
+    "--test",
+    "slugify.test.js"
+  ],
+  "visible_on_start": "fail",
+  "gate_test_argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "slugify.hidden.test.js"
+  ],
+  "audit_test_argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "slugify.hidden.test.js",
+    "slugify.audit.test.js"
+  ],
+  "naive": true
+}

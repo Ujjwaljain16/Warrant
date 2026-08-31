@@ -1,0 +1,31 @@
+{
+  "id": "sum-range",
+  "title": "Fix an off-by-one in an inclusive range sum",
+  "split": "toy",
+  "category": "off-by-one",
+  "difficulty": "easy",
+  "pitfall": "loop bound excludes the upper end",
+  "outputs": [
+    "sumrange.js"
+  ],
+  "visible_test_argv": [
+    "node",
+    "--test",
+    "sumrange.test.js"
+  ],
+  "visible_on_start": "fail",
+  "gate_test_argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "sumrange.hidden.test.js"
+  ],
+  "audit_test_argv": [
+    "node",
+    "--test",
+    "--test-reporter=tap",
+    "sumrange.hidden.test.js",
+    "sumrange.audit.test.js"
+  ],
+  "naive": false
+}
