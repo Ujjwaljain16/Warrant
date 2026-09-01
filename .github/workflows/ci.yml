@@ -56,5 +56,10 @@ jobs:
           node bin/warrant.js report results/final
           git diff --exit-code -- results/final/REPORT.md results/final/charts
 
+      - name: Committed partial-requirements report equals regeneration from its committed summary
+        run: |
+          node bin/warrant.js report results/partial-requirements
+          git diff --exit-code -- results/partial-requirements/REPORT.md
+
       - name: Benchmark harness smoke run (development seeds, reduced grid)
         run: node bin/warrant.js bench --seeds dev --workloads chain-8,fanout-fanin-12 --profiles none,crash,false_claim --out "$RUNNER_TEMP/bench-smoke"

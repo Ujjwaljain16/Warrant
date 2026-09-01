@@ -1,0 +1,134 @@
+{
+  "experiment": "partial-requirements",
+  "label": "partial-requirements experiment (protocol v2, extension A)",
+  "protocol_version": 2,
+  "base_protocol_version": 1,
+  "dataset_version": "workloads-v1",
+  "git": {
+    "commit": "bd6d2e1ccfaae4099aa53c5a5abc15ca246c96e7",
+    "dirty": true,
+    "dirty_files": [
+      ".github/workflows/ci.yml",
+      ".gitignore",
+      "README.md",
+      "docs/ARCHITECTURE.md",
+      "docs/EVALUATION_PROTOCOL.md",
+      "docs/THREAT_MODEL.md",
+      "examples/receipt/",
+      "package.json",
+      "results/partial-requirements/",
+      "src/bench/cli.js",
+      "src/bench/partial.js",
+      "src/bench/report.js",
+      "src/cli/main.js",
+      "src/core/spec.js",
+      "src/util/proc.js",
+      "src/workers/command-worker.js",
+      "src/workers/receipt-worker.js",
+      "src/workers/receipt.js",
+      "test/partial.test.js",
+      "test/proc-tree.test.js",
+      "test/receipt-worker.test.js"
+    ]
+  },
+  "seeds": {
+    "label": "extension A held-out",
+    "first": 20000,
+    "last": 20499,
+    "count": 500
+  },
+  "workloads": [
+    "chain-8",
+    "fanout-fanin-12",
+    "diamond-lattice-16",
+    "pipeline-24",
+    "random-dag-32"
+  ],
+  "profiles": [
+    "false_claim",
+    "mixed"
+  ],
+  "requirement_sets": [
+    "full",
+    "digest-only",
+    "shape-only"
+  ],
+  "requirement_counts": {
+    "full": {
+      "chain-8": {
+        "artifact_sha256": 8,
+        "artifact_json": 3
+      },
+      "fanout-fanin-12": {
+        "artifact_sha256": 12,
+        "artifact_json": 7
+      },
+      "diamond-lattice-16": {
+        "artifact_sha256": 16,
+        "artifact_json": 9
+      },
+      "pipeline-24": {
+        "artifact_sha256": 24,
+        "artifact_json": 18
+      },
+      "random-dag-32": {
+        "artifact_sha256": 32,
+        "artifact_json": 17
+      }
+    },
+    "digest-only": {
+      "chain-8": {
+        "artifact_sha256": 8
+      },
+      "fanout-fanin-12": {
+        "artifact_sha256": 12
+      },
+      "diamond-lattice-16": {
+        "artifact_sha256": 16
+      },
+      "pipeline-24": {
+        "artifact_sha256": 24
+      },
+      "random-dag-32": {
+        "artifact_sha256": 32
+      }
+    },
+    "shape-only": {
+      "chain-8": {
+        "artifact_json": 8
+      },
+      "fanout-fanin-12": {
+        "artifact_json": 12
+      },
+      "diamond-lattice-16": {
+        "artifact_json": 16
+      },
+      "pipeline-24": {
+        "artifact_json": 24
+      },
+      "random-dag-32": {
+        "artifact_json": 32
+      }
+    }
+  },
+  "policies": [
+    "naive-parallel-timeout",
+    "gated"
+  ],
+  "params": {
+    "protocol_version": 1,
+    "retry_budget": 3,
+    "gated_deadline_multiple": 3,
+    "gated_backoff_ms_per_attempt": 20,
+    "gate_cost_ms_per_requirement": 5,
+    "tokens_per_worker_ms": 10,
+    "run_cap_multiple_of_critical_path": 30,
+    "concurrency_cap": 4
+  },
+  "environment": {
+    "node": "v22.19.0",
+    "platform": "win32/x64"
+  },
+  "command": "node bin/warrant.js bench --seeds partial-requirements --out results/partial-requirements",
+  "elapsed_seconds": 24.331
+}
