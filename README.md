@@ -55,7 +55,9 @@ node bin/warrant.js verify-log .warrant/run-pipeline/run.log --spec examples/pip
 | Subprocess worker (no shell, scrubbed env, per-attempt dir, kill on deadline/cancel) | implemented |
 | Deterministic simulated worker + seeded fault injection | implemented |
 | Benchmark: 5 policies x 10 fault profiles x 5 workloads, bootstrap CIs, paired verdicts | implemented |
-| Adapter for a specific agent runtime (Claude Code, Codex, ...) | **planned** (the `Worker` interface is the seam) |
+| Reconcile from receipts for external commands (`ReceiptWorker`, `"exec": {"receipt": true}`): crash-after-effect recovery without repeating the effect | implemented; tested with real subprocesses; limits below |
+| Partial-requirements experiment (protocol v2, extension A) | implemented; results in [results/partial-requirements](results/partial-requirements/REPORT.md) |
+| Adapter for a specific agent runtime (Claude Code, Codex, ...) | **planned** (the `Worker` interface is the seam; the receipt adapter is a generic command adapter, not an agent integration) |
 | Signed log / receipts | planned |
 | OS-level sandboxing of workers | planned (see [threat model](docs/THREAT_MODEL.md)) |
 | Real-model evaluation | planned; the simulation says nothing about any real model |
@@ -101,6 +103,7 @@ A task with no requirements is rejected unless it says `"trust_worker": true`, a
 ```bash
 npm run bench:dev      # development seeds 0..99, ~1 minute, writes results/dev
 npm run bench:final    # held-out seeds 10000..10499, ~5 minutes, writes results/final
+npm run bench:partial  # protocol v2 extension A, seeds 20000..20499, ~25 seconds, writes results/partial-requirements
 node bin/warrant.js report results/final     # regenerate REPORT.md and charts from summary.json
 ```
 
@@ -136,10 +139,53 @@ What this does and does not show:
 - The false-claim result holds because the benchmark's requirements are complete (digest equality). Real requirements
   are rarely that strong. The workers are simulated and the fault rates are assumptions.
 
+### Partial requirements (protocol v2, extension A; new held-out seeds 20000..20499, run once)
+
+The results above give the gate complete requirements. This experiment relaxes that on the `false_claim` and `mixed`
+profiles, with three requirement sets: `full` (the v1 set), `digest-only` (a pinned sha256 on every task) and
+`shape-only` (only a JSON shape check; no content is pinned). Pooled false-success rates, with the closest baseline
+(`naive-parallel-timeout`, which ignores requirements and so is identical across sets):
+
+| profile | baseline | gated, `full` | gated, `digest-only` | gated, `shape-only` |
+|---|---|---|---|---|
+| false claims | 0.441 | 0 | 0 | **0.441** (same false-success and correct counts as the baseline on every one of the 2,500 paired runs) |
+| mixed faults | 0.290 | 0 | 0 | **0.254** [0.243, 0.266] |
+
+- With a shape check alone the gate stops nothing that is well-formed: under `false_claim` gated is exactly as wrong as the
+  baseline (false-success difference 0.000, CI [0, 0]) and also slower (+28 simulated ms on average).
+- Under `mixed` the shape check still rejects malformed and missing outputs, so gated is modestly better than the baseline
+  (false-success -0.036, correct completion +0.043, both CIs exclude 0) but far from the 0 it reaches with a pinned digest.
+- One metric moves the wrong way and is reported as such: `unsafe final status` (wrong tasks reported as succeeded, over all
+  wrong tasks) is +0.010 *worse* for gated than the baseline under `mixed`/`shape-only` (CI [0.003, 0.017]), because gated
+  has fewer wrong tasks overall and the ones it lets through are a slightly larger share.
+- `digest-only` is indistinguishable from `full` on false successes, as predicted in the protocol.
+- This shows the cost of weak requirements on three points of one axis, in a simulation. It says nothing about how complete
+  real requirements are. The run was made from a **dirty working tree** (provenance in `meta.json`); re-run
+  `npm run bench:partial` from a clean commit for a clean-tree record (raw records and summary are deterministic).
+
+Full tables, per-workload results and the paired comparisons: [results/partial-requirements/REPORT.md](results/partial-requirements/REPORT.md).
+
 Methodology, frozen parameters, metric definitions and threats to validity:
 [docs/EVALUATION_PROTOCOL.md](docs/EVALUATION_PROTOCOL.md). Results, with the cases where the gated approach
 loses listed automatically: [results/final/REPORT.md](results/final/REPORT.md). All latencies there are
 **simulated** milliseconds and all faults are injected by a seeded model.
+
+## Reconcile for external commands
+
+A non-repeatable task whose worker dies after its effect normally ends `unknown`: the engine will not guess. A command
+that follows a small file protocol can instead let the engine find out. Mark the task `"exec": { "argv": [...], "receipt": true }`;
+the command calls `markIntent()` just before its effect and `writeReceipt({ outputs })` as its very last step
+([src/workers/receipt.js](src/workers/receipt.js), or write the same files from any language). After a crash, `resume` asks
+the worker, which reads the receipt: a valid one means the effect was applied (the output still goes through the gate);
+no receipt from a dead process that never wrote its intent means it was not; every other case stays `unknown`.
+
+```bash
+node examples/receipt/demo.js   # runs, "crashes" after the effect, resumes; the ledger ends with exactly one line
+```
+
+Protocol, evidence rules and limits (the command's honesty is trusted; receipts are not authenticated; pid-based liveness;
+crash-safe, not power-loss-safe): [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#reconcile-from-receipts-receiptworker).
+Example: [examples/receipt](examples/receipt).
 
 ## Layout
 
@@ -147,7 +193,7 @@ loses listed automatically: [results/final/REPORT.md](results/final/REPORT.md). 
 src/core      spec validation, states, scheduler, gate, verifiers
 src/engine    engine (gated policy), envelope parsing, replay/audit/resume, baseline policies
 src/log       hash-chained run log
-src/workers   subprocess worker
+src/workers   subprocess worker; receipt-based reconcile adapter
 src/sim       virtual clock, seeded fault plans, ground-truth world, fake worker
 src/bench     workloads, metrics, stats, runner, aggregation, report
 src/cli       command line
@@ -168,10 +214,13 @@ as your user. Run untrusted workers in a container or VM. Details and residual r
   fault model, not how any real model behaves.
 - The gate is only as strong as the requirements you write. Missing requirements mean missing guarantees.
 - After an orchestrator crash, worker processes it had started are not tracked; non-repeatable tasks that were in
-  flight are resolved through `reconcile` or end `unknown`. The command worker has no `reconcile`, so those end `unknown`.
+  flight are resolved through `reconcile` or end `unknown`. Only tasks marked `"receipt": true` have a `reconcile`; any
+  other command task ends `unknown`. The receipt protocol depends on the command writing its intent marker before its
+  effect, and it cannot tell a forged receipt from a true one.
 - Log lock reclamation relies on process liveness; pid reuse can make a stale lock look live (`breakLock` overrides).
-- Verified on Windows 11 / Node 22.19. CI definitions for Linux and Windows are included but were not executed on
-  GitHub hosted runners at the time of writing.
+- Verified on Windows 11 / Node 22.19, and in a Linux container (Docker Desktop on WSL2, `node:22` image, Node 22.23, as root and as
+  an unprivileged user): check, tests, upstream parity, and byte-identical reproduction of both benchmarks. The CI definitions for
+  Linux and Windows are included but were **not executed on GitHub hosted runners**; there has been no macOS run.
 
 ## Attribution and what is original
 

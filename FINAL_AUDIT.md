@@ -35,7 +35,8 @@ the repository was inventoried, not examined, and may contain further defects **
 - **Removed (not copied):** graph contracts/scheduler/run/journal/effects, control plane, governance, loops, fleet,
   optimizer and readiness pilots (940 benchmark files), skills, hooks, runtime adapters, installers, dashboards, docs
   site. Per-row reasons in AUDIT.md section 5. Several were not audited, which is itself a reason not to inherit them.
-- **Deferred:** receipts/signed logs, multi-process coordination, agent-runtime adapters.
+- **Deferred:** signed logs, multi-process coordination, agent-runtime adapters. (A receipt-based reconcile adapter for
+  external commands was added later; see sections 6 and 10.)
 
 ## 4. Original engineering contributions
 
@@ -77,6 +78,25 @@ still running; artifact names that are Windows device names were accepted; bench
 tree. Documentation claims stronger than the code (lock "expiry", "atomic append", "null-prototype reviver") were
 corrected rather than left. A mutation survivor ("indeterminate verdict treated as pass") exposed a test gap that is now closed.
 
+### Later additions: Linux container runs and new tests **[verified]**
+
+Work added after the commit above (uncommitted when written; the commits that introduce it are in `git log`). The suite
+grew from 116 tests to the count in the table's last rows. Run in Docker Desktop 29.0.1 (Linux engine on WSL2, kernel
+6.6.87.2-microsoft-standard-WSL2) with the `node:22` image (Node v22.23.3), on a fresh copy of the tree with no `.git`:
+
+| Run | What ran | Result |
+|---|---|---|
+| `git archive HEAD` at `bd6d2e1`, as root | `npm run check`, `npm test`, `npm run test:upstream-parity`, `npm run bench:final` | check OK; 116 / 116; 5 + 7 upstream tests; **`raw.jsonl.gz` decompressed and `summary.json` byte-identical to `results/final`** (sha256 of the decompressed raw records `9af80f98...`, of `summary.json` `738ca334...`) |
+| final tree (tracked files plus the new work, no `.git`), as root | the same four, plus the receipt example | check OK; 147 / 147 (0 skipped, so the symlink tests really ran); parity OK; example OK; final benchmark byte-identical again; the partial-requirements experiment reproduced byte-identically against the committed copy (raw and summary) and the first Windows run; `report` on `results/final` regenerates byte-identically |
+| final tree, as uid 1000 (`node`) | `npm run check`, `npm test` | check OK; 147 / 147 |
+
+**No Linux-only failure was found, so no production code was changed for Linux.** The Linux-sensitive paths had no
+direct tests, so `test/proc-tree.test.js` adds them (grandchildren killed on abort and on deadline, output-flood kill,
+attempt-directory containment, `./` argument resolution, symlinked outputs refused); they pass on Windows and on Linux.
+What these runs are **not**: not GitHub-hosted runners, not `ubuntu-latest`, not macOS; a Docker Desktop VM shares the
+Windows host's WSL2 kernel. The workflow file was still never executed by GitHub. The suite is slow in the container
+(about 140 s alone, dominated by the fsync-per-append chaos tests), which is a speed observation, not a failure.
+
 ## 7. Benchmark methods and measured outcomes
 
 Protocol (frozen, one disclosed amendment): `docs/EVALUATION_PROTOCOL.md`. Held-out run: seeds 10000-10499, 5 workloads x
@@ -98,6 +118,25 @@ Protocol deviation to know about: the fifth policy (`naive-parallel-timeout`) wa
 showed the bare baselines were dominated by hangs; it was added before any held-out seed was run and is disclosed in
 protocol amendment 1 and decision D9.
 
+### Partial-requirements experiment (protocol v2, extension A) **[verified]**
+
+`docs/EVALUATION_PROTOCOL.md` ("Version 2, extension A"; v1 unchanged), `results/partial-requirements/`. New held-out seeds
+20000-20499, 30,000 runs (5 workloads x `false_claim`/`mixed` x `full`/`digest-only`/`shape-only` requirements x `gated` vs
+the closest baseline). The first run was made from a **dirty working tree** (`meta.json` records it and the changed
+paths). It was then run a second time, unchanged except that the CLI route was renamed, and a third time in Linux. All three
+produced byte-identical records and summaries; the committed `meta.json` is from the second run. Re-run
+`npm run bench:partial` from a clean commit for a clean-tree record.
+
+Pooled false-success rate: baseline 0.441 (false claims) / 0.290 (mixed). Gated is 0 under `full` and `digest-only` in both
+profiles. Under `shape-only` it is **0.441** under false claims (same false-success and correct counts as the baseline on
+all 2,500 paired runs) and **0.254** [0.243, 0.266] under mixed faults. Under `mixed`/`shape-only` gated is still better than
+the baseline on false-success (-0.036) and correct completion (+0.043), but `unsafe final status` is **worse** by +0.010
+(CI [0.003, 0.017]), because gated has fewer wrong tasks and the ones it passes are a larger share of them. The predictions
+written beforehand were consistent with the result (they were written after a 20-seed smoke run and are not claimed to be
+blind). Gated `shape-only` is also slower than the baseline under false claims (+28 simulated ms on average). Three requirement
+sets on one axis, simulated workers: this measures the gate's dependence on its requirements, not how complete real
+requirements are.
+
 ## 8. Performance changes and measured impact
 
 `docs/PERFORMANCE.md`. Two kept (hash each log entry once; do not revalidate/re-hash an already validated frozen spec),
@@ -115,19 +154,28 @@ directory, output caps, and tree kill. Full table with the test for each: `docs/
 a hanging predicate would stall verification (command verifiers have timeouts); Windows tree-kill relies on `taskkill`;
 log lock reclamation relies on pid liveness (pid reuse); the hash chain is tamper-evident but unsigned; orphaned worker
 processes after an orchestrator crash are not tracked; the gate cannot check what the spec does not require.
+Receipt-based reconcile (section 10) additionally trusts the command to write its intent marker before its effect, cannot
+tell a forged receipt from a true one, and its "not applied" answer rests on a pid check (descendants that outlive their
+parent are not tracked); receipts survive a process crash, not power loss.
 
 ## 10. Known limitations and remaining work
 
 - The benchmark uses simulated workers and assumed fault rates; nothing here measures any real model or provider.
-- The benchmark's requirements are complete by construction, which is the best case for the gate. A
-  partial-requirements experiment (relaxing this) was planned in the protocol and is **[not done]**.
-- No adapter for a real agent runtime; the command worker has no `reconcile`, so crashed non-repeatable work ends
-  `unknown`. **[not done]**
-- CI workflow written but **never executed on GitHub-hosted runners**; only the same commands ran locally, on Windows.
-  No Linux or macOS run. **[not done]**
+- The headline benchmark's requirements are complete by construction, which is the best case for the gate. The
+  partial-requirements experiment (section 7) relaxes this on two profiles and three requirement sets **[verified]**; it
+  does not say how complete real requirements are, and its committed copy was made from a dirty tree.
+- Reconcile exists for one adapter: `ReceiptWorker`, a generic external-command adapter (`"exec": {"receipt": true}`,
+  `docs/ARCHITECTURE.md`, `examples/receipt`). Crash-after-effect recovery through the real engine with real subprocesses is
+  tested (worker-level, orchestrator-level via `resume`, died before and after the effect, tampered and forged receipts, a
+  live process); 6 targeted mutants of its decision rules were all caught **[verified]**. **No adapter for an agent runtime
+  exists and no real model was run [not done]**; any other command task still ends `unknown`.
+- CI workflow written but **never executed on GitHub-hosted runners**. The same commands ran on Windows and in a Linux
+  container (section 6) **[verified]**; no macOS run and no `ubuntu-latest` run **[not done]**.
 - `LICENSE` names "Ujjwaljain16" for new work; replace with your legal name if desired.
-- Remaining work, in order of value: a real runtime adapter with `reconcile`; the partial-requirements experiment;
-  Linux/macOS runs; signed run logs; container sandboxing of workers.
+- Remaining work, in order of value: an agent-runtime adapter with `reconcile`; a run on GitHub-hosted runners and on macOS;
+  a clean-tree re-run of the partial-requirements experiment; signed run logs; container sandboxing of workers.
+- The CLI `USAGE` text still lists only `--seeds <final|dev>`; `--seeds partial-requirements` is documented in the README
+  and the protocol, not in `--help`.
 
 ## 11. Git history
 
@@ -163,6 +211,8 @@ npm test
 npm run test:upstream-parity
 npm run example && npm run example:lying          # second one exits 1 by design
 npm run bench:final                               # ~3 min; compare with results/final (byte-identical)
+npm run bench:partial                             # ~25 s; protocol v2 extension A, writes results/partial-requirements
+node examples/receipt/demo.js                     # crash-after-effect recovery from a receipt, real subprocess
 node bin/warrant.js report results/final          # regenerates REPORT.md and charts
 npm run bench:overhead                            # engine overhead (absolute numbers vary by machine)
 node scripts/profile-upstream-scheduler.js ../citadel-upstream   # F3 (needs an upstream clone at that path)
