@@ -1,0 +1,57 @@
+{
+  "spec_version": "1",
+  "run_id": "run-demo",
+  "max_concurrency": 2,
+  "tasks": [
+    {
+      "id": "produce",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 10000,
+      "max_attempts": 2,
+      "outputs": [
+        "out"
+      ],
+      "exec": {
+        "argv": [
+          "node",
+          "./scripts/produce.js"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "exact",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "9d4379f25d2de1fe8279fd866803e29ae164f0525c1b076ee6be749e79e978f5"
+        }
+      ]
+    },
+    {
+      "id": "double",
+      "deps": [
+        "produce"
+      ],
+      "effect": "pure",
+      "deadline_ms": 10000,
+      "max_attempts": 2,
+      "outputs": [
+        "out"
+      ],
+      "exec": {
+        "argv": [
+          "node",
+          "./scripts/double-lies.js"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "exact",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "d3a90b673a89fc5660311ed953408dc0f84ab4dbb1ac193e432e087c8ff2faac"
+        }
+      ]
+    }
+  ]
+}

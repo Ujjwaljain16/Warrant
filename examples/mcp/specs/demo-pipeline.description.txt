@@ -1,0 +1,1 @@
+Two-task pipeline: produce rows, then double them. Both results are sha256-gated.

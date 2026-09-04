@@ -1,0 +1,1 @@
+Same pipeline, but the second task lies (exit 0, wrong data). The gate must reject it, so the run fails.

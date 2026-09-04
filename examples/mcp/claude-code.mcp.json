@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "warrant": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/absolute/path/to/warrant/bin/warrant-mcp.js",
+        "--spec-dir", "/absolute/path/to/warrant/examples/mcp/specs",
+        "--state-dir", "/absolute/path/to/a/state/dir/outside/the/spec/dir"
+      ]
+    }
+  }
+}
