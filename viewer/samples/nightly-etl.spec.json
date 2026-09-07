@@ -1,0 +1,182 @@
+{
+  "spec_version": "1",
+  "run_id": "run-nightly-etl",
+  "max_concurrency": 3,
+  "tasks": [
+    {
+      "id": "fetch",
+      "deps": [],
+      "effect": "external-idempotent",
+      "deadline_ms": 360,
+      "max_attempts": 3,
+      "outputs": [
+        "out"
+      ],
+      "requirements": [
+        {
+          "id": "digest",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "445920cbc3ec249ff472712f5c6e7f3bfc84a2902c3c1b8d2c4c9d6a88b30ae9"
+        },
+        {
+          "id": "shape",
+          "kind": "artifact_json",
+          "artifact": "out",
+          "shape": {
+            "inputs": "object",
+            "n": "number",
+            "task": "string"
+          }
+        }
+      ],
+      "nominal_ms": 120
+    },
+    {
+      "id": "parse",
+      "deps": [
+        "fetch"
+      ],
+      "effect": "pure",
+      "deadline_ms": 240,
+      "max_attempts": 3,
+      "outputs": [
+        "out"
+      ],
+      "requirements": [
+        {
+          "id": "digest",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "95fcfa436803b375da69a385ef691ec1645efc84653a1622d109eb4112185b3f"
+        },
+        {
+          "id": "shape",
+          "kind": "artifact_json",
+          "artifact": "out",
+          "shape": {
+            "inputs": "object",
+            "n": "number",
+            "task": "string"
+          }
+        }
+      ],
+      "nominal_ms": 80
+    },
+    {
+      "id": "validate",
+      "deps": [
+        "parse"
+      ],
+      "effect": "pure",
+      "deadline_ms": 270,
+      "max_attempts": 3,
+      "outputs": [
+        "out"
+      ],
+      "requirements": [
+        {
+          "id": "digest",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "6acd08a8a9b603047961eb8d6126759318d92fa8494d50941c18148077b52bb5"
+        },
+        {
+          "id": "shape",
+          "kind": "artifact_json",
+          "artifact": "out",
+          "shape": {
+            "inputs": "object",
+            "n": "number",
+            "task": "string"
+          }
+        }
+      ],
+      "nominal_ms": 90
+    },
+    {
+      "id": "enrich",
+      "deps": [
+        "parse"
+      ],
+      "effect": "pure",
+      "deadline_ms": 450,
+      "max_attempts": 3,
+      "outputs": [
+        "out"
+      ],
+      "requirements": [
+        {
+          "id": "digest",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "144c13749782699d70ce40a244bd8471b89987ad1e4b8effebe5b2b8e4e872f4"
+        }
+      ],
+      "nominal_ms": 150
+    },
+    {
+      "id": "publish",
+      "deps": [
+        "validate",
+        "enrich"
+      ],
+      "effect": "external-nonrepeatable",
+      "deadline_ms": 300,
+      "max_attempts": 3,
+      "outputs": [
+        "out"
+      ],
+      "requirements": [
+        {
+          "id": "digest",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "113cc8f499e8e7e2683d76b17c0c3769082e88f6f6c0968fe3ad3803fa8cdb48"
+        },
+        {
+          "id": "shape",
+          "kind": "artifact_json",
+          "artifact": "out",
+          "shape": {
+            "inputs": "object",
+            "n": "number",
+            "task": "string"
+          }
+        }
+      ],
+      "nominal_ms": 100
+    },
+    {
+      "id": "report",
+      "deps": [
+        "publish"
+      ],
+      "effect": "pure",
+      "deadline_ms": 180,
+      "max_attempts": 3,
+      "outputs": [
+        "out"
+      ],
+      "requirements": [
+        {
+          "id": "digest",
+          "kind": "artifact_sha256",
+          "artifact": "out",
+          "sha256": "e481f7534bae747cc13e80aa82cd40e310c11b4f81b16d5ddac26197356eff39"
+        },
+        {
+          "id": "shape",
+          "kind": "artifact_json",
+          "artifact": "out",
+          "shape": {
+            "inputs": "object",
+            "n": "number",
+            "task": "string"
+          }
+        }
+      ],
+      "nominal_ms": 60
+    }
+  ]
+}
