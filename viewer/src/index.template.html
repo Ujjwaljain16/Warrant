@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--CSP-->
+<meta name="color-scheme" content="light dark">
+<meta name="referrer" content="no-referrer">
+<title>Warrant run viewer</title>
+<link rel="icon" href="data:,">
+<style>
+/*STYLE*/
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the run</a>
+<header class="top">
+  <div class="brand">
+    <h1 id="app-title">Warrant run viewer</h1>
+    <p class="tag">Open a run log, re-verify its hash chain, see what happened. Runs entirely in this page: nothing is uploaded.</p>
+  </div>
+  <div class="actions">
+    <button type="button" class="btn primary" id="btn-open">Open log&hellip;</button>
+    <button type="button" class="btn" id="btn-spec">Add run spec&hellip;</button>
+    <button type="button" class="btn" id="btn-theme" aria-label="Colour theme">Theme</button>
+  </div>
+  <input type="file" id="file-log" class="sr-only" tabindex="-1" aria-hidden="true" accept=".jsonl,.log,.json,.txt,application/json,text/plain" multiple>
+  <input type="file" id="file-spec" class="sr-only" tabindex="-1" aria-hidden="true" accept=".json,application/json">
+</header>
+
+<nav class="samples" aria-label="Built-in sample logs">
+  <span class="samples-label" id="samples-label">Built-in samples</span>
+  <div id="sample-list" class="sample-list" role="group" aria-labelledby="samples-label"></div>
+</nav>
+<p id="sample-blurb" class="sample-blurb"></p>
+<div id="status" class="status" role="status" aria-live="polite"></div>
+
+<main id="main" tabindex="-1">
+  <p id="welcome" class="welcome">Drop a run log (.jsonl) anywhere on this page, or use <strong>Open log&hellip;</strong>. Drop the run spec .json together with it to check dependencies, budgets and one-shot effects as well.</p>
+  <div id="content" hidden>
+    <section id="banner" class="banner" aria-label="Verification result"></section>
+
+    <nav class="jump" aria-label="Sections">
+      <a href="#sec-timeline">Timeline</a>
+      <a href="#sec-summary">Proves / does not prove</a>
+      <a href="#sec-tasks">Tasks</a>
+      <a href="#sec-detail">Task detail</a>
+      <a href="#sec-invariants">Invariants</a>
+      <a href="#sec-events">Events</a>
+    </nav>
+
+    <section class="card" id="sec-timeline" aria-labelledby="h-timeline">
+      <div class="card-head">
+        <h2 id="h-timeline">Timeline</h2>
+        <div class="controls">
+          <div class="seg" role="group" aria-label="Horizontal axis">
+            <button type="button" class="btn small" id="mode-seq" aria-pressed="true">Log sequence</button>
+            <button type="button" class="btn small" id="mode-time" aria-pressed="false">Time</button>
+          </div>
+          <div class="seg" role="group" aria-label="Zoom">
+            <button type="button" class="btn small" id="zoom-out" aria-label="Zoom out">&minus;</button>
+            <span id="zoom-label" class="zoom-label" aria-live="polite">100%</span>
+            <button type="button" class="btn small" id="zoom-in" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+      </div>
+      <p class="muted">One row per task, one bar per attempt, markers for what the gate and the engine decided. Select a bar or marker to open the raw entry. The tables below hold the same information as text.</p>
+      <div id="timeline" class="scroll timeline-host" tabindex="0" role="region" aria-label="Timeline (scrolls sideways)"></div>
+      <p id="timeline-note" class="muted small"></p>
+      <details class="legend">
+        <summary>Key to shapes and colours</summary>
+        <div id="legend" class="legend-body"></div>
+      </details>
+    </section>
+
+    <section class="card" id="sec-summary" aria-labelledby="h-summary">
+      <h2 id="h-summary">What this run proves &mdash; and what it does not</h2>
+      <div id="summary"></div>
+    </section>
+
+    <section class="card" id="sec-tasks" aria-labelledby="h-tasks">
+      <h2 id="h-tasks">Tasks</h2>
+      <div id="tasks" class="scroll"></div>
+    </section>
+
+    <section class="card" id="sec-detail" aria-labelledby="h-detail">
+      <h2 id="h-detail">Task detail</h2>
+      <div id="detail"></div>
+    </section>
+
+    <section class="card" id="sec-invariants" aria-labelledby="h-inv">
+      <h2 id="h-inv">Invariants</h2>
+      <div id="invariants"></div>
+    </section>
+
+    <section class="card" id="sec-events" aria-labelledby="h-events">
+      <h2 id="h-events">Events</h2>
+      <div id="filters" class="filters"></div>
+      <p id="events-count" class="muted small" aria-live="polite"></p>
+      <div id="events" class="scroll"></div>
+    </section>
+  </div>
+</main>
+
+<footer class="foot">
+  <p>Everything is computed in this page from the file you open; no network requests are made, and the page&rsquo;s security policy forbids them. Log text is untrusted: it is only ever shown as plain text. Limits: 20&nbsp;MB per file, 100,000 entries.</p>
+  <p>The hash chain is checked as the engine checks it: SHA-256 over the canonical JSON (keys sorted) of each entry, linked by <code>prev</code>. Valid means consistent, not authentic.</p>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlg-title"></dialog>
+<div id="drop" class="drop" hidden aria-hidden="true"><p>Drop a run log (.jsonl), and optionally its run spec (.json)</p></div>
+
+<script>
+/*SCRIPT*/
+</script>
+</body>
+</html>
