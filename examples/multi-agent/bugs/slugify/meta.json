@@ -1,0 +1,14 @@
+{
+  "id": "slugify",
+  "title": "Punctuation survives in slugs",
+  "split": "toy",
+  "category": "string",
+  "difficulty": "easy",
+  "pitfall": "strips punctuation but not accents, and accepts non-strings",
+  "outputs": ["slug.js"],
+  "visible_test_argv": ["node", "--test", "slug.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "slug.hidden.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "slug.hidden.test.js", "slug.audit.test.js"],
+  "naive": true
+}

@@ -1,0 +1,14 @@
+{
+  "id": "integrate",
+  "title": "The five fixes work together",
+  "split": "toy",
+  "category": "insufficient-visible",
+  "difficulty": "medium",
+  "pitfall": "each module looks right alone, but the combined flows only work if all five fixes are correct",
+  "outputs": ["chunk.js", "csv.js", "semver.js", "slug.js", "wrap.js"],
+  "visible_test_argv": ["node", "--test", "slug.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "integration.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "integration.test.js", "integration.audit.test.js"],
+  "naive": false
+}

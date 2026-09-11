@@ -1,0 +1,14 @@
+{
+  "id": "semver-order",
+  "title": "Versions are compared as text",
+  "split": "toy",
+  "category": "algorithm",
+  "difficulty": "medium",
+  "pitfall": "compares the numbers but ignores pre-release tags and invalid input",
+  "outputs": ["semver.js"],
+  "visible_test_argv": ["node", "--test", "semver.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "semver.hidden.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "semver.hidden.test.js", "semver.audit.test.js"],
+  "naive": true
+}

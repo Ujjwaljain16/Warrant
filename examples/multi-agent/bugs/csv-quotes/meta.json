@@ -1,0 +1,14 @@
+{
+  "id": "csv-quotes",
+  "title": "Quoted fields are split on their commas",
+  "split": "toy",
+  "category": "parsing",
+  "difficulty": "medium",
+  "pitfall": "handles quoted commas but not doubled quotes or unterminated quotes",
+  "outputs": ["csv.js"],
+  "visible_test_argv": ["node", "--test", "csv.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "csv.hidden.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "csv.hidden.test.js", "csv.audit.test.js"],
+  "naive": true
+}

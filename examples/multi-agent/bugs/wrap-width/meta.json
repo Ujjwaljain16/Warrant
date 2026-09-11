@@ -1,0 +1,14 @@
+{
+  "id": "wrap-width",
+  "title": "Lines break one character early",
+  "split": "toy",
+  "category": "off-by-one",
+  "difficulty": "easy",
+  "pitfall": "fixes the comparison but leaves blank lines for long words and repeated spaces",
+  "outputs": ["wrap.js"],
+  "visible_test_argv": ["node", "--test", "wrap.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "wrap.hidden.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "wrap.hidden.test.js", "wrap.audit.test.js"],
+  "naive": true
+}

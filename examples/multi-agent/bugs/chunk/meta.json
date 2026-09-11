@@ -1,0 +1,14 @@
+{
+  "id": "chunk",
+  "title": "The last short piece is lost",
+  "split": "toy",
+  "category": "array",
+  "difficulty": "easy",
+  "pitfall": "keeps the short piece but never validates the size",
+  "outputs": ["chunk.js"],
+  "visible_test_argv": ["node", "--test", "chunk.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "chunk.hidden.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "chunk.hidden.test.js", "chunk.audit.test.js"],
+  "naive": true
+}
