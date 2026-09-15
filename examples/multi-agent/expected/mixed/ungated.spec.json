@@ -1,0 +1,67 @@
+{
+  "spec_version": "1",
+  "run_id": "multi-agent-mixed-ungated",
+  "max_concurrency": 5,
+  "tasks": [
+    {
+      "id": "chunk",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 1800000,
+      "max_attempts": 2,
+      "outputs": [
+        "chunk.js"
+      ],
+      "requirements": [],
+      "trust_worker": true
+    },
+    {
+      "id": "csv-quotes",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 1800000,
+      "max_attempts": 2,
+      "outputs": [
+        "csv.js"
+      ],
+      "requirements": [],
+      "trust_worker": true
+    },
+    {
+      "id": "semver-order",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 1800000,
+      "max_attempts": 2,
+      "outputs": [
+        "semver.js"
+      ],
+      "requirements": [],
+      "trust_worker": true
+    },
+    {
+      "id": "slugify",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 1800000,
+      "max_attempts": 2,
+      "outputs": [
+        "slug.js"
+      ],
+      "requirements": [],
+      "trust_worker": true
+    },
+    {
+      "id": "wrap-width",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 1800000,
+      "max_attempts": 2,
+      "outputs": [
+        "wrap.js"
+      ],
+      "requirements": [],
+      "trust_worker": true
+    }
+  ]
+}

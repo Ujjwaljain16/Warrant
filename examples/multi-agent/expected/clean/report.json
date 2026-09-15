@@ -1,0 +1,445 @@
+{
+  "demo": "multi-agent",
+  "scenario": "clean",
+  "model": "scripted-agents",
+  "host_policy": {
+    "maxConcurrency": 5,
+    "workerDeadlineMs": 1800000,
+    "integrateDeadlineMs": 300000,
+    "workerMaxAttempts": 2,
+    "integrateMaxAttempts": 1,
+    "gateTimeoutMs": 150000,
+    "loopMaxSteps": 12
+  },
+  "plan": {
+    "accepted": true,
+    "rounds": 1,
+    "rejected": [],
+    "subtasks": [
+      {
+        "id": "chunk",
+        "title": "The last short piece is lost",
+        "files_hint": [
+          "chunk.js",
+          "chunk.test.js"
+        ]
+      },
+      {
+        "id": "csv-quotes",
+        "title": "Quoted fields are split on their commas",
+        "files_hint": [
+          "csv.js",
+          "csv.test.js"
+        ]
+      },
+      {
+        "id": "semver-order",
+        "title": "Versions are compared as text",
+        "files_hint": [
+          "semver.js",
+          "semver.test.js"
+        ]
+      },
+      {
+        "id": "slugify",
+        "title": "Punctuation survives in slugs",
+        "files_hint": [
+          "slug.js",
+          "slug.test.js"
+        ]
+      },
+      {
+        "id": "wrap-width",
+        "title": "Lines break one character early",
+        "files_hint": [
+          "wrap.js",
+          "wrap.test.js"
+        ]
+      }
+    ],
+    "uncovered": []
+  },
+  "modes": {
+    "gated": {
+      "run_status": "succeeded",
+      "spec_digest": "sha256:7186561fa475db89b99f48c3bdded8e9ddf549ab8208b66f707a9ce233e8e242",
+      "log_entries": 26,
+      "log_head": "sha256:ddac3b28c1eac3b98606946f8f4579742347b77ee24b2b027c71247b111e9518",
+      "invariant_violations": [],
+      "engine_attempts": 6,
+      "tasks": {
+        "chunk": {
+          "status": "succeeded",
+          "code": "VERIFIED",
+          "attempts": 1,
+          "verification": {
+            "level": "gated",
+            "passed": [
+              "hidden-tests"
+            ],
+            "failed": []
+          },
+          "agent": [
+            {
+              "attempt": 1,
+              "claim": "done",
+              "outcome": "finished",
+              "steps": 5
+            }
+          ]
+        },
+        "csv-quotes": {
+          "status": "succeeded",
+          "code": "VERIFIED",
+          "attempts": 1,
+          "verification": {
+            "level": "gated",
+            "passed": [
+              "hidden-tests"
+            ],
+            "failed": []
+          },
+          "agent": [
+            {
+              "attempt": 1,
+              "claim": "done",
+              "outcome": "finished",
+              "steps": 5
+            }
+          ]
+        },
+        "semver-order": {
+          "status": "succeeded",
+          "code": "VERIFIED",
+          "attempts": 1,
+          "verification": {
+            "level": "gated",
+            "passed": [
+              "hidden-tests"
+            ],
+            "failed": []
+          },
+          "agent": [
+            {
+              "attempt": 1,
+              "claim": "done",
+              "outcome": "finished",
+              "steps": 5
+            }
+          ]
+        },
+        "slugify": {
+          "status": "succeeded",
+          "code": "VERIFIED",
+          "attempts": 1,
+          "verification": {
+            "level": "gated",
+            "passed": [
+              "hidden-tests"
+            ],
+            "failed": []
+          },
+          "agent": [
+            {
+              "attempt": 1,
+              "claim": "done",
+              "outcome": "finished",
+              "steps": 5
+            }
+          ]
+        },
+        "wrap-width": {
+          "status": "succeeded",
+          "code": "VERIFIED",
+          "attempts": 1,
+          "verification": {
+            "level": "gated",
+            "passed": [
+              "hidden-tests"
+            ],
+            "failed": []
+          },
+          "agent": [
+            {
+              "attempt": 1,
+              "claim": "done",
+              "outcome": "finished",
+              "steps": 5
+            }
+          ]
+        },
+        "integrate": {
+          "status": "succeeded",
+          "code": "VERIFIED",
+          "attempts": 1,
+          "verification": {
+            "level": "gated",
+            "passed": [
+              "integration-suite"
+            ],
+            "failed": []
+          },
+          "agent": []
+        }
+      },
+      "accepted": [
+        "chunk",
+        "csv-quotes",
+        "semver-order",
+        "slugify",
+        "wrap-width"
+      ],
+      "audit": {
+        "chunk": "pass",
+        "csv-quotes": "pass",
+        "semver-order": "pass",
+        "slugify": "pass",
+        "wrap-width": "pass"
+      },
+      "false_acceptances": [],
+      "shipped_integration": {
+        "status": "pass",
+        "code": "HIDDEN_TESTS_PASS",
+        "detail": "5/5"
+      },
+      "reported_success": true,
+      "false_success": false,
+      "agent_usage": {
+        "calls": 25,
+        "input_tokens": 21546,
+        "output_tokens": 1213
+      }
+    },
+    "ungated": {
+      "run_status": "succeeded",
+      "spec_digest": "sha256:ef2cde634cbb6b2ed6676a9ef350c8e6af2fdd7f5a51f373687b67785c4d1a95",
+      "log_entries": 22,
+      "log_head": "sha256:0852312210f86f95f2856806f6b1ed2d6ab652bc0a7bd4a93412a753f3292279",
+      "invariant_violations": [],
+      "engine_attempts": 5,
+      "tasks": {
+        "chunk": {
+          "status": "succeeded",
+          "code": "CLAIM_ONLY",
+          "attempts": 1,
+          "verification": {
+            "level": "claim_only",
+            "passed": [],
+            "failed": []
+          },
+          "agent": [
+            {
+              "attempt": 1,
+              "claim": "done",
+              "outcome": "finished",
+              "steps": 5
+            }
+          ]
+        },
+        "csv-quotes": {
+          "status": "succeeded",
+          "code": "CLAIM_ONLY",
+          "attempts": 1,
+          "verification": {
+            "level": "claim_only",
+            "passed": [],
+            "failed": []
+          },
+          "agent": [
+            {
+              "attempt": 1,
+              "claim": "done",
+              "outcome": "finished",
+              "steps": 5
+            }
+          ]
+        },
+        "semver-order": {
+          "status": "succeeded",
+          "code": "CLAIM_ONLY",
+          "attempts": 1,
+          "verification": {
+            "level": "claim_only",
+            "passed": [],
+            "failed": []
+          },
+          "agent": [
+            {
+              "attempt": 1,
+              "claim": "done",
+              "outcome": "finished",
+              "steps": 5
+            }
+          ]
+        },
+        "slugify": {
+          "status": "succeeded",
+          "code": "CLAIM_ONLY",
+          "attempts": 1,
+          "verification": {
+            "level": "claim_only",
+            "passed": [],
+            "failed": []
+          },
+          "agent": [
+            {
+              "attempt": 1,
+              "claim": "done",
+              "outcome": "finished",
+              "steps": 5
+            }
+          ]
+        },
+        "wrap-width": {
+          "status": "succeeded",
+          "code": "CLAIM_ONLY",
+          "attempts": 1,
+          "verification": {
+            "level": "claim_only",
+            "passed": [],
+            "failed": []
+          },
+          "agent": [
+            {
+              "attempt": 1,
+              "claim": "done",
+              "outcome": "finished",
+              "steps": 5
+            }
+          ]
+        }
+      },
+      "accepted": [
+        "chunk",
+        "csv-quotes",
+        "semver-order",
+        "slugify",
+        "wrap-width"
+      ],
+      "audit": {
+        "chunk": "pass",
+        "csv-quotes": "pass",
+        "semver-order": "pass",
+        "slugify": "pass",
+        "wrap-width": "pass"
+      },
+      "false_acceptances": [],
+      "shipped_integration": {
+        "status": "pass",
+        "code": "HIDDEN_TESTS_PASS",
+        "detail": "5/5"
+      },
+      "reported_success": true,
+      "false_success": false,
+      "agent_usage": {
+        "calls": 25,
+        "input_tokens": 21546,
+        "output_tokens": 1213
+      }
+    }
+  },
+  "comparison": [
+    {
+      "id": "chunk",
+      "agent_claim": "done",
+      "agent_outcome": "finished",
+      "ungated": {
+        "status": "succeeded",
+        "code": "CLAIM_ONLY",
+        "accepted": true,
+        "audit": "pass"
+      },
+      "gated": {
+        "status": "succeeded",
+        "code": "VERIFIED",
+        "accepted": true,
+        "audit": "pass"
+      }
+    },
+    {
+      "id": "csv-quotes",
+      "agent_claim": "done",
+      "agent_outcome": "finished",
+      "ungated": {
+        "status": "succeeded",
+        "code": "CLAIM_ONLY",
+        "accepted": true,
+        "audit": "pass"
+      },
+      "gated": {
+        "status": "succeeded",
+        "code": "VERIFIED",
+        "accepted": true,
+        "audit": "pass"
+      }
+    },
+    {
+      "id": "semver-order",
+      "agent_claim": "done",
+      "agent_outcome": "finished",
+      "ungated": {
+        "status": "succeeded",
+        "code": "CLAIM_ONLY",
+        "accepted": true,
+        "audit": "pass"
+      },
+      "gated": {
+        "status": "succeeded",
+        "code": "VERIFIED",
+        "accepted": true,
+        "audit": "pass"
+      }
+    },
+    {
+      "id": "slugify",
+      "agent_claim": "done",
+      "agent_outcome": "finished",
+      "ungated": {
+        "status": "succeeded",
+        "code": "CLAIM_ONLY",
+        "accepted": true,
+        "audit": "pass"
+      },
+      "gated": {
+        "status": "succeeded",
+        "code": "VERIFIED",
+        "accepted": true,
+        "audit": "pass"
+      }
+    },
+    {
+      "id": "wrap-width",
+      "agent_claim": "done",
+      "agent_outcome": "finished",
+      "ungated": {
+        "status": "succeeded",
+        "code": "CLAIM_ONLY",
+        "accepted": true,
+        "audit": "pass"
+      },
+      "gated": {
+        "status": "succeeded",
+        "code": "VERIFIED",
+        "accepted": true,
+        "audit": "pass"
+      }
+    }
+  ],
+  "status": "completed",
+  "headline": {
+    "gated": {
+      "accepted": 5,
+      "false_acceptances": 0,
+      "reported_success": true,
+      "false_success": false,
+      "shipped_integration": "pass"
+    },
+    "ungated": {
+      "accepted": 5,
+      "false_acceptances": 0,
+      "reported_success": true,
+      "false_success": false,
+      "shipped_integration": "pass"
+    }
+  }
+}

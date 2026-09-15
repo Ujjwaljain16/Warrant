@@ -1,0 +1,48 @@
+{
+  "accepted": true,
+  "rounds": 1,
+  "rejected": [],
+  "subtasks": [
+    {
+      "id": "chunk",
+      "title": "The last short piece is lost",
+      "files_hint": [
+        "chunk.js",
+        "chunk.test.js"
+      ]
+    },
+    {
+      "id": "csv-quotes",
+      "title": "Quoted fields are split on their commas",
+      "files_hint": [
+        "csv.js",
+        "csv.test.js"
+      ]
+    },
+    {
+      "id": "semver-order",
+      "title": "Versions are compared as text",
+      "files_hint": [
+        "semver.js",
+        "semver.test.js"
+      ]
+    },
+    {
+      "id": "slugify",
+      "title": "Punctuation survives in slugs",
+      "files_hint": [
+        "slug.js",
+        "slug.test.js"
+      ]
+    },
+    {
+      "id": "wrap-width",
+      "title": "Lines break one character early",
+      "files_hint": [
+        "wrap.js",
+        "wrap.test.js"
+      ]
+    }
+  ],
+  "uncovered": []
+}

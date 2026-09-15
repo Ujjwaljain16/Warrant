@@ -1,0 +1,143 @@
+{
+  "spec_version": "1",
+  "run_id": "multi-agent-clean-gated",
+  "max_concurrency": 5,
+  "tasks": [
+    {
+      "id": "chunk",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 1800000,
+      "max_attempts": 2,
+      "outputs": [
+        "chunk.js"
+      ],
+      "requirements": [
+        {
+          "id": "hidden-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "gate.js"
+          ],
+          "timeout_ms": 150000
+        }
+      ]
+    },
+    {
+      "id": "csv-quotes",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 1800000,
+      "max_attempts": 2,
+      "outputs": [
+        "csv.js"
+      ],
+      "requirements": [
+        {
+          "id": "hidden-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "gate.js"
+          ],
+          "timeout_ms": 150000
+        }
+      ]
+    },
+    {
+      "id": "semver-order",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 1800000,
+      "max_attempts": 2,
+      "outputs": [
+        "semver.js"
+      ],
+      "requirements": [
+        {
+          "id": "hidden-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "gate.js"
+          ],
+          "timeout_ms": 150000
+        }
+      ]
+    },
+    {
+      "id": "slugify",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 1800000,
+      "max_attempts": 2,
+      "outputs": [
+        "slug.js"
+      ],
+      "requirements": [
+        {
+          "id": "hidden-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "gate.js"
+          ],
+          "timeout_ms": 150000
+        }
+      ]
+    },
+    {
+      "id": "wrap-width",
+      "deps": [],
+      "effect": "pure",
+      "deadline_ms": 1800000,
+      "max_attempts": 2,
+      "outputs": [
+        "wrap.js"
+      ],
+      "requirements": [
+        {
+          "id": "hidden-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "gate.js"
+          ],
+          "timeout_ms": 150000
+        }
+      ]
+    },
+    {
+      "id": "integrate",
+      "deps": [
+        "chunk",
+        "csv-quotes",
+        "semver-order",
+        "slugify",
+        "wrap-width"
+      ],
+      "effect": "pure",
+      "deadline_ms": 300000,
+      "max_attempts": 1,
+      "outputs": [
+        "chunk.js",
+        "csv.js",
+        "semver.js",
+        "slug.js",
+        "wrap.js"
+      ],
+      "requirements": [
+        {
+          "id": "integration-suite",
+          "kind": "command",
+          "argv": [
+            "node",
+            "gate.js"
+          ],
+          "timeout_ms": 150000
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "accepted": true,
+  "rounds": 3,
+  "rejected": [
+    {
+      "round": 1,
+      "reply_sha256": "0173f352835cd441f8470d212926fa72b60284b424a989af13684fcc48c7c7a6",
+      "errors": [
+        {
+          "at": "plan.subtasks",
+          "code": "TOO_MANY_SUBTASKS"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "reply_sha256": "543dfb7994ff3a26f11b13be890ee5f840f61429172fe661f91808d83a3e318e",
+      "errors": [
+        {
+          "at": "subtasks[0].files_hint[0]",
+          "code": "BAD_HINT_PATH"
+        }
+      ]
+    }
+  ],
+  "subtasks": [
+    {
+      "id": "chunk",
+      "title": "The last short piece is lost",
+      "files_hint": [
+        "chunk.js",
+        "chunk.test.js"
+      ]
+    },
+    {
+      "id": "csv-quotes",
+      "title": "Quoted fields are split on their commas",
+      "files_hint": [
+        "csv.js",
+        "csv.test.js"
+      ]
+    },
+    {
+      "id": "semver-order",
+      "title": "Versions are compared as text",
+      "files_hint": [
+        "semver.js",
+        "semver.test.js"
+      ]
+    },
+    {
+      "id": "slugify",
+      "title": "Punctuation survives in slugs",
+      "files_hint": [
+        "slug.js",
+        "slug.test.js"
+      ]
+    },
+    {
+      "id": "wrap-width",
+      "title": "Lines break one character early",
+      "files_hint": [
+        "wrap.js",
+        "wrap.test.js"
+      ]
+    }
+  ],
+  "uncovered": []
+}
