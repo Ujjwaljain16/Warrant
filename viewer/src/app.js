@@ -194,7 +194,10 @@ function openEvent(e) {
     close: () => dlg.close(),
     prev: pos > 0 ? () => openEvent(events[pos - 1]) : null,
     next: pos >= 0 && pos < events.length - 1 ? () => openEvent(events[pos + 1]) : null,
-    copy: (text) => { try { navigator.clipboard.writeText(text); setStatus('Entry JSON copied.', 'ok'); } catch (_error) { setStatus('Copy is not available in this browser context.', 'bad'); } },
+    copy: (text) => {
+      const failed = () => setStatus('Copy is not available in this browser context.', 'bad');
+      try { navigator.clipboard.writeText(text).then(() => setStatus('Entry JSON copied.', 'ok'), failed); } catch (_error) { failed(); }
+    },
   });
   if (!dlg.open) {
     if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');

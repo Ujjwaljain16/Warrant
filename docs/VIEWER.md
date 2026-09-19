@@ -36,12 +36,15 @@ The samples are real engine output (virtual clock, scripted faults), regenerated
   *chain valid · torn final line tolerated* (the engine's rule: an unfinished last line is ignored), or
   *chain broken at entry N* with the reason, the stored and the recomputed hash, and everything from N onward drawn
   hatched as unverified.
-* **Invariants**, a port of `auditLog` in `src/engine/replay.js`: I1 (success needs a matching passing verdict),
-  I4 (terminal states are final), I6 (each result ingested once), I7 (nothing starts after cancel), I8 (chain) and
-  attempt numbering from the log alone; I2 (dependencies), I3 (attempt budget, concurrency cap), I5 (non-repeatable
-  effects) and unknown tasks once the spec is loaded. Without the spec these rows read *Needs spec*, never *Holds*.
+* **Invariants**: the viewer runs the engine's own audit, `src/engine/audit-core.js` (`scripts/build-viewer.js` copies that file into the page;
+  it is not a port, so the two cannot drift). From the log alone: I1 (success needs a claimed result and a passing verdict about the
+  same digest), I4 (terminal states are final), I6 (each result ingested once), I7 (nothing starts after cancel), I8 (chain), attempt numbering,
+  *events belong to started attempts* (a result, verdict or settlement for an attempt that never started is a violation) and *run start and finish
+  are consistent* (one `run_started`, more only when resumed; `run_finished` last, with the status and counts the settled tasks imply);
+  I2 (dependencies), I3 (attempt budget, concurrency cap), I5 (non-repeatable effects), unknown tasks, the spec digest and
+  the blocked tasks of `run_finished` once the spec is loaded. Without the spec these rows read *Needs spec*, never *Holds*.
   With the spec the answers are identical to `auditLog`; `test/viewer.test.js` compares them on logs the real engine
-  wrote and on mutated copies of them. On a broken chain the engine's audit stops at I8; the viewer reports that
+  wrote, on mutated copies of them, and on twelve forged logs whose hashes were recomputed. On a broken chain the engine's audit stops at I8; the viewer reports that
   and evaluates the rest on the verified prefix only, labelled as such.
 * **Spec digest**: if a spec is loaded, its canonical digest is compared with the one in `run_started`.
 
@@ -70,7 +73,7 @@ A log can come from anywhere, so the page is built to be inert against hostile c
 ## Layout of the code
 
 ```
-viewer/src/            canonical.js  states.js  text.js  parse.js  chain.js  audit.js  model.js  describe.js
+viewer/src/            canonical.js  states.js  text.js  parse.js  chain.js  audit-core.js  audit.js  model.js  describe.js
                        summary.js  analysis.js        pure logic, loadable in Node (these are what the tests run)
                        dom.js  icons.js  timeline.js  views.js  app.js     browser-only UI
                        index.template.html  style.css

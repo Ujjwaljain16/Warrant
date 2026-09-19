@@ -30,7 +30,8 @@ const viewerStates = V('states');
 
 const toText = (entries) => entries.map((e) => `${JSON.stringify(e)}\n`).join('');
 const clone = (x) => JSON.parse(JSON.stringify(x));
-const LOG_ONLY_CODES = new Set(['I1_UNVERIFIED_SUCCESS', 'I4_START_AFTER_TERMINAL', 'I4_TERMINAL_CHANGED', 'I6_DOUBLE_INGEST', 'I7_START_AFTER_CANCEL', 'ATTEMPT_NUMBERING', 'I8_CHAIN']);
+const LOG_ONLY_CODES = new Set(['I1_UNVERIFIED_SUCCESS', 'I1_RESULT_DIGEST', 'I1_NO_RESULT', 'I4_START_AFTER_TERMINAL', 'I4_TERMINAL_CHANGED', 'I6_DOUBLE_INGEST', 'I7_START_AFTER_CANCEL', 'ATTEMPT_NUMBERING', 'I8_CHAIN',
+  'A_NO_START', 'A_TASK_MISMATCH', 'S_SETTLED_WITHOUT_START', 'R_RUN_STARTED', 'R_SPEC_DIGEST', 'R_FINISHED_NOT_LAST', 'R_FINISHED_COUNTS', 'R_FINISHED_STATUS']);
 
 function tmpFile(content) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'warrant-viewer-'));
@@ -251,9 +252,52 @@ test('randomly damaged logs never crash the viewer and are judged like the engin
 
 // ----------------------------------------------------------------------------- audit parity
 
-const permissive = (entries) => ({
-  max_concurrency: 1e9,
-  tasks: [...new Set(entries.filter((e) => e.task).map((e) => e.task))].map((id) => ({ id, deps: [], effect: 'pure', max_attempts: 1e9 })),
+// Logs a forger (or a buggy engine) could write with every hash recomputed, so the chain is valid and only the audit can object.
+// Each carries the code the audit must raise; the honest scenarios must stay clean.
+function forgedLogs(sc) {
+  const out = [];
+  const make = (name, code, fn, base = sc.honest) => {
+    const entries = clone(base.entries);
+    fn(entries);
+    out.push({ name, code, entries: rehash(entries) });
+  };
+  const idx = (e, pred) => e.findIndex(pred);
+  const drop = (e, pred) => { for (let i = e.length - 1; i >= 0; i--) if (pred(e[i])) e.splice(i, 1); };
+  make('a settled task that never started (and neither did its dependencies)', 'A_NO_START', (e) => drop(e, (x) => x.task === 'e' && x.type !== 'task_settled' && x.type !== 'run_finished'));
+  make('result digest differs from the verdict digest', 'I1_RESULT_DIGEST', (e) => { const i = idx(e, (x) => x.type === 'attempt_result' && x.task === 'a' && x.data.claim === 'success'); e[i].data.digest = `sha256:${'b'.repeat(64)}`; });
+  make('success without a claimed result', 'I1_NO_RESULT', (e) => drop(e, (x) => x.type === 'attempt_result' && x.task === 'a'));
+  make('run_finished(succeeded) with no task settled', 'R_FINISHED_COUNTS', (e) => drop(e, (x) => x.type !== 'run_started' && x.type !== 'run_finished'));
+  make('wrong spec digest in run_started', 'R_SPEC_DIGEST', (e) => { e[idx(e, (x) => x.type === 'run_started')].data.spec_digest = `sha256:${'c'.repeat(64)}`; });
+  make('a verdict for an attempt of another task', 'A_TASK_MISMATCH', (e) => { const i = idx(e, (x) => x.type === 'gate_verdict' && x.task === 'b'); e[i].task = 'c'; });
+  make('run_finished status invented', 'R_FINISHED_STATUS', (e) => { e[idx(e, (x) => x.type === 'run_finished')].data.status = 'failed'; });
+  make('run_finished counts invented', 'R_FINISHED_COUNTS', (e) => { e[idx(e, (x) => x.type === 'run_finished')].data.counts.succeeded = 99; });
+  make('entries after run_finished', 'R_FINISHED_NOT_LAST', (e) => { const i = idx(e, (x) => x.type === 'run_finished'); e.splice(i, 0, { v: 1, t: e[i].t, type: 'cancel_requested', data: { reason: 'x' } }); e.push({ v: 1, t: e[i].t, type: 'duplicate_ignored', task: 'a', attempt: 'a.1', data: { reason: 'LATE_AFTER_CLOSE' } }); });
+  make('a second run_started that is not a resume', 'R_RUN_STARTED', (e) => { e.splice(1, 0, clone(e[0])); });
+  make('a task settled failed without an attempt', 'S_SETTLED_WITHOUT_START', (e) => { const i = idx(e, (x) => x.type === 'task_settled' && x.task === 'a'); e[i] = { ...e[i], attempt: undefined, data: { status: 'failed', code: 'X' } }; delete e[i].attempt; });
+  make('run_finished before the tasks it summarises', 'R_FINISHED_NOT_LAST', (e) => { const i = idx(e, (x) => x.type === 'run_finished'); const [f] = e.splice(i, 1); e.splice(3, 0, f); });
+  return out;
+}
+
+test('forged logs (valid chain, wrong story): the engine audit, the viewer and the MCP-facing audit all object, and honest logs stay clean', async () => {
+  const sc = await scenarios();
+  const forged = forgedLogs(sc);
+  assert.ok(forged.length >= 10);
+  for (const f of forged) {
+    const engine = auditLog(sc.honest.spec, f.entries);
+    assert.ok(engine.some((v) => v.code === f.code), `${f.name}: the engine audit must raise ${f.code}, got ${engine.map((v) => v.code).join(',') || 'nothing'}`);
+    const viewer = await analyze(toText(f.entries), { specValue: sc.honest.spec });
+    assert.equal(viewer.chain.status, 'valid', `${f.name}: the chain itself is consistent`);
+    assert.deepEqual(viewer.violations, engine, `${f.name}: viewer and engine agree`);
+    assert.equal(viewer.summary.tone === 'good', false, `${f.name}: the viewer must not look green`);
+    // Log-only mode still catches everything that does not need the task graph.
+    const logOnly = await analyze(toText(f.entries));
+    if (LOG_ONLY_CODES.has(f.code) && f.code !== 'R_SPEC_DIGEST') assert.ok(logOnly.violations.some((v) => v.code === f.code), `${f.name}: log-only mode must raise ${f.code}`);
+  }
+  for (const s of Object.values(sc)) {
+    assert.deepEqual(auditLog(s.spec, s.entries), [], `${s.name}: honest`);
+    assert.deepEqual(auditLog(null, s.entries), [], `${s.name}: honest, log only`);
+    assert.deepEqual((await analyze(toText(s.entries), { specValue: s.spec })).violations, [], `${s.name}: honest, viewer`);
+  }
 });
 
 test('audit: with the spec the viewer gives auditLog\'s exact answers; without it, the log-only subset', async () => {
@@ -293,6 +337,8 @@ test('audit: with the spec the viewer gives auditLog\'s exact answers; without i
   add('non-repeatable restart without a reconcile', sc['crash-not-applied'], (e) => { const i = find(e, (x) => x.type === 'reconcile'); e.splice(i, 1); });
   add('non-repeatable restarted after an applied reconcile', sc['crash-not-applied'], (e) => { const i = find(e, (x) => x.type === 'reconcile'); e[i].data.outcome = 'applied'; });
 
+  for (const f of forgedLogs(sc)) cases.push({ name: `forged: ${f.name}`, spec: sc.honest.spec, entries: f.entries });
+
   const seen = new Set();
   for (const c of cases) {
     const expected = auditLog(c.spec, c.entries);
@@ -302,7 +348,7 @@ test('audit: with the spec the viewer gives auditLog\'s exact answers; without i
     expected.forEach((v) => seen.add(v.code));
 
     const logOnly = await analyze(toText(c.entries));
-    const reference = auditLog(permissive(c.entries), c.entries);
+    const reference = auditLog(null, c.entries);
     assert.deepEqual(logOnly.violations, reference, `${c.name}: log only`);
     assert.ok(logOnly.violations.every((v) => LOG_ONLY_CODES.has(v.code)), `${c.name}: log-only mode must not claim spec-dependent codes`);
     for (const row of logOnly.invariants.filter((r) => r.needsSpec)) assert.equal(row.state, 'needs-spec', `${c.name}: ${row.id} must be reported as unchecked, not as passing`);
@@ -490,7 +536,8 @@ test('stored samples are exactly what the generator produces, and behave as adve
 
   const forged = await analyze(files['forged-success.jsonl'], { specValue: spec });
   assert.equal(forged.chain.status, 'valid', 'a forger who recomputes the hashes passes the chain check');
-  assert.deepEqual(forged.violations.map((v) => v.code), ['I1_UNVERIFIED_SUCCESS']);
+  // The forger flipped one settlement and left the rest: the verdict is missing (I1), and run_finished still describes the old story.
+  assert.deepEqual([...new Set(forged.violations.map((v) => v.code))], ['I1_UNVERIFIED_SUCCESS', 'R_FINISHED_INCOMPLETE', 'R_FINISHED_COUNTS', 'R_FINISHED_STATUS']);
   assert.equal(forged.summary.tone, 'bad');
 });
 

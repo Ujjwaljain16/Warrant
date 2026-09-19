@@ -19,7 +19,7 @@ const OUT = path.join(ROOT, 'viewer', 'run-viewer.html');
 
 // Order is irrelevant to correctness (modules load on first require) but fixed for a reproducible output.
 const MODULES = [
-  'states', 'text', 'canonical', 'parse', 'chain', 'audit', 'model', 'summary', 'analysis', 'describe',
+  'states', 'text', 'canonical', 'parse', 'chain', 'audit-core', 'audit', 'model', 'summary', 'analysis', 'describe',
   'dom', 'icons', 'timeline', 'views', 'app',
 ];
 
@@ -51,7 +51,8 @@ function samplesModule() {
 }
 
 function bundle() {
-  const sources = MODULES.map((name) => ({ name, source: read(path.join(SRC, `${name}.js`)) }));
+  // audit-core is the engine's own file (src/engine/audit-core.js): the viewer's audit is that implementation, not a port of it.
+  const sources = MODULES.map((name) => ({ name, source: read(name === 'audit-core' ? path.join(ROOT, 'src', 'engine', 'audit-core.js') : path.join(SRC, `${name}.js`)) }));
   sources.push({ name: 'samples', source: samplesModule() });
   const defs = sources.map((m) => `defs[${JSON.stringify(m.name)}] = function (module, exports, require) {\n${m.source.trimEnd()}\n};`).join('\n');
   return [

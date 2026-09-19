@@ -47,18 +47,19 @@ async function analyze(text, { specValue = null, name = null, limits = LIMITS } 
   let spec = null;
   let specError = null;
   let specMatch = null;
+  let digest = null;
   if (specValue !== null) {
     const normalized = normalizeSpec(specValue);
     if (normalized.ok) {
       spec = normalized.spec;
-      const digest = await specDigestOf(specValue);
+      digest = await specDigestOf(specValue);
       const recorded = parsed.entries.find((e) => isObj(e) && e.type === 'run_started' && isObj(e.data) && typeof e.data.spec_digest === 'string');
       specMatch = recorded && digest ? recorded.data.spec_digest === digest : null;
     } else specError = normalized.error;
   }
 
   const usable = chain.status === 'broken' ? parsed.entries.slice(0, chain.verified) : parsed.entries;
-  const violations = auditLog(spec, usable, chain.status === 'broken' ? null : chain);
+  const violations = auditLog(spec, usable, chain.status === 'broken' ? null : chain, spec ? digest : null);
   if (chain.status === 'broken') violations.unshift({ code: 'I8_CHAIN', seq: null, message: chain.broken.message });
   const chainBroken = chain.status === 'broken';
   const invariants = invariantReport(violations, { hasSpec: spec !== null, chainBroken });
