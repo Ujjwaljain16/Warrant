@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { runProcess, scrubbedEnv } = require('../util/proc');
+const { digestArtifacts } = require('../core/gate');
 const { MAX_ARTIFACT_BYTES } = require('../engine/envelope');
 const { redact } = require('../util/redact');
 
@@ -50,10 +51,15 @@ class CommandWorker {
     }
     const dir = this.attemptDir(info.runId, attemptId);
     fs.mkdirSync(dir, { recursive: true });
+    const depDirs = this._freezeDependencies(info, dir);
+    if (depDirs.error) {
+      ctx.deliver({ attemptId, claim: 'failure', errorCode: depDirs.error, retryable: false });
+      return;
+    }
     fs.writeFileSync(path.join(dir, 'input.json'), JSON.stringify({
       task: taskId, attempt: info.attemptNo, inputs: info.inputs, idempotency_key: info.idempotencyKey, outputs: task.outputs,
       // Where each dependency's *accepted* (gate-verified) output lives, so commands can read real upstream data.
-      dep_dirs: Object.fromEntries(Object.entries(info.depAttempts || {}).map(([dep, attempt]) => [dep, this.attemptDir(info.runId, attempt)])),
+      dep_dirs: depDirs.dirs,
     }));
     this._prepare(info, dir);
     const result = await runProcess({
@@ -91,6 +97,37 @@ class CommandWorker {
     ctx.deliver({ attemptId, claim: 'success', artifacts: this._collect(info, dir) });
   }
 
+  // F2: a dependency's accepted output is handed over as a private, read-only copy of the bytes the gate verified (or, after a
+  // resume when this process never held them, of the files re-read from the finished attempt and checked against the digest the
+  // gate recorded). A process the dependency left running can still rewrite its own attempt directory, but nothing downstream reads it.
+  _freezeDependencies(info, dir) {
+    const dirs = {};
+    for (const [dep, attempt] of Object.entries(info.depAttempts || {})) {
+      const d = info.deps && info.deps[dep];
+      if (!d) { dirs[dep] = this.attemptDir(info.runId, attempt); continue; } // a caller that does not describe its dependencies
+      let artifacts = d.artifacts;
+      if (!artifacts) {
+        artifacts = {};
+        for (const name of d.outputs) {
+          const body = this._readOutput(this.attemptDir(info.runId, attempt), name);
+          if (body === null) return { error: 'DEP_MISSING' };
+          artifacts[name] = body;
+        }
+        if (digestArtifacts(artifacts) !== d.digest) return { error: 'DEP_CHANGED' };
+      }
+      const target = path.join(dir, 'deps', dep);
+      fs.rmSync(target, { recursive: true, force: true }); // an attempt directory can be reused after a resume; its old copies are read-only
+      fs.mkdirSync(target, { recursive: true });
+      for (const [name, body] of Object.entries(artifacts)) {
+        const file = path.join(target, name);
+        fs.writeFileSync(file, body);
+        fs.chmodSync(file, 0o444);
+      }
+      dirs[dep] = target;
+    }
+    return { dirs };
+  }
+
   // Extension points for subclasses (see receipt-worker.js). The defaults add nothing.
   _prepare(_info, _dir) {}
 
@@ -109,13 +146,18 @@ class CommandWorker {
   }
 
   _readOutput(dir, name) {
+    const bytes = this._readOutputBytes(dir, name);
+    return bytes === null ? null : bytes.toString('utf8');
+  }
+
+  _readOutputBytes(dir, name) {
     const file = path.join(dir, name);
     let stat;
     try { stat = fs.lstatSync(file); } catch (_error) { return null; }
     if (!stat.isFile() || stat.isSymbolicLink() || stat.size > MAX_ARTIFACT_BYTES) return null;
     const real = fs.realpathSync(file);
     if (!real.startsWith(fs.realpathSync(dir) + path.sep)) return null;
-    return fs.readFileSync(real, 'utf8');
+    return fs.readFileSync(real);
   }
 }
 

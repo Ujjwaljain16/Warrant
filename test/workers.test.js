@@ -222,3 +222,47 @@ test('CLI: resume continues an interrupted run from its log without redoing fini
   assert.equal(again.code, 2, 'a finished run cannot be resumed again');
   assert.match(again.err, /RUN_FINISHED/);
 });
+
+// ---------------------------------------------------------------- F2: downstream tasks consume the verified bytes
+
+test('real subprocess: a process left running by an accepted task can not change what a dependent task reads', async () => {
+  const good = 'GOOD';
+  const producer = {
+    id: 'a', deps: [], effect: 'pure', deadline_ms: 8000, max_attempts: 1, outputs: ['out'],
+    requirements: [{ id: 'exact', kind: 'artifact_sha256', artifact: 'out', sha256: sha(good) }],
+    exec: { argv: node(`
+      const fs = require('fs'); const path = require('path'); const { spawn } = require('child_process');
+      fs.writeFileSync('out', ${JSON.stringify(good)});
+      const target = path.resolve('out');
+      spawn(process.execPath, ['-e', 'setTimeout(() => require("fs").writeFileSync(process.argv[1], "EVIL"), 1200)', target], { detached: true, stdio: 'ignore' }).unref();`) },
+  };
+  const consumer = claimOnlyTask('b', `
+    const fs = require('fs'); const path = require('path');
+    setTimeout(() => {
+      const input = JSON.parse(fs.readFileSync('input.json', 'utf8'));
+      fs.writeFileSync('out', fs.readFileSync(path.join(input.dep_dirs.a, 'out'), 'utf8'));
+    }, 2600);`, { deps: ['a'], deadline_ms: 8000, max_attempts: 1 });
+  const { report, baseDir, violations } = await runReal([producer, consumer]);
+  assert.equal(report.status, 'succeeded');
+  assert.deepEqual(violations, []);
+  assert.equal(fs.readFileSync(path.join(baseDir, 'run-real', 'a.1', 'out'), 'utf8'), 'EVIL', 'the lingering process did rewrite the producer\'s own file');
+  assert.equal(fs.readFileSync(path.join(baseDir, 'run-real', 'b.1', 'out'), 'utf8'), good, 'the consumer still read the verified bytes');
+});
+
+test('real subprocess: without the verified bytes (after a resume) a dependency is re-read and checked against the recorded digest', () => {
+  const baseDir = tmp('dep');
+  const worker = new CommandWorker({ baseDir });
+  const attemptDir = path.join(baseDir, 'r', 'a.1');
+  fs.mkdirSync(attemptDir, { recursive: true });
+  fs.writeFileSync(path.join(attemptDir, 'out'), 'GOOD');
+  const { digestArtifacts } = require('../src/core/gate');
+  const info = { runId: 'r', depAttempts: { a: 'a.1' }, deps: { a: { attempt: 'a.1', digest: digestArtifacts({ out: 'GOOD' }), outputs: ['out'], artifacts: null } } };
+  const consumerDir = path.join(baseDir, 'r', 'b.1');
+  fs.mkdirSync(consumerDir, { recursive: true });
+  const ok = worker._freezeDependencies(info, consumerDir);
+  assert.equal(fs.readFileSync(path.join(ok.dirs.a, 'out'), 'utf8'), 'GOOD');
+  fs.writeFileSync(path.join(attemptDir, 'out'), 'EVIL');
+  assert.equal(worker._freezeDependencies(info, path.join(baseDir, 'r', 'c.1')).error, 'DEP_CHANGED');
+  fs.rmSync(path.join(attemptDir, 'out'));
+  assert.equal(worker._freezeDependencies(info, path.join(baseDir, 'r', 'd.1')).error, 'DEP_MISSING');
+});

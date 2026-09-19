@@ -3,7 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { CommandWorker } = require('./command-worker');
-const { FILES, ReceiptError, readRecord, verifyReceipt, writeFileAtomic } = require('./receipt');
+const { FILES, ReceiptError, hostRecordPath, readRecord, verifyReceipt, writeFileAtomic } = require('./receipt');
 
 function processAlive(pid) {
   try { process.kill(pid, 0); return true; } catch (error) { return error.code === 'EPERM'; }
@@ -35,14 +35,14 @@ class ReceiptWorker extends CommandWorker {
   }
 
   _record(dir, patch) {
-    const file = path.join(dir, FILES.attempt);
+    const file = hostRecordPath(dir);
     writeFileAtomic(file, `${JSON.stringify({ ...readRecord(file), ...patch })}\n`);
   }
 
   _prepare(info, dir) {
     if (!this._usesReceipt(info.task)) return;
     // Written before the process exists, so "no record" can only mean "this attempt never got as far as starting".
-    writeFileAtomic(path.join(dir, FILES.attempt), `${JSON.stringify({
+    writeFileAtomic(hostRecordPath(dir), `${JSON.stringify({
       version: 1, run_id: info.runId, task: info.taskId, attempt: info.attemptId, idempotency_key: info.idempotencyKey, pid: null, exit: null,
     })}\n`);
   }
@@ -60,7 +60,7 @@ class ReceiptWorker extends CommandWorker {
   _collect(info, dir) {
     if (!this._usesReceipt(info.task)) return super._collect(info, dir);
     const verified = verifyReceipt({
-      dir, idempotencyKey: info.idempotencyKey, outputs: info.task.outputs, readOutput: (d, name) => this._readOutput(d, name),
+      dir, idempotencyKey: info.idempotencyKey, outputs: info.task.outputs, readOutput: (d, name) => this._readOutputBytes(d, name),
     });
     if (verified === null) throw new ReceiptError('RECEIPT_MISSING', 'command exited 0 without writing a receipt');
     return verified.artifacts;
@@ -69,12 +69,12 @@ class ReceiptWorker extends CommandWorker {
   async reconcile(info) {
     const { runId, taskId, attemptId, idempotencyKey, task } = info;
     const dir = this.attemptDir(runId, attemptId);
-    const attempt = readRecord(path.join(dir, FILES.attempt));
+    const attempt = readRecord(hostRecordPath(dir));
     if (attempt === null) throw new ReceiptError('NO_ATTEMPT_RECORD', 'no attempt record: the task does not use receipts, or the attempt never started');
     if (attempt.run_id !== runId || attempt.task !== taskId || attempt.attempt !== attemptId || attempt.idempotency_key !== idempotencyKey) {
       throw new ReceiptError('ATTEMPT_RECORD_MISMATCH', 'attempt record belongs to a different attempt');
     }
-    const verified = verifyReceipt({ dir, idempotencyKey, outputs: task.outputs, readOutput: (d, name) => this._readOutput(d, name) });
+    const verified = verifyReceipt({ dir, idempotencyKey, outputs: task.outputs, readOutput: (d, name) => this._readOutputBytes(d, name) });
     if (verified !== null) return { applied: true, artifacts: verified.artifacts };
 
     // No receipt. Absence proves nothing unless every route to an unrecorded effect is closed.

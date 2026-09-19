@@ -45,6 +45,7 @@ class Engine {
     this.attemptsUsed = new Map(this.spec.tasks.map((t) => [t.id, this.restore ? (this.restore.attemptsUsed[t.id] || 0) : 0]));
     this.digests = new Map(this.restore ? Object.entries(this.restore.digests) : []);
     this.accepted = new Map(this.restore ? Object.entries(this.restore.accepted) : []); // task -> attempt whose output passed the gate
+    this.acceptedArtifacts = new Map(); // task -> the verified artifact bytes (frozen); empty for tasks accepted by an earlier process (resume)
     this.records = new Map(this.spec.tasks.map((t) => [t.id, { code: null, verification: null, cancelled_in_flight: false }]));
     this.inflight = new Map();
     this.backoff = new Map();
@@ -194,7 +195,10 @@ class Engine {
     this.inflight.set(id, att);
     const inputs = Object.fromEntries(task.deps.map((d) => [d, this.digests.get(d)]));
     const depAttempts = Object.fromEntries(task.deps.map((d) => [d, this.accepted.get(d)]));
-    const info = { runId: this.spec.run_id, taskId: id, attemptNo: no, attemptId: att.id, idempotencyKey: key, inputs, depAttempts, task: { id, effect: task.effect, outputs: task.outputs, exec: task.exec, deadline_ms: task.deadline_ms } };
+    // What each dependency produced AS VERIFIED: the accepted attempt, the digest the gate saw, and (when this engine process verified it)
+    // the verified bytes themselves, so a worker never has to trust the files a finished attempt left behind (F2).
+    const deps = Object.fromEntries(task.deps.map((d) => [d, { attempt: this.accepted.get(d), digest: this.digests.get(d), outputs: [...this.taskById.get(d).outputs], artifacts: this.acceptedArtifacts.get(d) || null }]));
+    const info = { runId: this.spec.run_id, taskId: id, attemptNo: no, attemptId: att.id, idempotencyKey: key, inputs, depAttempts, deps, task: { id, effect: task.effect, outputs: task.outputs, exec: task.exec, deadline_ms: task.deadline_ms } };
     let started;
     try {
       started = this.worker.execute(info, { signal: att.ctl.signal, deliver: (env) => this._guard(() => this._ingest(att, env)), clock: this.clock });
@@ -307,7 +311,7 @@ class Engine {
       level: verdict.claim_only ? 'claim_only' : 'gated',
       passed: [...verdict.passed], failed: [...verdict.failed], not_verified: [...verdict.not_verified],
     };
-    if (verdict.status === 'pass') return this._settleSucceeded(att, verdict);
+    if (verdict.status === 'pass') return this._settleSucceeded(att, verdict, artifacts);
     if (verdict.status === 'fail') {
       // The effect (if any) has already happened and produced wrong output; repeating it is only safe for repeatable classes.
       if (task.effect === 'external-nonrepeatable') return this._settle(att, STATUS.FAILED, 'GATE_FAILED');
@@ -316,7 +320,7 @@ class Engine {
     return this._settle(att, STATUS.UNKNOWN, 'UNVERIFIED');
   }
 
-  _settleSucceeded(att, verdict) {
+  _settleSucceeded(att, verdict, artifacts) {
     // Defence in depth for I1: the only way to reach `succeeded` is a minted, passing verdict for THIS attempt.
     if (!isGateVerdict(verdict) || verdict.status !== 'pass' || verdict.attempt_id !== att.id || verdict.task_id !== att.taskId) {
       throw new Error(`refusing to mark ${att.taskId} succeeded without a passing gate verdict`);
@@ -324,6 +328,7 @@ class Engine {
     this.sched.transition(att.taskId, STATUS.SUCCEEDED);
     this.digests.set(att.taskId, verdict.artifacts_digest);
     this.accepted.set(att.taskId, att.id);
+    this.acceptedArtifacts.set(att.taskId, Object.freeze(Object.assign(Object.create(null), artifacts)));
     this.records.get(att.taskId).code = verdict.claim_only ? 'CLAIM_ONLY' : 'VERIFIED';
     this._emit('task_settled', { task: att.taskId, attempt: att.id, data: { status: STATUS.SUCCEEDED, code: this.records.get(att.taskId).code, digest: verdict.artifacts_digest } });
     this.inflight.delete(att.taskId);

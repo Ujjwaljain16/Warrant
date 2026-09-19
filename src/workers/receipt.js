@@ -5,7 +5,9 @@
 // commands themselves (the markIntent / writeReceipt helpers below; any language can write the same files).
 //
 // Files, all in the attempt directory:
-//   attempt.json   written by the host: run, task, attempt, idempotency key, the child's pid, its exit code
+//   attempt.json   written by the host: run, task, attempt, idempotency key, the child's pid, its exit code. It lives NEXT TO the attempt
+//                  directory (<attempt>.host.json, see hostRecordPath), not inside it: the command's working directory holds only what the
+//                  command itself may write. (A command that goes looking for that path can still write there; this is not a sandbox.)
 //   effect.intent  written by the COMMAND, atomically, BEFORE it performs its external effect
 //   receipt.json   written by the COMMAND, atomically, AFTER the effect and after every declared output file
 //                  {"version":1,"idempotency_key":"<key>","outputs":{"<name>":"<sha256 hex of the file's bytes>"}}
@@ -29,6 +31,11 @@ class ReceiptError extends Error {
 }
 
 const sha256Hex = (data) => crypto.createHash('sha256').update(data).digest('hex');
+
+// Where the host keeps its record of an attempt: a sibling of the attempt directory, outside the command's working directory.
+const hostRecordPath = (dir) => path.join(path.dirname(dir), `${path.basename(dir)}.host.json`);
+
+const UTF8 = new TextDecoder('utf-8', { fatal: true });
 
 // Write-then-rename in the same directory, with the data flushed before the rename: a reader sees the old file, the
 // new file, or no file, never a prefix. The containing directory is not fsynced, so this survives a process crash;
@@ -70,7 +77,9 @@ function readRecord(file) {
 /**
  * Check a receipt against the declared outputs. Returns { artifacts } when it is complete and consistent, null when no
  * receipt exists, and throws a ReceiptError when one exists but cannot be trusted. `readOutput(dir, name)` must return
- * the file's text or null if it is missing or unsafe (symlink, not a regular file, oversized).
+ * the file's bytes (a Buffer; a string is taken as UTF-8) or null if it is missing or unsafe (symlink, not a regular file, oversized).
+ * The digest binds the BYTES of the file, as writeReceipt computed it; the artifact handed to the engine is those bytes decoded
+ * as UTF-8, and a file that is not valid UTF-8 is refused (OUTPUT_NOT_UTF8) rather than silently altered by a lossy decode.
  */
 function verifyReceipt({ dir, idempotencyKey, outputs, readOutput }) {
   const receipt = readRecord(path.join(dir, FILES.receipt));
@@ -82,10 +91,11 @@ function verifyReceipt({ dir, idempotencyKey, outputs, readOutput }) {
   for (const name of outputs) {
     const claimed = Object.hasOwn(receipt.outputs, name) ? receipt.outputs[name] : undefined;
     if (typeof claimed !== 'string' || !HEX64.test(claimed)) throw new ReceiptError('RECEIPT_INVALID', `receipt has no valid digest for output "${name}"`);
-    const body = readOutput(dir, name);
-    if (body === null) throw new ReceiptError('OUTPUT_MISSING', `output "${name}" is missing or not a plain file`);
-    if (sha256Hex(body) !== claimed) throw new ReceiptError('OUTPUT_DIGEST_MISMATCH', `output "${name}" does not match the receipt`);
-    artifacts[name] = body;
+    const raw = readOutput(dir, name);
+    if (raw === null) throw new ReceiptError('OUTPUT_MISSING', `output "${name}" is missing or not a plain file`);
+    const bytes = Buffer.isBuffer(raw) ? raw : Buffer.from(raw, 'utf8');
+    if (sha256Hex(bytes) !== claimed) throw new ReceiptError('OUTPUT_DIGEST_MISMATCH', `output "${name}" does not match the receipt`);
+    try { artifacts[name] = UTF8.decode(bytes); } catch (_error) { throw new ReceiptError('OUTPUT_NOT_UTF8', `output "${name}" is not valid UTF-8 text`); }
   }
   return { artifacts };
 }
@@ -106,4 +116,4 @@ function writeReceipt({ outputs, dir = process.env.WARRANT_ATTEMPT_DIR, idempote
   writeFileAtomic(path.join(dir, FILES.receipt), `${JSON.stringify({ version: RECEIPT_VERSION, idempotency_key: idempotencyKey, outputs: digests })}\n`);
 }
 
-module.exports = Object.freeze({ FILES, ReceiptError, markIntent, readRecord, sha256Hex, verifyReceipt, writeFileAtomic, writeReceipt });
+module.exports = Object.freeze({ FILES, ReceiptError, hostRecordPath, markIntent, readRecord, sha256Hex, verifyReceipt, writeFileAtomic, writeReceipt });

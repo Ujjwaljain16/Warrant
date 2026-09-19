@@ -12,7 +12,7 @@ const { FileRunLog, MemoryRunLog } = require('../src/log/runlog');
 const { validateRunSpec } = require('../src/core/spec');
 const { main } = require('../src/cli/main');
 const { ReceiptWorker } = require('../src/workers/receipt-worker');
-const { FILES, markIntent, sha256Hex, verifyReceipt, writeFileAtomic, writeReceipt } = require('../src/workers/receipt');
+const { FILES, hostRecordPath, markIntent, sha256Hex, verifyReceipt, writeFileAtomic, writeReceipt } = require('../src/workers/receipt');
 const { sha } = require('./helpers');
 
 const RECEIPT_MODULE = path.resolve(__dirname, '..', 'src', 'workers', 'receipt.js');
@@ -78,8 +78,10 @@ test('receipt: a command that follows the protocol succeeds, is gated, and leave
   assert.equal(lines(r.ledger).length, 1);
   assert.deepEqual(violations, []);
   const dir = r.attemptDir(1);
-  for (const name of [FILES.attempt, FILES.intent, FILES.receipt]) assert.ok(fs.existsSync(path.join(dir, name)), name);
-  const record = JSON.parse(fs.readFileSync(path.join(dir, FILES.attempt), 'utf8'));
+  assert.ok(fs.existsSync(hostRecordPath(dir)), 'the host record exists, next to the attempt directory');
+  assert.ok(!fs.existsSync(path.join(dir, FILES.attempt)), "and not inside the command's working directory");
+  for (const name of [FILES.intent, FILES.receipt]) assert.ok(fs.existsSync(path.join(dir, name)), name);
+  const record = JSON.parse(fs.readFileSync(hostRecordPath(dir), 'utf8'));
   assert.equal(record.exit, 0);
   assert.ok(Number.isInteger(record.pid) && record.pid > 0);
   assert.equal(record.idempotency_key, KEY);
@@ -183,7 +185,7 @@ test('receipt: without "receipt": true the task runs as under CommandWorker, wri
   assert.equal(report.tasks.pay.status, 'unknown');
   assert.equal(report.tasks.pay.attempts, 1);
   assert.deepEqual(reconcileOutcomes(log), ['inconclusive']);
-  assert.ok(!fs.existsSync(path.join(r.attemptDir(1), FILES.attempt)));
+  assert.ok(!fs.existsSync(hostRecordPath(r.attemptDir(1))));
   assert.equal(lines(r.ledger).length, 1);
 });
 
@@ -203,7 +205,7 @@ function attemptFixture(overrides = {}) {
   const dir = worker.attemptDir(info.runId, info.attemptId);
   fs.mkdirSync(dir, { recursive: true });
   const record = { version: 1, run_id: 'run-x', task: 't', attempt: 't.1', idempotency_key: 'run-x:t', pid: 2_000_000_000, exit: 1, ...overrides };
-  writeFileAtomic(path.join(dir, FILES.attempt), JSON.stringify(record));
+  writeFileAtomic(hostRecordPath(dir), JSON.stringify(record));
   return { worker, info, dir };
 }
 
@@ -211,11 +213,11 @@ const rejectsWith = (promise, code) => assert.rejects(promise, (error) => { asse
 
 test('reconcile: no attempt record, or a record for another attempt, is inconclusive', async () => {
   const { worker, info, dir } = attemptFixture();
-  fs.rmSync(path.join(dir, FILES.attempt));
+  fs.rmSync(hostRecordPath(dir));
   await rejectsWith(worker.reconcile(info), 'NO_ATTEMPT_RECORD');
-  writeFileAtomic(path.join(dir, FILES.attempt), JSON.stringify({ version: 1, run_id: 'run-x', task: 'other', attempt: 't.1', idempotency_key: 'run-x:t', pid: 2_000_000_000, exit: 1 }));
+  writeFileAtomic(hostRecordPath(dir), JSON.stringify({ version: 1, run_id: 'run-x', task: 'other', attempt: 't.1', idempotency_key: 'run-x:t', pid: 2_000_000_000, exit: 1 }));
   await rejectsWith(worker.reconcile(info), 'ATTEMPT_RECORD_MISMATCH');
-  writeFileAtomic(path.join(dir, FILES.attempt), '{{{ not json');
+  writeFileAtomic(hostRecordPath(dir), '{{{ not json');
   await rejectsWith(worker.reconcile(info), 'RECORD_INVALID');
 });
 
@@ -367,4 +369,21 @@ test('example: examples/receipt/demo.js runs end to end and reports success', ()
   const out = execFileSync(process.execPath, [path.join(__dirname, '..', 'examples', 'receipt', 'demo.js')], { encoding: 'utf8' });
   assert.match(out, /reconcile outcome "applied"/);
   assert.match(out, /^ok: /m);
+});
+
+// F12: the receipt binds the bytes of an output, not a lossy decoding of them.
+test('receipt digests bind bytes: multi-byte UTF-8 verifies, invalid UTF-8 is refused by name (not as a digest mismatch), and nothing is altered by a lossy decode', () => {
+  const dir = tmp('bytes');
+  const write = (bytes) => {
+    fs.writeFileSync(path.join(dir, 'out'), bytes);
+    writeReceipt({ outputs: ['out'], dir, idempotencyKey: 'k' });
+  };
+  const readBytes = (d, name) => fs.readFileSync(path.join(d, name));
+  write(Buffer.from('Café €5 \u{1F600}\n', 'utf8'));
+  assert.equal(verifyReceipt({ dir, idempotencyKey: 'k', outputs: ['out'], readOutput: readBytes }).artifacts.out, 'Café €5 \u{1F600}\n');
+  write(Buffer.from([0x4f, 0x4b, 0xff, 0xfe, 0x0a]));
+  assert.throws(() => verifyReceipt({ dir, idempotencyKey: 'k', outputs: ['out'], readOutput: readBytes }), (e) => e.code === 'OUTPUT_NOT_UTF8');
+  // a file changed after the receipt is still a digest mismatch
+  fs.writeFileSync(path.join(dir, 'out'), Buffer.from([0x4f, 0x4b, 0x0a]));
+  assert.throws(() => verifyReceipt({ dir, idempotencyKey: 'k', outputs: ['out'], readOutput: readBytes }), (e) => e.code === 'OUTPUT_DIGEST_MISMATCH');
 });
