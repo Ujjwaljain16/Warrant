@@ -735,7 +735,7 @@ test('only one run at a time; a second request is rejected, and the slot frees w
   await assertTreeGone(w.stateDir, runId);
 
   const next = await c.call('warrant_run', { spec: 'demo-pipeline' });
-  assert.equal(next.data.status, 'succeeded', 'the slot was released');
+  assert.equal(next.data.status, 'succeeded', `the slot was released: ${JSON.stringify(next.data)}`);
   await c.finish();
 });
 
@@ -830,4 +830,80 @@ test('startup refuses a missing, unreadable or overlapping directory without wri
   const viaEnv = await run([], { WARRANT_MCP_SPEC_DIR: path.join(state, 'nope'), WARRANT_MCP_STATE_DIR: state });
   assert.equal(viaEnv.code, 2, 'environment variables are honoured (and the bad directory is refused)');
   assert.doesNotMatch(viaEnv.err, /is required/);
+});
+
+test('warrant_verify_log rejects a log that was forged with consistent hashes: a settled task that never started', async () => {
+  const { rehash } = require('../scripts/gen-viewer-samples');
+  const stateDir = tmp('state');
+  const c = McpClient.start({ stateDir });
+  await c.legacyInit();
+  const runId = (await c.call('warrant_run', { spec: 'demo-pipeline' })).data.run_id;
+  const logFile = path.join(stateDir, 'runs', runId, 'run.log');
+  const honest = (await c.call('warrant_verify_log', { run_id: runId })).data;
+  assert.equal(honest.ok, true, 'the honest log verifies');
+  const entries = fs.readFileSync(logFile, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
+  const victim = entries.find((e) => e.type === 'task_settled' && e.data.status === 'succeeded').task;
+  const forged = rehash(entries.filter((e) => !(e.task === victim && ['attempt_started', 'attempt_result', 'gate_verdict'].includes(e.type))));
+  fs.writeFileSync(logFile, `${forged.map((e) => JSON.stringify(e)).join('\n')}\n`);
+  const verify = (await c.call('warrant_verify_log', { run_id: runId })).data;
+  assert.equal(verify.chain_ok, true, 'the forger recomputed the hashes');
+  assert.equal(verify.ok, false);
+  assert.ok(verify.violations.some((v) => v.code === 'A_NO_START'), JSON.stringify(verify.violations));
+  await c.finish();
+});
+
+// I1, I2, I7: what the model sees, what is written to the wire, and what a client that never reads can cost
+test('RUN_START_FAILED does not echo a host path to the model, and the detail goes to the server log', async () => {
+  const { RunManager } = require('../src/mcp/runs');
+  const { SpecStore } = require('../src/mcp/specs');
+  const stateDir = tmp('state');
+  const specDir = path.join(__dirname, '..', 'examples', 'mcp', 'specs');
+  const lines = [];
+  const runs = new RunManager({ specs: new SpecStore(specDir), stateDir, log: (l) => lines.push(l) });
+  fs.rmSync(path.join(stateDir, 'runs'), { recursive: true, force: true }); // the state directory breaks after startup
+  fs.writeFileSync(path.join(stateDir, 'runs'), 'not a directory');
+  const name = 'demo-pipeline';
+  assert.throws(() => runs.start(name), (e) => {
+    assert.equal(e.code, 'RUN_START_FAILED');
+    assert.ok(!e.message.includes(stateDir) && !/[A-Za-z]:\|\/Users\/|\/home\//.test(e.message), e.message);
+    return true;
+  });
+  assert.ok(lines.some((l) => l.includes('could not start run')), 'the operator still gets the detail');
+});
+
+test('ids: an integer beyond 2^53 is refused rather than echoed as a different number; U+2028 in a string id is escaped on the wire', async () => {
+  const stateDir = tmp('state');
+  const c = McpClient.start({ stateDir });
+  let raw = '';
+  c.child.stdout.on('data', (chunk) => { raw += chunk; });
+  await c.legacyInit();
+  c.sendRaw('{"jsonrpc":"2.0","id":99999999999999999999,"method":"tools/list"}');
+  const refused = await c.waitFor((m) => m.error && m.id === null && /invalid request/.test(m.error.message), 5000, 'the refusal of the unsafe id');
+  assert.ok(refused);
+  const LS = String.fromCharCode(0x2028);
+  const PS = String.fromCharCode(0x2029);
+  const id = `a${LS}b${PS}c`;
+  const answer = await c.request('tools/list', undefined, id);
+  assert.equal(answer.id, id, 'the id comes back unchanged once decoded');
+  assert.ok(!raw.includes(LS) && !raw.includes(PS), 'no raw line separator was written');
+  assert.ok(raw.includes(`a${String.fromCharCode(92)}u2028b`), 'it was written as an escape');
+  await c.finish();
+});
+
+test('backpressure: when the client does not drain stdout the server stops reading requests until it does', async () => {
+  const { PassThrough } = require('node:stream');
+  const { serveStdio } = require('../src/mcp/stdio');
+  const input = new PassThrough();
+  const output = new PassThrough({ highWaterMark: 16 }); // nobody reads it: the first response fills it
+  const errors = new PassThrough();
+  let paused = 0;
+  const originalPause = input.pause.bind(input);
+  input.pause = () => { paused++; return originalPause(); };
+  const { done, shutdown } = serveStdio({ input, output, errors, specDir: EXAMPLE_SPECS, stateDir: tmp('state') });
+  input.write('{"jsonrpc":"2.0","id":1,"method":"ping"}\n');
+  await until(() => paused > 0, 5000, 'the server to pause its input');
+  output.resume(); // the client starts reading again
+  await until(() => !input.isPaused(), 5000, 'the server to resume its input');
+  await shutdown();
+  await done;
 });

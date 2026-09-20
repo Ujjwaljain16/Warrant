@@ -44,7 +44,7 @@ function createServer({ specDir, stateDir, maxRunMs, syncWaitMs, write, log }) {
   if (contains(specs.dir, state) || contains(state, specs.dir)) {
     throw new Error('--state-dir and --spec-dir must not be the same directory or contain one another');
   }
-  const runs = new RunManager({ specs, stateDir: state, maxRunMs, syncWaitMs });
+  const runs = new RunManager({ specs, stateDir: state, maxRunMs, syncWaitMs, log });
   const server = new McpServer({ tools: createTools({ specs, runs }), serverInfo: SERVER_INFO, write, log, onClose: () => runs.shutdown() });
   return { server, runs, specs };
 }
@@ -53,9 +53,15 @@ function createServer({ specDir, stateDir, maxRunMs, syncWaitMs, write, log }) {
 // active run, if any, is gone.
 // Nothing but protocol messages is ever written to `output`; diagnostics go to `errors`.
 function serveStdio({ input = process.stdin, output = process.stdout, errors = process.stderr, ...options }) {
+  let paused = false; // output backpressure: while the client is not reading, the server stops reading requests
   const write = (message) => {
     if (output.destroyed) return;
-    output.write(`${JSON.stringify(message)}\n`);
+    const line = JSON.stringify(message).replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+    if (output.write(`${line}\n`) === false && !paused) {
+      paused = true;
+      input.pause();
+      output.once('drain', () => { paused = false; input.resume(); });
+    }
   };
   const log = (text) => { try { errors.write(`warrant-mcp: ${text}\n`); } catch (_error) { /* stderr is optional */ } };
   const { server } = createServer({ ...options, write, log }); // throws on a bad directory, before any input is read

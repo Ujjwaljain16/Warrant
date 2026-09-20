@@ -35,8 +35,9 @@ function readStateJson(file, what) {
  * Everything the model supplies (a spec name, a run id, a concurrency) is validated before it touches a path or the engine.
  */
 class RunManager {
-  constructor({ specs, stateDir, maxRunMs = LIMITS.defaultMaxRunMs, syncWaitMs = LIMITS.defaultSyncWaitMs, killGraceMs = LIMITS.killGraceMs, now = () => new Date() }) {
+  constructor({ specs, stateDir, maxRunMs = LIMITS.defaultMaxRunMs, syncWaitMs = LIMITS.defaultSyncWaitMs, killGraceMs = LIMITS.killGraceMs, now = () => new Date(), log = () => {} }) {
     this.specs = specs;
+    this.log = log; // the operator's channel (stderr); host paths and system error text go here, never to the model
     fs.mkdirSync(stateDir, { recursive: true });
     this.stateDir = fs.realpathSync(stateDir);
     this.runsDir = path.join(this.stateDir, 'runs');
@@ -94,7 +95,8 @@ class RunManager {
     } catch (error) {
       if (log) log.close();
       try { writeJsonAtomic(path.join(runDir, 'meta.json'), { ...meta, state: 'error', termination: 'error', error: cleanText(error.message, 300) }); } catch (_ignored) { /* nothing more to record */ }
-      throw new ToolError('RUN_START_FAILED', `could not start run: ${cleanText(error.message, 200)}`);
+      this.log(`could not start run ${runId}: ${error && error.message}`);
+      throw new ToolError('RUN_START_FAILED', 'could not start the run: the server could not prepare its run directory (details are in the server log)');
     }
     const active = { runId, name, startedAt, controller, capped: false, cancelledByClient: false, done: null, meta, runDir };
     this.active = active;
