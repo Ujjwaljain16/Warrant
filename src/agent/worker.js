@@ -64,12 +64,11 @@ class AgentWorker {
     const wsDir = path.join(dir, 'workspace');
     fs.mkdirSync(dir, { recursive: true });
     fs.cpSync(task.repoDir, wsDir, { recursive: true, dereference: false });
-    if (process.platform !== 'win32') fs.chmodSync(wsDir, 0o777); // the sandbox user is not the host user
     const workspace = new Workspace(wsDir);
 
     const run = await runAgent({
       llm: this.llm, model: this.model, prompt: task.prompt, workspace, signal: ctx.signal, ...this.loop,
-      runTests: (signal) => this.sandbox({ workspace: wsDir, argv: task.meta.visible_test_argv, timeoutMs: this.testTimeoutMs, signal }),
+      runTests: (signal) => this.sandbox({ workspace: wsDir, argv: task.meta.visible_test_argv, timeoutMs: this.testTimeoutMs, signal, mode: 'copy' }),
     });
 
     const summary = { task: taskId, attempt: attemptId, model: this.model, outcome: run.outcome, claim: run.claim, note: run.note, steps: run.steps, usage: run.usage, protocolErrors: run.protocolErrors };

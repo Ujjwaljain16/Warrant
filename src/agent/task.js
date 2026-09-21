@@ -162,4 +162,4 @@ function buildAgentRunSpec({ runId, tasks, gateScript, deadlineMs = 300_000, gat
   };
 }
 
-module.exports = Object.freeze({ BENCH_ROOT, CATEGORIES, DIFFICULTIES, MAX_FILE_BYTES, SPLITS, buildAgentRunSpec, listSplit, listTaskDirs, loadTask, validateTaskDir, walkFiles });
+module.exports = Object.freeze({ BENCH_ROOT, CATEGORIES, DIFFICULTIES, MAX_FILE_BYTES, SPLITS, buildAgentRunSpec, listSplit, listTaskDirs, loadTask, testFiles, validateTaskDir, walkFiles });

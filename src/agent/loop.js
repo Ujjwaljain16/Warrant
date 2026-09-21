@@ -85,9 +85,11 @@ async function runAgent({ llm, model, prompt, workspace, runTests, signal, syste
       if (error instanceof QuotaExhaustedError) return result('quota_exhausted', { error: { code: error.code, message: error.message } });
       return result('llm_error', { error: { code: error.code || 'LLM_ERROR', message: String(error.message).slice(0, 300) } });
     }
+    if (reply === null || typeof reply !== 'object' || typeof reply.text !== 'string') return result('llm_error', { error: { code: 'BAD_RESPONSE', message: 'the model client returned no text' } });
     usage.calls++;
-    usage.inputTokens += reply.usage.inputTokens;
-    usage.outputTokens += reply.usage.outputTokens;
+    const used = reply.usage && typeof reply.usage === 'object' ? reply.usage : {};
+    usage.inputTokens += Number.isFinite(used.inputTokens) && used.inputTokens >= 0 ? used.inputTokens : 0;
+    usage.outputTokens += Number.isFinite(used.outputTokens) && used.outputTokens >= 0 ? used.outputTokens : 0;
     transcript.push({ step: usage.calls, role: 'assistant', text: reply.text, finishReason: reply.finishReason });
     messages.push({ role: 'assistant', content: reply.text });
 
