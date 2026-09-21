@@ -283,3 +283,151 @@ test('cassette: record/replay modes validate their configuration', () => {
   fs.writeFileSync(file, 'not json\n');
   assert.throws(() => new CassetteClient({ file, mode: 'replay' }), (e) => e.code === 'BAD_CASSETTE');
 });
+
+test('cassette: storeRequest false keeps only key, model and response, and still replays', async () => {
+  const file = path.join(tmp('cassette'), 'compact.jsonl');
+  const { client } = makeClient(reply(OK));
+  const rec = new CassetteClient({ file, mode: 'record', inner: client, storeRequest: false });
+  assert.equal((await rec.generate(REQ)).text, 'hello');
+  const line = JSON.parse(fs.readFileSync(file, 'utf8'));
+  assert.deepEqual(Object.keys(line), ['key', 'n', 'model', 'response']);
+  assert.ok(!fs.readFileSync(file, 'utf8').includes('be brief'), 'the prompt is not stored');
+  const rep = new CassetteClient({ file, mode: 'replay' });
+  assert.equal((await rep.generate(REQ)).text, 'hello');
+});
+
+test('request body: Gemma 4 is asked to run without thinking, Gemini models use the API default', async () => {
+  const bodies = [];
+  const capture = (body) => (_url, init) => { bodies.push(JSON.parse(init.body)); return Promise.resolve(new Response(JSON.stringify(body), { status: 200 })); };
+  const { client } = makeClient(capture(OK));
+  await client.generate({ ...REQ, model: 'gemma-4-31b-it' });
+  await client.generate({ ...REQ, model: 'gemma-4-31b' }); // alias
+  await client.generate(REQ);
+  assert.deepEqual(bodies[0].generationConfig.thinkingConfig, { thinkingLevel: 'minimal' });
+  assert.deepEqual(bodies[1].generationConfig.thinkingConfig, { thinkingLevel: 'minimal' });
+  assert.equal(bodies[2].generationConfig.thinkingConfig, undefined);
+});
+
+test('diagnostics hook: reports attempts and latency, never the key', async () => {
+  const events = [];
+  const responses = [new Response('{"error":{"code":503,"message":"overloaded"}}', { status: 503 }), new Response(JSON.stringify(OK), { status: 200 })];
+  const { client } = makeClient(() => Promise.resolve(responses.shift()), { client: { onEvent: (e) => events.push(e) } });
+  await client.generate(REQ);
+  assert.deepEqual(events.map((e) => [e.type, e.attempt]), [['http_error', 0], ['ok', 1]]);
+  assert.equal(events[0].status, 503);
+  assert.ok(!JSON.stringify(events).includes(FAKE_KEY));
+});
+
+// F5: the daily counter is shared by every process on the machine (two benchmark sessions, a dry run next to a live one).
+test('quota: three processes incrementing at once lose no update and none throws (EPERM on Windows with the old rename-based file)', async () => {
+  const { spawn } = require('node:child_process');
+  const dir = tmp('quota-race');
+  const script = `
+    const { DailyCounter } = require(${JSON.stringify(path.join(__dirname, '..', 'src', 'llm', 'quota.js'))});
+    const counter = new DailyCounter({ dir: process.argv[1] });
+    let thrown = 0;
+    for (let i = 0; i < 100; i++) { try { counter.increment('gemini-3.5-flash-lite'); } catch (e) { thrown++; } }
+    process.stdout.write(String(thrown));`;
+  const runs = await Promise.all([1, 2, 3].map(() => new Promise((resolve) => {
+    const child = spawn(process.execPath, ['-e', script, dir], { stdio: ['ignore', 'pipe', 'inherit'] });
+    let out = '';
+    child.stdout.on('data', (c) => { out += c; });
+    child.on('close', (code) => resolve({ code, thrown: Number(out) }));
+  })));
+  assert.deepEqual(runs.map((r) => r.code), [0, 0, 0]);
+  assert.deepEqual(runs.map((r) => r.thrown), [0, 0, 0], 'no increment threw');
+  assert.equal(new DailyCounter({ dir }).count('gemini-3.5-flash-lite'), 300, 'every increment was counted exactly once');
+});
+
+test('quota: counts recorded in the older single-file format are still honoured, and exhaustion markers work across instances', () => {
+  const dir = tmp('quota-legacy');
+  const counter = new DailyCounter({ dir });
+  fs.writeFileSync(path.join(dir, `calls-${counter.today()}.json`), JSON.stringify({ counts: { 'gemini-3.5-flash-lite': 41 }, exhausted: ['gemma-4-31b-it'] }));
+  assert.equal(counter.count('gemini-3.5-flash-lite'), 41);
+  assert.equal(counter.increment('gemini-3.5-flash-lite'), 42);
+  assert.equal(new DailyCounter({ dir }).count('gemini-3.5-flash-lite'), 42);
+  assert.equal(counter.isExhausted('gemma-4-31b-it'), true);
+  assert.equal(counter.isExhausted('gemini-3.1-flash-lite'), false);
+  counter.markExhausted('gemini-3.1-flash-lite');
+  assert.equal(new DailyCounter({ dir }).isExhausted('gemini-3.1-flash-lite'), true);
+  assert.equal(new DailyCounter({ dir }).remaining('gemini-3.1-flash-lite'), 0);
+});
+
+// ---------------------------------------------------------------- F7: key hygiene
+
+test('the client holds the key where no serialiser, inspector or spread can show it', async () => {
+  const util = require('node:util');
+  const { client } = makeClient(reply(OK));
+  await client.generate(REQ);
+  assert.ok(!JSON.stringify(client).includes(FAKE_KEY));
+  assert.ok(!util.inspect(client, { showHidden: true, depth: 6 }).includes(FAKE_KEY));
+  assert.ok(!JSON.stringify({ ...client }).includes(FAKE_KEY));
+  assert.ok(!Object.getOwnPropertyNames(client).some((k) => /key/i.test(k)));
+});
+
+test('an error body is redacted BEFORE it is cut: a key that straddles the 300-character cut does not leave a fragment', async () => {
+  const body = `${'x'.repeat(290)}${FAKE_KEY}`;
+  const { client } = makeClient(reply(body, { status: 400 }));
+  await assert.rejects(client.generate(REQ), (e) => {
+    assert.ok(!e.message.includes(FAKE_KEY.slice(0, 10)), `a fragment of the key survived: ${e.message}`);
+    return e.code === 'HTTP_ERROR';
+  });
+});
+
+test('redactSecrets without a known key: no word boundary is needed and a key ending in "-" is removed whole', () => {
+  const tail = `AIza${'Sy'}${'k'.repeat(31)}-`;
+  for (const text of [`apikey${FAKE_KEY}`, `GEMINI_${FAKE_KEY}`, `x-${FAKE_KEY}-y`, `key=${tail}.`, `[${tail}]`]) {
+    const out = redactSecrets(text, []);
+    assert.ok(!/AIza/.test(out), `${text} -> ${out}`);
+    assert.ok(!out.includes('kkkk'), `${text} -> ${out}`);
+  }
+  assert.equal(redactSecrets(`cut here ${FAKE_KEY.slice(0, 20)}`, [FAKE_KEY]).includes(FAKE_KEY.slice(0, 20)), false, 'a prefix of a known key at the end of a text is removed');
+});
+
+// ---------------------------------------------------------------- F8: untrusted numbers from the network
+
+test('Retry-After beyond the ceiling fails fast with RATE_LIMITED instead of sleeping for days', async () => {
+  const { client, sleeps } = makeClient(reply({ error: { code: 429, message: 'slow down' } }, { status: 429, headers: { 'retry-after': '99999999' } }));
+  await assert.rejects(client.generate(REQ), (e) => e.code === 'RATE_LIMITED' && /at most 120 s/.test(e.message));
+  assert.deepEqual(sleeps, [], 'never asked to sleep');
+  const ok = makeClient(() => reply({ error: { code: 429, message: 'slow' } }, { status: 429, headers: { 'retry-after': '3' } })(), { client: { maxRetries: 1 } });
+  await assert.rejects(ok.client.generate(REQ), (e) => e.code === 'RATE_LIMITED');
+  assert.ok(ok.sleeps[0] >= 3000 && ok.sleeps[0] < 4000, 'a reasonable pause is honoured');
+  const server = makeClient(reply('busy', { status: 503, headers: { 'retry-after': '99999999' } }));
+  await assert.rejects(server.client.generate(REQ), (e) => e.code === 'SERVER_ERROR');
+  assert.deepEqual(server.sleeps, []);
+});
+
+test('token usage from the network is believed only when finite and non-negative', async () => {
+  const hostile = { candidates: [{ content: { parts: [{ text: 'hi' }] }, finishReason: 'STOP' }], usageMetadata: { promptTokenCount: '1e400', candidatesTokenCount: -5, thoughtsTokenCount: 'NaN' } };
+  const { client } = makeClient(reply(hostile));
+  const out = await client.generate(REQ);
+  assert.deepEqual(out.usage, { inputTokens: 0, outputTokens: 0 });
+  const big = makeClient(reply({ ...hostile, usageMetadata: { promptTokenCount: 1e300, candidatesTokenCount: 3.7 } }));
+  const r = await big.client.generate(REQ);
+  assert.ok(Number.isFinite(r.usage.inputTokens) && r.usage.inputTokens <= 1e9);
+  assert.equal(r.usage.outputTokens, 3);
+});
+
+// ---------------------------------------------------------------- F10: recorded responses are validated
+
+test('a cassette entry that is not a valid response, or whose stored request does not match its key, is refused when the file is loaded', () => {
+  const { loadCassette } = require('../src/llm/cassette');
+  const dir = tmp('cassette-bad');
+  const key = requestKey(REQ);
+  const good = { key, n: 0, request: canonicalRequest(REQ), response: { text: 'ok', usage: { inputTokens: 1, outputTokens: 1 }, finishReason: 'stop' } };
+  const write = (name, entry) => { const f = path.join(dir, name); fs.writeFileSync(f, `${JSON.stringify(entry)}\n`); return f; };
+  assert.equal(loadCassette(write('good.jsonl', good)).entries.size, 1);
+  const bad = {
+    'no usage': { ...good, response: { text: 'ok', finishReason: 'stop' } },
+    'text is not a string': { ...good, response: { ...good.response, text: 5 } },
+    'negative usage': { ...good, response: { ...good.response, usage: { inputTokens: -1, outputTokens: 0 } } },
+    'unknown finish reason': { ...good, response: { ...good.response, finishReason: 'whatever' } },
+    'request does not match key': { ...good, request: { ...good.request, system: 'something else' } },
+    'negative occurrence': { ...good, n: -1 },
+  };
+  for (const [name, entry] of Object.entries(bad)) assert.throws(() => loadCassette(write(`${name.replace(/\W/g, '_')}.jsonl`, entry)), (e) => e.code === 'BAD_CASSETTE', name);
+  // compact cassettes (no stored request) stay valid
+  const { request: _dropped, ...compact } = good;
+  assert.equal(loadCassette(write('compact.jsonl', { ...compact, model: REQ.model })).entries.size, 1);
+});

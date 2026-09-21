@@ -158,3 +158,154 @@ dockerTest('the host environment (and any API key) is not visible inside', async
   const r = await runInSandbox({ workspace: ws, argv: node(`console.log(Object.keys(process.env).filter((k) => /WARRANT|GEMINI|KEY/.test(k)).join(','))`) });
   assert.equal(r.stdout.trim(), '');
 });
+
+// ---------------------------------------------------------------- copy mode: no host directory is mounted (F4, F11, F13, F14, I5)
+
+test('copy mode arguments: no bind mount, a size- and inode-limited /work, file size and descriptor limits, a label, an init process', () => {
+  const { DEFAULTS, LABEL } = require('../src/sandbox/docker');
+  const args = buildDockerArgs({ name: 'warrant-x', argv: ['node', '--test'], mode: 'copy', bootOptions: { proto: false, deadlineMs: 1000, maxBundle: 10, maxStderr: 10 } });
+  const flat = args.join(' ');
+  assert.ok(!args.includes('--mount') && !flat.includes('type=bind'), 'nothing from the host is mounted');
+  assert.ok(flat.includes(`/work:rw,nosuid,size=${DEFAULTS.workSize},nr_inodes=${DEFAULTS.workInodes}`), 'a limited tmpfs at /work');
+  for (const needle of ['--network none', '--read-only', '--cap-drop ALL', 'no-new-privileges', '--init', `--label ${LABEL}`, `fsize=${DEFAULTS.fileSizeLimit}`, `nofile=${DEFAULTS.openFiles}`, '--pids-limit 128']) assert.ok(flat.includes(needle), `missing ${needle}`);
+  assert.deepEqual(args.slice(-5, -2), ['node:22-alpine', 'node', '-e']);
+  const bind = buildDockerArgs({ name: 'warrant-x', workspace: tmp('args2'), argv: ['node'] });
+  assert.ok(bind.join(' ').includes('fsize=') && bind.includes('--init'), 'the legacy bind mode is bounded too');
+});
+
+test('WARRANT_SANDBOX_IMAGE pins the image without touching code; the default tag is unchanged', () => {
+  const { DEFAULT_IMAGE, resolveImage } = require('../src/sandbox/docker');
+  assert.equal(DEFAULT_IMAGE, 'node:22-alpine');
+  assert.equal(resolveImage(), 'node:22-alpine');
+  const saved = process.env.WARRANT_SANDBOX_IMAGE;
+  const pinned = `node:22-alpine@sha256:${'a'.repeat(64)}`;
+  process.env.WARRANT_SANDBOX_IMAGE = pinned;
+  try {
+    assert.equal(resolveImage(), pinned);
+    assert.ok(buildDockerArgs({ name: 'n', argv: ['x'], mode: 'copy', bootOptions: {} }).includes(pinned));
+  } finally {
+    if (saved === undefined) delete process.env.WARRANT_SANDBOX_IMAGE; else process.env.WARRANT_SANDBOX_IMAGE = saved;
+  }
+});
+
+dockerTest('copy mode: the files arrive in /work, and what the command writes there never reaches the host directory', async () => {
+  const ws = tmp('copy');
+  fs.writeFileSync(path.join(ws, 'in.txt'), 'hello from host');
+  const r = await runInSandbox({ workspace: ws, mode: 'copy', argv: node("const fs=require('fs');process.stdout.write(fs.readFileSync('in.txt','utf8')+'|'+process.cwd());fs.writeFileSync('out.txt','from container');process.exit(3)") });
+  assert.equal(r.exitCode, 3);
+  assert.equal(r.stdout, 'hello from host|/work');
+  assert.deepEqual(fs.readdirSync(ws), ['in.txt'], 'the host directory is untouched');
+  assert.equal(containerExists(r.container), false);
+});
+
+dockerTest('F11: the container can not see any host path - mountinfo holds no user name and no temp directory', async () => {
+  const ws = tmp('mountinfo');
+  const r = await runInSandbox({ workspace: ws, mode: 'copy', argv: node("process.stdout.write(require('fs').readFileSync('/proc/self/mountinfo','utf8'))") });
+  assert.equal(r.exitCode, 0);
+  const user = os.userInfo().username;
+  assert.ok(user.length > 0 && !r.stdout.includes(user), 'the Windows/Unix user name is not in mountinfo');
+  assert.ok(!r.stdout.includes(os.tmpdir()) && !r.stdout.includes(ws), 'no host path is in mountinfo');
+  assert.ok(!/ (?:9p|virtiofs|grpcfuse|fuse\.[a-z]+) /.test(r.stdout.split('\n').filter((l) => / \/work /.test(l)).join('\n')), '/work is not a host share');
+  assert.match(r.stdout, / \/work .* - tmpfs /, '/work is a tmpfs');
+});
+
+dockerTest('F4: a 300 MB writer is stopped by the file size limit, 20000 files by the inode limit, and the host disk sees nothing', async () => {
+  const ws = tmp('disk');
+  const code = `
+    const fs = require('fs');
+    const out = {};
+    try { const fd = fs.openSync('big.bin', 'w'); const chunk = Buffer.alloc(1 << 20, 1); for (let i = 0; i < 300; i++) fs.writeSync(fd, chunk); out.big = 'WROTE'; } catch (e) { out.big = e.code; }
+    out.bigSize = fs.existsSync('big.bin') ? fs.statSync('big.bin').size : 0;
+    let made = 0; try { for (let i = 0; i < 20000; i++) { fs.writeFileSync('f' + i, 'x'); made++; } } catch (e) { out.files = e.code; }
+    out.made = made;
+    process.stdout.write(JSON.stringify(out));`;
+  const r = await runInSandbox({ workspace: ws, mode: 'copy', argv: node(code), timeoutMs: 60_000 });
+  const out = JSON.parse(r.stdout);
+  assert.notEqual(out.big, 'WROTE', 'the 300 MB write must fail');
+  assert.ok(out.bigSize <= 16 * 1024 * 1024, `big.bin is ${out.bigSize} bytes`);
+  assert.ok(out.made < 20000 && out.files === 'ENOSPC', `files made ${out.made}, error ${out.files}`);
+  assert.deepEqual(fs.readdirSync(ws), [], 'nothing was written on the host');
+});
+
+dockerTest('F14: the container ends by itself at its own deadline even if the process that started it is gone, and a sweep removes leftovers by name prefix', async () => {
+  const { spawn } = require('node:child_process');
+  const { encodeBundle } = require('../src/sandbox/bundle');
+  const { sweepStale, spawnSandbox } = require('../src/sandbox/docker');
+  const name = `warrant-deadline-${process.pid}-${Date.now()}`;
+  const args = buildDockerArgs({ name, argv: node('setInterval(()=>{},1000)'), mode: 'copy', bootOptions: { proto: false, deadlineMs: 4000, maxBundle: 1 << 20, maxStderr: 1000 } });
+  const client = spawn('docker', args, { stdio: ['pipe', 'ignore', 'ignore'], env: dockerEnv(), windowsHide: true });
+  client.stdin.write(encodeBundle([]));
+  client.stdin.end();
+  await new Promise((resolve) => setTimeout(resolve, 2500));
+  assert.equal(containerExists(name), true, 'the container is running');
+  client.kill(); // the orchestrator dies: no timeout, no rm -f from the host
+  const until = Date.now() + 20_000;
+  while (containerExists(name) && Date.now() < until) await new Promise((resolve) => setTimeout(resolve, 500));
+  assert.equal(containerExists(name), false, 'the in-container deadline ended it');
+
+  // a leftover with a long deadline is found by the sweep, by name prefix only, and only when old enough
+  const prefix = `warrant-sweeptest-${process.pid}-`;
+  const handle = spawnSandbox({ argv: node('setInterval(()=>{},1000)'), files: [], timeoutMs: 120_000, name: `${prefix}a` });
+  await new Promise((resolve) => setTimeout(resolve, 2500));
+  assert.equal(containerExists(`${prefix}a`), true);
+  assert.deepEqual(sweepStale({ olderThanMs: 24 * 3600_000, namePrefix: prefix }).removed, [], 'a young container is left alone');
+  assert.equal(sweepStale({ olderThanMs: 0, namePrefix: prefix }).removed.length, 1);
+  assert.equal(containerExists(`${prefix}a`), false);
+  await handle.result;
+});
+
+dockerTest('imageInfo reports the content id and, when the image has one, the repository digest', () => {
+  const { imageInfo } = require('../src/sandbox/docker');
+  const info = imageInfo();
+  assert.equal(info.image, 'node:22-alpine');
+  assert.match(info.id, /^sha256:[a-f0-9]{64}$/);
+  if (info.digest) assert.match(info.digest, /@sha256:[a-f0-9]{64}$/);
+});
+
+// ---------------------------------------------------------------- the container slots are shared by every process
+
+test('slots: at most N holders at once across processes, a dead holder\'s slot is reclaimed, and two requests for two slots do not deadlock', async () => {
+  const { spawn } = require('node:child_process');
+  const { SlotPool } = require('../src/sandbox/slots');
+  const dir = tmp('slots');
+  const script = `
+    const { SlotPool } = require(${JSON.stringify(path.join(__dirname, '..', 'src', 'sandbox', 'slots.js'))});
+    const pool = new SlotPool({ dir: process.argv[1], limit: 2, pollMs: 20 });
+    (async () => {
+      const want = Number(process.argv[2]);
+      const release = await pool.acquire(want);
+      process.stdout.write('IN ' + want + ' ' + Date.now() + String.fromCharCode(10));
+      await new Promise((r) => setTimeout(r, 300));
+      process.stdout.write('OUT ' + want + ' ' + Date.now() + String.fromCharCode(10));
+      release();
+    })();`;
+  const runs = [2, 2, 1, 1, 2].map((want) => new Promise((resolve) => {
+    const child = spawn(process.execPath, ['-e', script, dir, String(want)], { stdio: ['ignore', 'pipe', 'inherit'] });
+    let out = '';
+    child.stdout.on('data', (c) => { out += c; });
+    child.on('close', () => resolve(out.trim().split('\n').map((l) => l.split(' '))));
+  }));
+  const events = (await Promise.all(runs)).flat();
+  assert.equal(events.length, 10, 'every process got its slots and gave them back');
+  let held = 0;
+  for (const [kind, want] of events.map((e) => [e[0], Number(e[1]), Number(e[2])]).sort((a, b) => a[2] - b[2] || (a[0] === 'OUT' ? -1 : 1)).map((e) => [e[0], e[1]])) {
+    held += kind === 'IN' ? want : -want;
+    assert.ok(held <= 2, 'never more than 2 slots held at once');
+  }
+
+  fs.writeFileSync(path.join(dir, 'slot-0'), '2000000000'); // a holder that no longer exists
+  const pool = new SlotPool({ dir, limit: 2, pollMs: 20 });
+  const release = await Promise.race([pool.acquire(2), new Promise((resolve) => setTimeout(() => resolve(null), 5000))]);
+  assert.ok(release, 'the stale slot was reclaimed');
+  release();
+  assert.deepEqual(fs.readdirSync(dir).filter((f) => f.startsWith('slot-')), [], 'everything released');
+});
+
+dockerTest('code under test that prints a docker daemon error is judged, not mistaken for an infrastructure failure', async () => {
+  const ws = tmp('fake-infra');
+  const r = await runInSandbox({ workspace: ws, mode: 'copy', argv: node("process.stderr.write('docker: Error response from daemon: Conflict.' + String.fromCharCode(10) + 'fatal error: runtime: cannot allocate memory' + String.fromCharCode(10)); process.exit(1)") });
+  assert.equal(r.exitCode, 1);
+  assert.equal(r.spawnError, null, "the run counts as the code's own result");
+  assert.match(r.stderr, /Error response from daemon/);
+  assert.ok(!r.stderr.includes('@@warrant-boot'), 'the marker is not part of the output');
+});

@@ -16,9 +16,12 @@ function pacificDay(ms) {
 }
 
 /**
- * Per-day, per-model request counter persisted to disk, so quota use survives restarts.
- * One small JSON file per Pacific day; writes are atomic (temp file + rename).
- * `markExhausted` records that the provider itself said the day's quota is gone.
+ * Per-day, per-model request counter persisted to disk, so quota use survives restarts and is shared by every process on the machine.
+ *
+ * Each call appends ONE byte to `calls-<day>-<model>.log` (O_APPEND: the kernel serialises concurrent appends, so no update is ever lost,
+ * where a read-modify-write of a JSON file loses some and, on Windows, fails with EPERM when two processes rename over each other);
+ * the count is the file's size. `markExhausted` writes a marker file (the provider itself said the day's quota is gone).
+ * The older single-file format (`calls-<day>.json`) is still read, never written, so counts made before this change are kept.
  */
 class DailyCounter {
   constructor({ dir = path.join(warrantHome(), 'quota'), now = Date.now } = {}) {
@@ -26,13 +29,9 @@ class DailyCounter {
     this.now = now;
   }
 
-  _file(day) {
-    return path.join(this.dir, `calls-${day}.json`);
-  }
-
-  _read(day) {
+  _legacy(day) {
     try {
-      const parsed = JSON.parse(fs.readFileSync(this._file(day), 'utf8'));
+      const parsed = JSON.parse(fs.readFileSync(path.join(this.dir, `calls-${day}.json`), 'utf8'));
       return {
         counts: parsed && typeof parsed.counts === 'object' && parsed.counts ? parsed.counts : {},
         exhausted: Array.isArray(parsed && parsed.exhausted) ? parsed.exhausted : [],
@@ -42,50 +41,63 @@ class DailyCounter {
     }
   }
 
-  _write(day, state) {
-    fs.mkdirSync(this.dir, { recursive: true });
-    const file = this._file(day);
-    const tmp = `${file}.${process.pid}.tmp`;
-    fs.writeFileSync(tmp, JSON.stringify(state));
-    fs.renameSync(tmp, file);
+  _log(day, id) {
+    return path.join(this.dir, `calls-${day}-${id}.log`);
+  }
+
+  _marker(day, id) {
+    return path.join(this.dir, `exhausted-${day}-${id}`);
   }
 
   today() {
     return pacificDay(this.now());
   }
 
+  _size(file) {
+    try { return fs.statSync(file).size; } catch (_error) { return 0; }
+  }
+
   count(model) {
-    const state = this._read(this.today());
-    return state.counts[resolveModel(model)] || 0;
+    const id = resolveModel(model);
+    const day = this.today();
+    const old = this._legacy(day).counts[id];
+    return (Number.isFinite(old) && old > 0 ? Math.floor(old) : 0) + this._size(this._log(day, id));
   }
 
   isExhausted(model) {
     const id = resolveModel(model);
-    const state = this._read(this.today());
-    return state.exhausted.includes(id) || (state.counts[id] || 0) >= limitsFor(id).rpd;
+    const day = this.today();
+    return fs.existsSync(this._marker(day, id)) || this._legacy(day).exhausted.includes(id) || this.count(id) >= limitsFor(id).rpd;
   }
 
   remaining(model) {
     const id = resolveModel(model);
-    if (this._read(this.today()).exhausted.includes(id)) return 0;
+    const day = this.today();
+    if (fs.existsSync(this._marker(day, id)) || this._legacy(day).exhausted.includes(id)) return 0;
     return Math.max(0, limitsFor(id).rpd - this.count(id));
   }
 
+  // A transient EPERM/EBUSY/EACCES (another process holds the file open, a virus scanner looks at it) is retried; nothing else is hidden.
+  _retry(fn) {
+    for (let attempt = 0; ; attempt++) {
+      try { return fn(); } catch (error) {
+        if (attempt >= 8 || !['EPERM', 'EBUSY', 'EACCES', 'EMFILE'].includes(error.code)) throw error;
+        Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 5 * (attempt + 1));
+      }
+    }
+  }
+
   increment(model) {
-    const day = this.today();
     const id = resolveModel(model);
-    const state = this._read(day);
-    state.counts[id] = (state.counts[id] || 0) + 1;
-    this._write(day, state);
-    return state.counts[id];
+    const day = this.today();
+    this._retry(() => { fs.mkdirSync(this.dir, { recursive: true }); fs.appendFileSync(this._log(day, id), '.'); });
+    return this.count(id);
   }
 
   markExhausted(model) {
-    const day = this.today();
     const id = resolveModel(model);
-    const state = this._read(day);
-    if (!state.exhausted.includes(id)) state.exhausted.push(id);
-    this._write(day, state);
+    const day = this.today();
+    this._retry(() => { fs.mkdirSync(this.dir, { recursive: true }); fs.writeFileSync(this._marker(day, id), '1'); });
   }
 }
 

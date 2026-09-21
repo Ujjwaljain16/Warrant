@@ -18,6 +18,7 @@ const { redactSecrets } = require('./secrets');
 //             promptFeedback?: { blockReason } }
 const ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models';
 const MAX_RETRIES = 5;
+const MAX_SERVER_DELAY_MS = 120_000; // longest Retry-After / retryDelay the client will sit through
 
 const FINISH = { STOP: 'stop', MAX_TOKENS: 'length' };
 const BLOCKED = ['SAFETY', 'RECITATION', 'BLOCKLIST', 'PROHIBITED_CONTENT', 'SPII'];
@@ -43,22 +44,35 @@ function estimateTokens(request) {
   return Math.ceil(chars / 4);
 }
 
+// Gemma 4 thinks by default, which took ~100 s per call in the dev run (a 20-step episode would exceed the wall-clock limit and
+// the 16K tokens/minute quota). It supports switching thinking off with thinkingLevel "minimal" (ai.google.dev/gemma/docs/core/gemma_on_gemini_api);
+// the agent protocol asks for one JSON action per turn and needs no reasoning mode. Gemini flash-lite models use the API default.
+const THINKING_LEVELS = Object.freeze({ 'gemma-4-31b-it': 'minimal', 'gemma-4-26b-a4b-it': 'minimal' });
+
 function buildBody(request) {
   const body = {
     contents: request.messages.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
     generationConfig: { maxOutputTokens: request.maxOutputTokens, temperature: request.temperature },
   };
+  const level = Object.hasOwn(THINKING_LEVELS, resolveModel(request.model)) ? THINKING_LEVELS[resolveModel(request.model)] : null;
+  if (level) body.generationConfig.thinkingConfig = { thinkingLevel: level };
   if (request.system) body.systemInstruction = { parts: [{ text: request.system }] };
   return body;
+}
+
+// Token counts come off the network: only finite, non-negative numbers are believed (anything else counts as 0).
+function tokenCount(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 ? Math.min(Math.floor(n), 1e9) : 0;
 }
 
 function parseResponse(json) {
   const candidate = json && Array.isArray(json.candidates) ? json.candidates[0] : null;
   const usage = (json && json.usageMetadata) || {};
   const usageOut = {
-    inputTokens: Number(usage.promptTokenCount) || 0,
+    inputTokens: tokenCount(usage.promptTokenCount),
     // Thinking tokens are billed (and rate limited) as output.
-    outputTokens: (Number(usage.candidatesTokenCount) || 0) + (Number(usage.thoughtsTokenCount) || 0),
+    outputTokens: tokenCount(usage.candidatesTokenCount) + tokenCount(usage.thoughtsTokenCount),
   };
   if (!candidate) {
     const blocked = json && json.promptFeedback && json.promptFeedback.blockReason;
@@ -75,7 +89,7 @@ function parseResponse(json) {
 }
 
 // Provider error bodies are {error:{code,status,message,details:[...]}}; the newer API also uses {error:{code:'quota_exceeded',message}}.
-function describeError(bodyText) {
+function describeError(bodyText, redact = (s) => s) {
   let parsed = null;
   try { parsed = JSON.parse(bodyText); } catch (_error) { /* not JSON */ }
   const err = parsed && parsed.error ? parsed.error : {};
@@ -89,7 +103,7 @@ function describeError(bodyText) {
       if (m) retryAfterMs = Math.ceil(Number(m[1]) * 1000);
     }
   }
-  return { message: typeof err.message === 'string' ? err.message : String(bodyText).slice(0, 300), daily, retryAfterMs };
+  return { message: typeof err.message === 'string' ? redact(err.message) : redact(String(bodyText)).slice(0, 300), daily, retryAfterMs };
 }
 
 function parseRetryAfter(header) {
@@ -101,12 +115,15 @@ function parseRetryAfter(header) {
 }
 
 class GeminiClient {
+  #env;
+  #key = null; // private: never visible to JSON.stringify, util.inspect, Object.keys or a spread of the client
+
   constructor({
     env = process.env, fetchImpl = globalThis.fetch, counter = new DailyCounter(), limiter = new RateLimiter(),
     sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)), random = Math.random,
-    maxCalls = Infinity, requestTimeoutMs = 120_000, maxRetries = MAX_RETRIES,
+    maxCalls = Infinity, requestTimeoutMs = 120_000, maxRetries = MAX_RETRIES, onEvent = null,
   } = {}) {
-    this.env = env;
+    this.#env = env; // private as well: when the key comes from the environment, the environment holds it
     this.fetchImpl = fetchImpl;
     this.counter = counter;
     this.limiter = limiter;
@@ -116,18 +133,22 @@ class GeminiClient {
     this.requestTimeoutMs = requestTimeoutMs;
     this.maxRetries = maxRetries;
     this.httpCalls = 0;
-    this._key = null;
+    this.onEvent = onEvent; // optional diagnostics hook: ({ type, model, attempt, ms, status?, message? }); never receives the key
+  }
+
+  _emit(event) {
+    if (this.onEvent) { try { this.onEvent(event); } catch (_error) { /* diagnostics must never break a call */ } }
   }
 
   _redact(text) {
-    return redactSecrets(text, this._key ? [this._key] : []);
+    return redactSecrets(text, this.#key ? [this.#key] : []);
   }
 
   async generate(rawRequest, { signal } = {}) {
     const request = canonicalRequest(rawRequest);
     const model = resolveModel(request.model);
-    if (this.env.WARRANT_LIVE !== '1') throw new LiveDisabledError();
-    if (!this._key) this._key = loadApiKey(this.env);
+    if (this.#env.WARRANT_LIVE !== '1') throw new LiveDisabledError();
+    if (!this.#key) this.#key = loadApiKey(this.#env);
     const body = JSON.stringify(buildBody(request));
     const url = `${ENDPOINT}/${encodeURIComponent(model)}:generateContent`;
     let lastDetail = 'no attempt made';
@@ -142,11 +163,12 @@ class GeminiClient {
 
       let response;
       let text;
+      const startedAt = Date.now();
       try {
         const timeout = AbortSignal.timeout(this.requestTimeoutMs);
         response = await this.fetchImpl(url, {
           method: 'POST',
-          headers: { 'content-type': 'application/json', 'x-goog-api-key': this._key },
+          headers: { 'content-type': 'application/json', 'x-goog-api-key': this.#key },
           body,
           signal: signal ? AbortSignal.any([signal, timeout]) : timeout,
         });
@@ -154,12 +176,14 @@ class GeminiClient {
       } catch (error) {
         if (signal && signal.aborted) throw new LlmError('ABORTED', 'generate aborted');
         lastDetail = `network error: ${this._redact(error && error.message ? error.message : String(error))}`;
+        this._emit({ type: 'network_error', model, attempt, ms: Date.now() - startedAt, message: lastDetail.slice(0, 200) });
         if (attempt === this.maxRetries) throw new LlmError('NETWORK', lastDetail);
         await this.sleep(this._backoff(attempt, null));
         continue;
       }
 
       if (response.ok) {
+        this._emit({ type: 'ok', model, attempt, ms: Date.now() - startedAt });
         let json;
         try { json = JSON.parse(text); } catch (_error) { throw new LlmError('BAD_RESPONSE', 'response was not JSON'); }
         const result = parseResponse(json);
@@ -167,21 +191,26 @@ class GeminiClient {
         return result;
       }
 
-      const info = describeError(text);
+      const info = describeError(text, (s) => this._redact(s));
       const message = this._redact(info.message);
       lastDetail = `HTTP ${response.status}: ${message}`;
+      this._emit({ type: 'http_error', model, attempt, ms: Date.now() - startedAt, status: response.status, message: message.slice(0, 200) });
       if (response.status === 429) {
         if (info.daily) {
           this.counter.markExhausted(model);
           throw new QuotaExhaustedError(model, message, { status: 429 });
         }
         if (attempt === this.maxRetries) throw new LlmError('RATE_LIMITED', lastDetail, { status: 429 });
-        await this.sleep(this._backoff(attempt, parseRetryAfter(response.headers.get('retry-after')) ?? info.retryAfterMs));
+        const wanted = parseRetryAfter(response.headers.get('retry-after')) ?? info.retryAfterMs;
+        if (wanted !== null && wanted !== undefined && wanted > MAX_SERVER_DELAY_MS) throw new LlmError('RATE_LIMITED', `${lastDetail} (the server asked for a ${Math.round(wanted / 1000)} s pause; the client waits at most ${MAX_SERVER_DELAY_MS / 1000} s)`, { status: 429 });
+        await this.sleep(this._backoff(attempt, wanted));
         continue;
       }
       if (response.status >= 500 || response.status === 408) {
         if (attempt === this.maxRetries) throw new LlmError('SERVER_ERROR', lastDetail, { status: response.status });
-        await this.sleep(this._backoff(attempt, parseRetryAfter(response.headers.get('retry-after'))));
+        const asked = parseRetryAfter(response.headers.get('retry-after'));
+        if (asked !== null && asked > MAX_SERVER_DELAY_MS) throw new LlmError('SERVER_ERROR', `${lastDetail} (the server asked for a ${Math.round(asked / 1000)} s pause; the client waits at most ${MAX_SERVER_DELAY_MS / 1000} s)`, { status: response.status });
+        await this.sleep(this._backoff(attempt, asked));
         continue;
       }
       // 4xx other than 408/429 are our fault (bad key, bad model, bad request): never retried.
@@ -198,4 +227,4 @@ class GeminiClient {
   }
 }
 
-module.exports = Object.freeze({ GeminiClient, buildBody, describeError, estimateTokens, keyFilePath, loadApiKey, parseResponse });
+module.exports = Object.freeze({ GeminiClient, MAX_SERVER_DELAY_MS, THINKING_LEVELS, buildBody, describeError, estimateTokens, keyFilePath, loadApiKey, parseResponse });
