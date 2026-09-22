@@ -45,7 +45,7 @@ async function judgeFiles({ task, files, suite, sandbox }) {
   const workspace = fs.mkdtempSync(path.join(os.tmpdir(), 'warrant-demo-judge-'));
   try {
     writeFiles(workspace, files);
-    const r = await runHiddenGate({ task, workspace, suite, run: sandbox });
+    const r = await runHiddenGate({ task, workspace, suite });
     return { status: r.status, code: r.code, detail: r.detail || '' };
   } finally {
     fs.rmSync(workspace, { recursive: true, force: true });

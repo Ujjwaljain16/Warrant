@@ -8,6 +8,9 @@ const { runHiddenGate } = require('./gate');
 const { stableTestOutput } = require('./loop');
 const { loadTask } = require('./task');
 
+// A suite that does not finish in this time (a starting repo that loops forever, say) counts as a failure; the slowest legitimate suite takes ~10 s.
+const SUITE_TIMEOUT_MS = 45_000;
+
 // Executable checks that make the task suite trustworthy (run by `agent-task-check.js --run` and the test suite).
 
 // A scratch workspace: the starting repo with a solution directory's files laid over it. Caller removes it.
@@ -15,12 +18,11 @@ function overlayWorkspace(task, solutionDir) {
   const dest = fs.mkdtempSync(path.join(os.tmpdir(), 'warrant-overlay-'));
   fs.cpSync(task.repoDir, dest, { recursive: true });
   if (solutionDir) fs.cpSync(solutionDir, dest, { recursive: true });
-  if (process.platform !== 'win32') fs.chmodSync(dest, 0o777);
   return dest;
 }
 
 async function visibleRun(task, workspace, run) {
-  const r = await run({ workspace, argv: task.meta.visible_test_argv, timeoutMs: 60_000 });
+  const r = await run({ workspace, argv: task.meta.visible_test_argv, timeoutMs: 60_000, mode: 'copy' });
   if (r.spawnError) return { status: 'error', detail: String(r.spawnError) };
   const pass = r.exitCode === 0 && !r.timedOut;
   return { status: pass ? 'pass' : 'fail', detail: `${r.exitCode}|${stableTestOutput(r.stdout)}` };
@@ -37,7 +39,7 @@ const digest = (r) => `${r.status} ${r.code || ''} ${r.detail}`;
  *   - when the task has a naive solution: the visible tests pass on it but the gate fails (visible tests alone are
  *     not sufficient); the audit fails on it too (it is a superset of the gate).
  */
-async function runTaskProperties(taskDir, { run = runInSandbox, repeats = 2 } = {}) {
+async function runTaskProperties(taskDir, { run = runInSandbox, repeats = 2, gate = runHiddenGate, expected, collect = null } = {}) {
   const task = loadTask(taskDir);
   const problems = [];
   const state = async (label, solutionDir) => {
@@ -45,12 +47,16 @@ async function runTaskProperties(taskDir, { run = runInSandbox, repeats = 2 } = 
     try {
       const out = { label };
       for (const [name, probe] of [
-        ['gate', () => runHiddenGate({ task, workspace: ws, suite: 'gate', run })],
-        ['audit', () => runHiddenGate({ task, workspace: ws, suite: 'audit', run })],
+        ['gate', () => gate({ task, workspace: ws, suite: 'gate', expected, timeoutMs: SUITE_TIMEOUT_MS })],
+        ['audit', () => gate({ task, workspace: ws, suite: 'audit', expected, timeoutMs: SUITE_TIMEOUT_MS })],
         ['visible', () => visibleRun(task, ws, run)],
       ]) {
         const results = [];
-        for (let i = 0; i < repeats; i++) results.push(await probe());
+        for (let i = 0; i < repeats; i++) {
+          let r = await probe();
+          for (let retry = 0; retry < 3 && r.status === 'error'; retry++) r = await probe(); // docker hiccups under load are not task defects
+          results.push(r);
+        }
         if (results.some((r) => r.status === 'error')) { out.error = `${name}: ${digest(results.find((r) => r.status === 'error'))}`; return out; }
         if (new Set(results.map(digest)).size !== 1) problems.push(`${name} suite is not deterministic on ${label}: ${results.map((r) => `[${digest(r).slice(0, 120)}]`).join(' vs ')}`);
         out[name] = results[0];
@@ -72,6 +78,7 @@ async function runTaskProperties(taskDir, { run = runInSandbox, repeats = 2 } = 
   if (ref.gate.status !== 'pass') problems.push(`gate tests do not pass on reference/ (${ref.gate.status} ${ref.gate.code} ${ref.gate.detail})`);
   if (ref.audit.status !== 'pass') problems.push(`audit tests do not pass on reference/ (${ref.audit.status} ${ref.audit.code} ${ref.audit.detail})`);
   if (ref.visible.status !== 'pass') problems.push('visible tests do not pass on reference/');
+  if (collect) { collect.gate = ref.gate; collect.audit = ref.audit; }
 
   if (task.naiveDir) {
     const naive = await state('naive/', task.naiveDir);

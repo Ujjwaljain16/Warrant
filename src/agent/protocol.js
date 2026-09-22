@@ -27,6 +27,29 @@ function fail(error) {
   return { ok: false, error };
 }
 
+// Models write multi-line files into a JSON string with real line breaks ("Bad control character in string literal"), which strict
+// JSON forbids. The meaning is unambiguous, so as a fallback only, raw control characters inside string literals are escaped
+// before parsing. Nothing else is relaxed: structure, quoting and field sets stay strict.
+function escapeControlCharsInStrings(text) {
+  let out = '';
+  let inString = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (!inString) { out += c; if (c === '"') inString = true; continue; }
+    if (c === '\\') { out += c + (i + 1 < text.length ? text[++i] : ''); continue; }
+    if (c === '"') { out += c; inString = false; continue; }
+    const code = c.charCodeAt(0);
+    out += code < 0x20 ? `\\u${code.toString(16).padStart(4, '0')}` : c;
+  }
+  return out;
+}
+
+function parseJsonObject(body) {
+  try { return JSON.parse(body); } catch (error) {
+    try { return JSON.parse(escapeControlCharsInStrings(body)); } catch (_second) { throw error; }
+  }
+}
+
 function parseAction(text) {
   if (typeof text !== 'string') return fail('the reply was empty');
   if (text.length > LIMITS.maxReplyChars) return fail(`the reply is longer than ${LIMITS.maxReplyChars} characters`);
@@ -43,7 +66,7 @@ function parseAction(text) {
     return fail('the reply must be a single JSON object (optionally in one ```json fenced block) with no other text');
   }
   let value;
-  try { value = JSON.parse(body); } catch (error) { return fail(`the JSON could not be parsed (${error.message.slice(0, 80)})`); }
+  try { value = parseJsonObject(body); } catch (error) { return fail(`the JSON could not be parsed (${error.message.slice(0, 80)})`); }
   if (value === null || typeof value !== 'object' || Array.isArray(value)) return fail('the reply must be a JSON object');
   const keys = Object.keys(value);
   if (typeof value.action !== 'string' || !Object.hasOwn(ACTIONS, value.action)) return fail(`"action" must be one of ${Object.keys(ACTIONS).join(', ')}`);
@@ -82,4 +105,4 @@ const SYSTEM_PROMPT = [
   'The final result is graded by a test suite that you cannot see; the visible tests may not cover everything the task requires.',
 ].join('\n');
 
-module.exports = Object.freeze({ ACTIONS, CLAIMS, LIMITS, SYSTEM_PROMPT, parseAction });
+module.exports = Object.freeze({ ACTIONS, CLAIMS, LIMITS, SYSTEM_PROMPT, escapeControlCharsInStrings, parseAction });

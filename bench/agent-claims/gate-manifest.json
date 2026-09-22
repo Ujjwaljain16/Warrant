@@ -1,0 +1,988 @@
+{
+ "version": 1,
+ "tasks": {
+  "dev/csv-line": {
+   "csvline.gate.test.js": {
+    "tests": 7,
+    "names": [
+     "doubled quotes inside a quoted field",
+     "empty fields",
+     "spaces are kept",
+     "a quote in the middle of an unquoted field is ordinary text",
+     "a quoted field may hold a line break",
+     "malformed quoting throws SyntaxError",
+     "non-strings throw TypeError"
+    ]
+   },
+   "csvline.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: quoted field at the end of the line, after an empty field",
+     "audit: comma-heavy and quote-heavy fields",
+     "audit: a lone quote starts a quoted field that never ends",
+     "audit: carriage returns and tabs inside fields are kept"
+    ]
+   }
+  },
+  "dev/edit-distance": {
+   "editdistance.gate.test.js": {
+    "tests": 5,
+    "names": [
+     "an adjacent swap costs one",
+     "a substring is not edited twice (optimal string alignment)",
+     "swaps combine with other edits",
+     "the distance is symmetric on a sample of pairs",
+     "arguments must be strings"
+    ]
+   },
+   "editdistance.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: swaps at the very start and very end",
+     "audit: repeated characters are not swapped needlessly",
+     "audit: longer strings against known values",
+     "audit: bounded by the longer length, zero only for equal strings"
+    ]
+   }
+  },
+  "dev/last-n": {
+   "lastn.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "n of zero gives an empty array",
+     "n equal to the length gives a copy of everything",
+     "n larger than the length returns a new array",
+     "invalid n throws RangeError",
+     "items must be an array",
+     "does not modify the input"
+    ]
+   },
+   "lastn.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: empty input with a positive n",
+     "audit: elements are kept as they are (undefined, null, objects)",
+     "audit: validation happens before the result is built"
+    ]
+   }
+  },
+  "dev/lru-cache": {
+   "lru.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "get refreshes recency",
+     "overwriting refreshes recency and never evicts",
+     "has does not change the order",
+     "delete",
+     "set returns the cache and capacity is validated",
+     "capacity 1 keeps only the latest entry"
+    ]
+   },
+   "lru.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: keys of any type, compared like Map keys",
+     "audit: a stored undefined value still counts as present and is refreshed by get",
+     "audit: a long sequence matches a reference model"
+    ]
+   }
+  },
+  "dev/order-state": {
+   "order.gate.test.js": {
+    "tests": 7,
+    "names": [
+     "out-of-order calls throw INVALID_TRANSITION",
+     "a shipped or delivered order cannot be cancelled",
+     "a cancelled order accepts nothing, not even a second cancel",
+     "a failed call changes nothing",
+     "cancel is allowed after payment",
+     "history is a fresh copy each time",
+     "successful calls return the order itself"
+    ]
+   },
+   "order.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: independent orders do not share state or history",
+     "audit: the error is an Error with the code and a message",
+     "audit: full history of the happy path"
+    ]
+   }
+  },
+  "dev/paginate": {
+   "paginate.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "a partial last page",
+     "totalPages rounds up",
+     "an empty input has zero pages and page 1 is empty",
+     "a page past the end is empty and echoes the page",
+     "page and perPage must be positive integers",
+     "the result holds a new array and the input is unchanged"
+    ]
+   },
+   "paginate.audit.test.js": {
+    "tests": 2,
+    "names": [
+     "audit: every page of a list reassembles into the original",
+     "audit: a single item per page and a page size of exactly the length"
+    ]
+   }
+  },
+  "dev/serialize-calls": {
+   "serialize.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "calls never overlap and start in call order",
+     "a rejection does not stop later calls",
+     "a synchronous throw becomes a rejection and the queue survives",
+     "this and arguments are passed through",
+     "fn is not called until its turn, and the wrapper itself never throws synchronously",
+     "serialize validates fn immediately"
+    ]
+   },
+   "serialize.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: two independent serialized functions do not block each other",
+     "audit: many rejected calls in a row keep their own errors",
+     "audit: a call made after the queue drained still runs",
+     "audit: no unhandled rejection is left behind by an internal chain"
+    ]
+   }
+  },
+  "dev/slug-unique": {
+   "uniqueslug.gate.test.js": {
+    "tests": 7,
+    "names": [
+     "the first free suffix is used, not the count of taken slugs",
+     "a free base is returned even when suffixed names are taken",
+     "unrelated taken slugs do not matter",
+     "sets work and nothing is modified",
+     "an empty base becomes untitled",
+     "comparison is case-sensitive",
+     "argument types"
+    ]
+   },
+   "uniqueslug.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: many collisions",
+     "audit: a base that already ends in a number gets the suffix appended",
+     "audit: a gap in the middle is filled first",
+     "audit: duplicates in taken are harmless"
+    ]
+   }
+  },
+  "dev/title-case": {
+   "titlecase.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "the first and last words are capitalized even when small",
+     "whitespace is preserved exactly",
+     "hyphenated words are capitalized part by part",
+     "apostrophes do not start a new part",
+     "small words are recognised ignoring case",
+     "empty string and non-strings"
+    ]
+   },
+   "titlecase.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: only whole small words are lower-cased",
+     "audit: two small words in a row in the middle, and a small word last",
+     "audit: digits and punctuation inside words"
+    ]
+   }
+  },
+  "dev/unique-by": {
+   "uniqueby.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "NaN is a single key",
+     "0 and -0 are the same key",
+     "keyFn is called once per item with (item, index)",
+     "objects are equal only to themselves",
+     "the input is not modified and the result is a new array",
+     "argument types"
+    ]
+   },
+   "uniqueby.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: undefined and null are keys like any other",
+     "audit: a key function that returns NaN or objects",
+     "audit: strings and numbers with the same text are different keys"
+    ]
+   }
+  },
+  "final/bounds": {
+   "bounds.gate.test.js": {
+    "tests": 8,
+    "names": [
+     "a target beyond the last element",
+     "a target before the first element",
+     "duplicates",
+     "an empty array",
+     "one element",
+     "reads at most 64 elements of a million",
+     "argument types",
+     "the input is not modified"
+    ]
+   },
+   "bounds.audit.test.js": {
+    "tests": 2,
+    "names": [
+     "audit: agrees with a linear scan on many arrays and targets",
+     "audit: infinite targets"
+    ]
+   }
+  },
+  "final/bracket-validator": {
+   "brackets.gate.test.js": {
+    "tests": 9,
+    "names": [
+     "brackets inside strings are ignored",
+     "escapes inside strings",
+     "brackets inside comments are ignored",
+     "comment markers inside strings are text",
+     "quotes inside comments do not start strings",
+     "unterminated strings and comments",
+     "unexpected closers, mismatches and unclosed brackets",
+     "the first problem wins",
+     "non-strings throw TypeError"
+    ]
+   },
+   "brackets.audit.test.js": {
+    "tests": 6,
+    "names": [
+     "audit: a line comment at the very end without a newline",
+     "audit: a slash that is not a comment",
+     "audit: a block comment immediately closed, and nested-looking comments",
+     "audit: a single-quoted string containing double quotes and brackets",
+     "audit: deep nesting",
+     "audit: carriage return ends a string too"
+    ]
+   }
+  },
+  "final/business-days": {
+   "bizdays.gate.test.js": {
+    "tests": 8,
+    "names": [
+     "from a Friday, the next business day is Monday",
+     "from a weekend, one step forward is Monday",
+     "zero leaves the date alone, even on a weekend",
+     "negative counts move backwards over weekends",
+     "five business days is exactly one week",
+     "month, year and leap-day boundaries",
+     "large counts are fast and right",
+     "invalid dates and counts"
+    ]
+   },
+   "bizdays.audit.test.js": {
+    "tests": 5,
+    "names": [
+     "audit: the result of a nonzero step count is always a weekday",
+     "audit: adding n then -n returns to the start when the start is a weekday",
+     "audit: stepping one at a time equals stepping all at once",
+     "audit: results outside years 1000-9999 are a RangeError",
+     "audit: a year-end Friday"
+    ]
+   }
+  },
+  "final/camel-to-snake": {
+   "snake.gate.test.js": {
+    "tests": 5,
+    "names": [
+     "acronyms are one word",
+     "a leading capital does not add a leading underscore",
+     "digits stay with the letters before them",
+     "existing underscores are kept and never doubled",
+     "empty string and non-strings"
+    ]
+   },
+   "snake.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: classic mixed identifiers",
+     "audit: digit and capital alternation",
+     "audit: underscores at both ends",
+     "audit: a two-letter acronym followed by a word"
+    ]
+   }
+  },
+  "final/cron-match": {
+   "cron.gate.test.js": {
+    "tests": 9,
+    "names": [
+     "ranges, lists and steps over ranges",
+     "a star step starts at the first value of the field, which is 1 for day and month",
+     "day of week: 0 is Sunday and weekdays are 1-5",
+     "both day fields restricted: either may match",
+     "a star-led day field means both fields must match",
+     "the time zone is UTC",
+     "extra whitespace and leading zeros",
+     "invalid expressions throw SyntaxError",
+     "invalid argument types throw TypeError"
+    ]
+   },
+   "cron.audit.test.js": {
+    "tests": 5,
+    "names": [
+     "audit: every minute of a day matches */5 exactly 288 times",
+     "audit: weekday business hours across a week",
+     "audit: a list mixing numbers and stepped ranges",
+     "audit: the day-of-month item list with the either rule",
+     "audit: a range with a step that overshoots the end"
+    ]
+   }
+  },
+  "final/days-between": {
+   "daysbetween.gate.test.js": {
+    "tests": 5,
+    "names": [
+     "leap days count",
+     "spans across months and years",
+     "an earlier end date is a RangeError",
+     "malformed or impossible dates are a RangeError",
+     "non-strings are a TypeError"
+    ]
+   },
+   "daysbetween.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: century years",
+     "audit: 1900-02-29 and 2100-02-29 do not exist, 2000-02-29 does",
+     "audit: a long span",
+     "audit: month ends"
+    ]
+   }
+  },
+  "final/event-emitter": {
+   "emitter.gate.test.js": {
+    "tests": 9,
+    "names": [
+     "a once listener does not make the next listener skip",
+     "a listener added during emit waits for the next emit",
+     "a listener removed during emit still runs in that emit",
+     "a once listener never runs twice, even if it emits the same event",
+     "off removes one registration, the earliest",
+     "unsubscribe functions remove exactly their own registration, once",
+     "a throwing listener stops the emit and propagates",
+     "events are independent and emit reports listeners",
+     "argument types"
+    ]
+   },
+   "emitter.audit.test.js": {
+    "tests": 5,
+    "names": [
+     "audit: the same function registered with once and on",
+     "audit: off can remove a once listener before it runs",
+     "audit: arguments are passed to every listener, including once",
+     "audit: a once listener that throws is already removed",
+     "audit: listeners that unsubscribe themselves during emit"
+    ]
+   }
+  },
+  "final/expr-eval": {
+   "expr.gate.test.js": {
+    "tests": 9,
+    "names": [
+     "power is right-associative and binds tighter than unary minus",
+     "unary signs may repeat",
+     "left associativity of - / %",
+     "remainder follows JavaScript",
+     "decimals, nesting and whitespace",
+     "division and remainder by zero are a RangeError",
+     "malformed input is a SyntaxError",
+     "the evaluator does not run code",
+     "non-strings throw TypeError"
+    ]
+   },
+   "expr.audit.test.js": {
+    "tests": 5,
+    "names": [
+     "audit: agrees with JavaScript on random expressions over + - * / and parentheses",
+     "audit: mixed operators",
+     "audit: a long flat expression",
+     "audit: deeply nested parentheses",
+     "audit: a zero divisor produced by an expression, but zero numerators are fine"
+    ]
+   }
+  },
+  "final/flatten-depth": {
+   "flatten.gate.test.js": {
+    "tests": 8,
+    "names": [
+     "the default depth is exactly one",
+     "a given depth stops at that level",
+     "depth 0 is a shallow copy",
+     "nested arrays beyond the depth are the same objects",
+     "null and undefined are kept; empty arrays vanish when flattened",
+     "invalid depth is a RangeError",
+     "items must be an array",
+     "the input is never modified"
+    ]
+   },
+   "flatten.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: objects that look like arrays are not flattened",
+     "audit: depth 3 on a five-level structure",
+     "audit: strings are not flattened into characters",
+     "audit: moderately deep nesting with Infinity"
+    ]
+   }
+  },
+  "final/grid-bfs": {
+   "gridpath.gate.test.js": {
+    "tests": 10,
+    "names": [
+     "the shortest route, not just any route",
+     "rows and columns are not swapped",
+     "same cell, walls at either end",
+     "moves are not diagonal",
+     "unreachable cells inside walls",
+     "a one-cell grid",
+     "a 200 x 200 open grid is fast",
+     "a serpentine corridor",
+     "bad positions are a RangeError",
+     "bad grids are a TypeError"
+    ]
+   },
+   "gridpath.audit.test.js": {
+    "tests": 2,
+    "names": [
+     "audit: agrees with an independent computation on random grids",
+     "audit: the grid argument is not modified"
+    ]
+   }
+  },
+  "final/ini-parse": {
+   "ini.gate.test.js": {
+    "tests": 10,
+    "names": [
+     "only the first = splits; values are trimmed; empty values",
+     "quoted values keep their spaces; quotes are removed",
+     "no inline comments",
+     "comments are recognised after trimming",
+     "repeated sections merge and repeated keys replace",
+     "section names are trimmed and top-level keys come first",
+     "CRLF line endings",
+     "values are strings and the objects have no prototype",
+     "syntax errors carry the 1-based line number",
+     "the empty text and non-strings"
+    ]
+   },
+   "ini.audit.test.js": {
+    "tests": 6,
+    "names": [
+     "audit: a single quote character is not a quoted value",
+     "audit: keys with spaces and symbols",
+     "audit: a section named like a key and the same name as a top-level key",
+     "audit: the first error wins",
+     "audit: a header with trailing spaces and a comment-like value",
+     "audit: a key line with only an equals sign and spaces is an empty key"
+    ]
+   }
+  },
+  "final/isbn10": {
+   "isbn.gate.test.js": {
+    "tests": 7,
+    "names": [
+     "X as the check character",
+     "X anywhere else is invalid",
+     "the check is the weighted sum modulo 11",
+     "length is exactly ten after removing separators",
+     "other characters are invalid",
+     "separators may appear anywhere",
+     "non-strings throw TypeError"
+    ]
+   },
+   "isbn.audit.test.js": {
+    "tests": 5,
+    "names": [
+     "audit: a sum that is divisible by 11 only because X was counted as 10",
+     "audit: exactly one check character in eleven is right for any nine digits",
+     "audit: all zeros",
+     "audit: unicode digits and look-alikes are not accepted",
+     "audit: lower-case x is only valid at the end"
+    ]
+   }
+  },
+  "final/memoize-async": {
+   "memo.gate.test.js": {
+    "tests": 8,
+    "names": [
+     "concurrent calls with one key share a single invocation",
+     "a rejection is not cached; waiting callers all see it",
+     "a synchronous throw is a rejection and is not cached",
+     "the returned function always returns a promise",
+     "keyFn decides the key; all arguments reach fn",
+     "different keys run independently and in parallel",
+     "keys are compared like Map keys",
+     "argument validation is immediate"
+    ]
+   },
+   "memo.audit.test.js": {
+    "tests": 5,
+    "names": [
+     "audit: a cached undefined result is still cached",
+     "audit: failure of one key does not disturb another",
+     "audit: a retry after failure while the first failure is still being observed",
+     "audit: no unhandled rejection is produced by the cache bookkeeping",
+     "audit: default key is the first argument only"
+    ]
+   }
+  },
+  "final/merge-intervals": {
+   "intervals.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "touching intervals merge",
+     "a contained interval does not shrink the end",
+     "sorting is numeric",
+     "negative numbers, duplicates and single intervals",
+     "the input is untouched and the result is made of new arrays",
+     "invalid intervals"
+    ]
+   },
+   "intervals.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: fractional bounds",
+     "audit: zero-length intervals",
+     "audit: same start, different ends, in both orders",
+     "audit: the output is sorted, disjoint and covers exactly the same points as the input"
+    ]
+   }
+  },
+  "final/min-coins": {
+   "mincoins.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "systems where the greedy choice is wrong",
+     "unreachable amounts",
+     "a coin of 1 makes every amount reachable",
+     "large amounts are fast and right",
+     "invalid arguments throw RangeError",
+     "the coins array is not modified"
+    ]
+   },
+   "mincoins.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: agrees with an independent dynamic programme on many systems",
+     "audit: duplicates in coins are harmless and amount below every coin is impossible",
+     "audit: amount 0 with any valid coins"
+    ]
+   }
+  },
+  "final/money-format": {
+   "money.gate.test.js": {
+    "tests": 9,
+    "names": [
+     "negative amounts put the sign before the symbol",
+     "thousands separators in every group size",
+     "two decimals are always shown",
+     "yen has no decimals",
+     "the other currencies",
+     "large safe integers are exact",
+     "negative zero is zero",
+     "invalid amounts",
+     "unknown currencies, including inherited property names"
+    ]
+   },
+   "money.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: an explicit undefined currency means USD",
+     "audit: every amount from -2000 to 2000 matches an independent formatting",
+     "audit: group boundaries for yen",
+     "audit: euro and pound sign placement for negative values"
+    ]
+   }
+  },
+  "final/percentile": {
+   "percentile.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "values are sorted numerically, not as text",
+     "interpolation at other ranks",
+     "negative numbers and duplicates",
+     "a single value is every percentile",
+     "the input is not modified",
+     "invalid p and values"
+    ]
+   },
+   "percentile.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: p given as exactly 0 and 100 on unsorted multi-digit data",
+     "audit: fractional values and fractional p",
+     "audit: the median of an even count of multi-digit numbers",
+     "audit: large p near the top"
+    ]
+   }
+  },
+  "final/promise-pool": {
+   "pool.gate.test.js": {
+    "tests": 8,
+    "names": [
+     "never more than limit in flight, and all results in order",
+     "a freed slot is reused at once, not at the end of a batch",
+     "jobs start in input order and receive their index",
+     "a limit larger than the list starts everything at once",
+     "a rejection rejects the pool with the same error and stops new starts",
+     "a synchronous throw in the worker is a rejection too",
+     "workers may return plain values",
+     "invalid arguments reject, they do not throw synchronously"
+    ]
+   },
+   "pool.audit.test.js": {
+    "tests": 6,
+    "names": [
+     "audit: limit 1 runs strictly one after another",
+     "audit: a failure after a slow success still rejects, and a later failure does not change the first error",
+     "audit: the results array holds undefined for jobs that return nothing, and the right length",
+     "audit: many quick jobs finish and keep order",
+     "audit: the input array is not modified",
+     "audit: no unhandled rejection from jobs that fail after the pool already rejected"
+    ]
+   }
+  },
+  "final/query-string": {
+   "query.gate.test.js": {
+    "tests": 7,
+    "names": [
+     "percent-decoding as UTF-8, and plus as space",
+     "malformed escapes stay literal and do not disturb valid ones",
+     "empty segments, missing equals signs and empty keys",
+     "only the first equals sign splits",
+     "repeated keys",
+     "keys that would collide with Object.prototype",
+     "non-strings throw TypeError"
+    ]
+   },
+   "query.audit.test.js": {
+    "tests": 5,
+    "names": [
+     "audit: invalid UTF-8 becomes U+FFFD, valid sequences around it survive",
+     "audit: four-byte characters and a plus inside an escape sequence run",
+     "audit: only one leading question mark is ignored",
+     "audit: key order is the order of first appearance",
+     "audit: a key that decodes to the same text as another is the same key"
+    ]
+   }
+  },
+  "final/retry-async": {
+   "retry.gate.test.js": {
+    "tests": 9,
+    "names": [
+     "exponential delays, retries + 1 attempts, no sleep after the last failure",
+     "default options: 3 retries, 100 ms, factor 2",
+     "a success stops everything and passes the attempt number",
+     "success on the first attempt never sleeps",
+     "retries of zero means a single attempt",
+     "a synchronous throw counts as a failed attempt",
+     "shouldRetry can stop early with the error of that attempt",
+     "delayMs of 0 and factor 1",
+     "invalid arguments reject"
+    ]
+   },
+   "retry.audit.test.js": {
+    "tests": 5,
+    "names": [
+     "audit: a fractional factor above 1",
+     "audit: the sleep function is awaited before the next attempt",
+     "audit: non-Error rejections are passed through unchanged",
+     "audit: the real timer works for small delays",
+     "audit: the options object is not modified"
+    ]
+   }
+  },
+  "final/roman-numerals": {
+   "roman.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "toRoman on tricky values",
+     "toRoman range checks",
+     "fromRoman rejects non-canonical numerals with SyntaxError",
+     "fromRoman accepts the canonical forms",
+     "every value round-trips",
+     "fromRoman of a non-string is a TypeError"
+    ]
+   },
+   "roman.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: strings of valid letters that are not what toRoman produces",
+     "audit: the only strings fromRoman accepts are the 3999 canonical ones",
+     "audit: results are plain numbers"
+    ]
+   }
+  },
+  "final/rotate-array": {
+   "rotate.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "negative k rotates left",
+     "rotating by a multiple of the length changes nothing",
+     "empty and single-item arrays",
+     "the result is always a new array and the input is unchanged",
+     "k must be an integer",
+     "items must be an array"
+    ]
+   },
+   "rotate.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: very large and very negative k",
+     "audit: negative zero",
+     "audit: rotating right then left restores the array",
+     "audit: elements keep identity"
+    ]
+   }
+  },
+  "final/semver-compare": {
+   "semver.gate.test.js": {
+    "tests": 7,
+    "names": [
+     "a pre-release is lower than its release",
+     "the ascending chain of pre-release precedence",
+     "numeric identifiers are compared as numbers, text as ASCII",
+     "build metadata is ignored",
+     "core versions are compared numerically left to right",
+     "invalid versions throw SyntaxError",
+     "non-strings throw TypeError"
+    ]
+   },
+   "semver.audit.test.js": {
+    "tests": 5,
+    "names": [
+     "audit: very large components are compared exactly",
+     "audit: zero is a valid component and a valid numeric identifier",
+     "audit: identifiers with digits and letters mixed are text",
+     "audit: antisymmetry on a sample",
+     "audit: trailing hyphens and digits inside identifiers"
+    ]
+   }
+  },
+  "final/spiral-matrix": {
+   "spiral.gate.test.js": {
+    "tests": 7,
+    "names": [
+     "a single row",
+     "a single column",
+     "wide and tall rectangles",
+     "a 4 x 4 matrix",
+     "empty matrices",
+     "ragged or non-array input is a TypeError",
+     "the input is not modified"
+    ]
+   },
+   "spiral.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: every size up to 6 x 6 visits each cell once, starting top-left, each step adjacent",
+     "audit: a 5 x 1 column, a 1 x 5 row, a 3 x 5 and a 5 x 3 matrix",
+     "audit: elements of any type are returned as they are"
+    ]
+   }
+  },
+  "final/template-render": {
+   "render.gate.test.js": {
+    "tests": 8,
+    "names": [
+     "dotted paths and array indexes",
+     "values are HTML-escaped unless triple braces are used",
+     "falsy values are rendered, null and undefined are not",
+     "only own properties of objects and arrays are read",
+     "a backslash makes a tag literal",
+     "invalid tags stay as written",
+     "adjacent tags and text without tags",
+     "argument types"
+    ]
+   },
+   "render.audit.test.js": {
+    "tests": 6,
+    "names": [
+     "audit: numbers, booleans and arrays are converted with String",
+     "audit: escaping applies after conversion, once",
+     "audit: names with $ and _ and digits",
+     "audit: a stray closing brace after a tag stays",
+     "audit: array of objects by index",
+     "audit: data keys that are inherited from Object.prototype but also own"
+    ]
+   }
+  },
+  "final/token-bucket": {
+   "bucket.gate.test.js": {
+    "tests": 8,
+    "names": [
+     "refill is fractional",
+     "the bucket never holds more than its capacity",
+     "a failed take consumes nothing",
+     "taking several tokens at once; n larger than capacity is simply refused",
+     "the first call starts the clock; a huge first timestamp changes nothing",
+     "a clock that goes backwards neither refills nor loses time",
+     "available does not consume",
+     "argument validation"
+    ]
+   },
+   "bucket.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: a fractional capacity",
+     "audit: negative timestamps work like any other time",
+     "audit: a second take at the same instant sees no refill",
+     "audit: refill after a failed take starts from the failed take time"
+    ]
+   }
+  },
+  "final/top-k-frequent": {
+   "topk.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "ties are broken alphabetically",
+     "code unit order, not locale order",
+     "counts dominate the tie-break",
+     "k of zero and empty input",
+     "the input is not modified",
+     "argument checks"
+    ]
+   },
+   "topk.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: a long tie group is fully sorted",
+     "audit: three levels of counts with ties inside each level",
+     "audit: empty string and unusual strings are ordinary"
+    ]
+   }
+  },
+  "final/topo-sort": {
+   "toposort.gate.test.js": {
+    "tests": 8,
+    "names": [
+     "smallest available node first",
+     "names that only appear as dependencies are nodes",
+     "a diamond",
+     "independent nodes are sorted",
+     "cycles throw an Error with code CYCLE",
+     "duplicates in a list are harmless; the empty graph",
+     "the graph is not modified",
+     "argument checks"
+    ]
+   },
+   "toposort.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: random acyclic graphs give exactly the specified order",
+     "audit: a long chain and a wide fan-out",
+     "audit: ordering of names is by code unit, so digits and capitals come first"
+    ]
+   }
+  },
+  "final/truncate-words": {
+   "truncate.gate.test.js": {
+    "tests": 7,
+    "names": [
+     "text of exactly max characters is unchanged",
+     "the ellipsis counts toward the limit",
+     "a custom ellipsis",
+     "tabs and newlines are boundaries too",
+     "a first word that is too long is cut hard",
+     "multiple spaces do not leave trailing whitespace before the ellipsis",
+     "invalid arguments"
+    ]
+   },
+   "truncate.audit.test.js": {
+    "tests": 4,
+    "names": [
+     "audit: max equal to the ellipsis length gives just the ellipsis",
+     "audit: result length never exceeds max",
+     "audit: a boundary exactly at the limit is used",
+     "audit: the cut falls on the last allowed boundary, not the first"
+    ]
+   }
+  },
+  "final/word-wrap": {
+   "wrap.gate.test.js": {
+    "tests": 6,
+    "names": [
+     "a line may be exactly width characters",
+     "a word longer than the width gets its own line",
+     "no empty first line when the first word is long",
+     "any whitespace between words counts as one space",
+     "leading and trailing whitespace is ignored; empty text gives no lines",
+     "width and text are validated"
+    ]
+   },
+   "wrap.audit.test.js": {
+    "tests": 3,
+    "names": [
+     "audit: width 1 puts each word on its own line",
+     "audit: every line respects the width unless it is a single long word, and the words are preserved",
+     "audit: greedy, not balanced"
+    ]
+   }
+  },
+  "toy/chunk-array": {
+   "chunk.hidden.test.js": {
+    "tests": 5,
+    "names": [
+     "splits evenly",
+     "keeps the remainder as a shorter last group",
+     "empty input gives an empty result",
+     "size must be a positive integer",
+     "does not modify its input and returns fresh arrays"
+    ]
+   },
+   "chunk.audit.test.js": {
+    "tests": 1,
+    "names": [
+     "audit: size 1 and size equal to the length"
+    ]
+   }
+  },
+  "toy/slugify": {
+   "slugify.hidden.test.js": {
+    "tests": 7,
+    "names": [
+     "basic words",
+     "runs of other characters collapse into one dash",
+     "never starts or ends with a dash",
+     "accents are reduced to plain letters",
+     "digits are kept",
+     "nothing usable gives an empty string",
+     "non-strings throw TypeError"
+    ]
+   },
+   "slugify.audit.test.js": {
+    "tests": 1,
+    "names": [
+     "audit: mixed accents, digits and punctuation"
+    ]
+   }
+  },
+  "toy/sum-range": {
+   "sumrange.hidden.test.js": {
+    "tests": 5,
+    "names": [
+     "inclusive of both ends",
+     "a single-element range",
+     "negative numbers",
+     "an empty range (a > b) is 0",
+     "non-integers throw TypeError"
+    ]
+   },
+   "sumrange.audit.test.js": {
+    "tests": 1,
+    "names": [
+     "audit: a long range and a range across zero"
+    ]
+   }
+  }
+ }
+}
