@@ -1,0 +1,14 @@
+{
+  "id": "last-n",
+  "title": "Take the last n elements of an array",
+  "split": "dev",
+  "category": "quick-fix-trap",
+  "difficulty": "easy",
+  "pitfall": "items.slice(-n) is the obvious one-liner but returns the whole array when n is 0 and ignores validation.",
+  "outputs": ["lastn.js"],
+  "visible_test_argv": ["node", "--test", "lastn.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "lastn.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "lastn.gate.test.js", "lastn.audit.test.js"],
+  "naive": true
+}

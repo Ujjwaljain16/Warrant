@@ -1,0 +1,14 @@
+{
+  "id": "title-case",
+  "title": "Title-case a string with small-word rules",
+  "split": "dev",
+  "category": "string",
+  "difficulty": "medium",
+  "pitfall": "Small words must stay lower-case except first and last; hyphen parts are capitalized; whitespace must be preserved exactly.",
+  "outputs": ["titlecase.js"],
+  "visible_test_argv": ["node", "--test", "titlecase.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "titlecase.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "titlecase.gate.test.js", "titlecase.audit.test.js"],
+  "naive": false
+}

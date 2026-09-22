@@ -1,0 +1,14 @@
+{
+  "id": "csv-line",
+  "title": "Parse one CSV record",
+  "split": "dev",
+  "category": "parsing",
+  "difficulty": "medium",
+  "pitfall": "split(',') breaks on quoted commas; doubled quotes, empty fields and malformed quoting need explicit handling.",
+  "outputs": ["csvline.js"],
+  "visible_test_argv": ["node", "--test", "csvline.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "csvline.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "csvline.gate.test.js", "csvline.audit.test.js"],
+  "naive": false
+}

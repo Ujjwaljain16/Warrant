@@ -1,0 +1,14 @@
+{
+  "id": "slug-unique",
+  "title": "Pick a free slug",
+  "split": "dev",
+  "category": "insufficient-visible",
+  "difficulty": "easy",
+  "pitfall": "Counting taken slugs instead of probing for the first free suffix passes the single-collision example.",
+  "outputs": ["uniqueslug.js"],
+  "visible_test_argv": ["node", "--test", "uniqueslug.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "uniqueslug.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "uniqueslug.gate.test.js", "uniqueslug.audit.test.js"],
+  "naive": true
+}

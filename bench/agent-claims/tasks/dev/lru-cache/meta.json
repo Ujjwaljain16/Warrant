@@ -1,0 +1,14 @@
+{
+  "id": "lru-cache",
+  "title": "Implement an LRU cache",
+  "split": "dev",
+  "category": "algorithm",
+  "difficulty": "medium",
+  "pitfall": "Evicting in insertion order (FIFO) passes simple tests; reads and overwrites must also refresh recency.",
+  "outputs": ["lru.js"],
+  "visible_test_argv": ["node", "--test", "lru.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "lru.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "lru.gate.test.js", "lru.audit.test.js"],
+  "naive": true
+}

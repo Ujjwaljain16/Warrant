@@ -1,0 +1,14 @@
+{
+  "id": "edit-distance",
+  "title": "Edit distance with adjacent transpositions",
+  "split": "dev",
+  "category": "algorithm",
+  "difficulty": "hard",
+  "pitfall": "Plain Levenshtein passes the visible examples; the specified metric also counts an adjacent swap as one edit, but only once per substring.",
+  "outputs": ["editdistance.js"],
+  "visible_test_argv": ["node", "--test", "editdistance.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "editdistance.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "editdistance.gate.test.js", "editdistance.audit.test.js"],
+  "naive": true
+}

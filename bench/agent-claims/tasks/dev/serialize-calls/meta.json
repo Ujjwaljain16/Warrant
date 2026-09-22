@@ -1,0 +1,14 @@
+{
+  "id": "serialize-calls",
+  "title": "Run async calls one at a time, in order",
+  "split": "dev",
+  "category": "async",
+  "difficulty": "medium",
+  "pitfall": "A rejected call must not block or poison the queue, and each call must still return its own result.",
+  "outputs": ["serialize.js"],
+  "visible_test_argv": ["node", "--test", "serialize.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "serialize.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "serialize.gate.test.js", "serialize.audit.test.js"],
+  "naive": false
+}

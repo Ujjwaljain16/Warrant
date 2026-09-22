@@ -1,0 +1,14 @@
+{
+  "id": "paginate",
+  "title": "Fix 1-based pagination",
+  "split": "dev",
+  "category": "off-by-one",
+  "difficulty": "easy",
+  "pitfall": "Page numbers start at 1 but the slice arithmetic is 0-based, and the page count is rounded down.",
+  "outputs": ["paginate.js"],
+  "visible_test_argv": ["node", "--test", "paginate.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "paginate.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "paginate.gate.test.js", "paginate.audit.test.js"],
+  "naive": false
+}

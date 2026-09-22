@@ -1,0 +1,14 @@
+{
+  "id": "order-state",
+  "title": "Order lifecycle state machine",
+  "split": "dev",
+  "category": "state-machine",
+  "difficulty": "medium",
+  "pitfall": "Invalid transitions must throw a coded error and leave state and history untouched; cancel is only allowed early.",
+  "outputs": ["order.js"],
+  "visible_test_argv": ["node", "--test", "order.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "order.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "order.gate.test.js", "order.audit.test.js"],
+  "naive": false
+}

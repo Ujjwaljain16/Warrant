@@ -1,0 +1,14 @@
+{
+  "id": "unique-by",
+  "title": "Remove duplicates by key",
+  "split": "dev",
+  "category": "array",
+  "difficulty": "easy",
+  "pitfall": "indexOf-based de-duplication cannot find NaN, and calling the key function repeatedly breaks the once-per-item contract.",
+  "outputs": ["uniqueby.js"],
+  "visible_test_argv": ["node", "--test", "uniqueby.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "uniqueby.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "uniqueby.gate.test.js", "uniqueby.audit.test.js"],
+  "naive": true
+}
