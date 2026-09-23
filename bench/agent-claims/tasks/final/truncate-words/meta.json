@@ -1,0 +1,14 @@
+{
+  "id": "truncate-words",
+  "title": "Truncate text at a word boundary",
+  "split": "final",
+  "category": "string",
+  "difficulty": "medium",
+  "pitfall": "The ellipsis counts toward the limit, any whitespace is a boundary, and a first word that is too long is cut hard.",
+  "outputs": ["truncate.js"],
+  "visible_test_argv": ["node", "--test", "truncate.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "truncate.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "truncate.gate.test.js", "truncate.audit.test.js"],
+  "naive": false
+}

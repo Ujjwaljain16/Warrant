@@ -1,0 +1,14 @@
+{
+  "id": "cron-match",
+  "title": "Match a date against a cron expression",
+  "split": "final",
+  "category": "spec-trap",
+  "difficulty": "hard",
+  "pitfall": "When both day-of-month and day-of-week are restricted, cron matches either, but with a star-led day field both must match; steps over ranges, lists, and strict validation add detail.",
+  "outputs": ["cron.js"],
+  "visible_test_argv": ["node", "--test", "cron.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "cron.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "cron.gate.test.js", "cron.audit.test.js"],
+  "naive": false
+}

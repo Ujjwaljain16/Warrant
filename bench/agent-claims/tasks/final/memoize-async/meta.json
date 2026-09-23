@@ -1,0 +1,14 @@
+{
+  "id": "memoize-async",
+  "title": "Memoize an async function including in-flight calls",
+  "split": "final",
+  "category": "async",
+  "difficulty": "medium",
+  "pitfall": "Caching only after the promise resolves lets concurrent callers duplicate work; caching rejections makes failures permanent.",
+  "outputs": ["memo.js"],
+  "visible_test_argv": ["node", "--test", "memo.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "memo.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "memo.gate.test.js", "memo.audit.test.js"],
+  "naive": true
+}

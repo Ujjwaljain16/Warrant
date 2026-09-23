@@ -1,0 +1,14 @@
+{
+  "id": "word-wrap",
+  "title": "Greedy word wrapping",
+  "split": "final",
+  "category": "string",
+  "difficulty": "medium",
+  "pitfall": "The existing code uses < instead of <=, splits only on single spaces and can emit an empty first line; the visible example happens to pass.",
+  "outputs": ["wrap.js"],
+  "visible_test_argv": ["node", "--test", "wrap.test.js"],
+  "visible_on_start": "pass",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "wrap.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "wrap.gate.test.js", "wrap.audit.test.js"],
+  "naive": false
+}

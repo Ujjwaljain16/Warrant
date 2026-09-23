@@ -1,0 +1,14 @@
+{
+  "id": "semver-compare",
+  "title": "Compare semantic versions",
+  "split": "final",
+  "category": "parsing",
+  "difficulty": "hard",
+  "pitfall": "Pre-release ordering has several rules (release beats pre-release, numeric vs text identifiers, longer sets win); build metadata is ignored; strict syntax.",
+  "outputs": ["semver.js"],
+  "visible_test_argv": ["node", "--test", "semver.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "semver.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "semver.gate.test.js", "semver.audit.test.js"],
+  "naive": true
+}

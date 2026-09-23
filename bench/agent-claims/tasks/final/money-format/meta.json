@@ -1,0 +1,14 @@
+{
+  "id": "money-format",
+  "title": "Format integer cents as money",
+  "split": "final",
+  "category": "spec-trap",
+  "difficulty": "easy",
+  "pitfall": "Division and toFixed lose the sign placement and the zero-decimal currency; the sign goes before the symbol and JPY has no minor unit.",
+  "outputs": ["money.js"],
+  "visible_test_argv": ["node", "--test", "money.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "money.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "money.gate.test.js", "money.audit.test.js"],
+  "naive": false
+}

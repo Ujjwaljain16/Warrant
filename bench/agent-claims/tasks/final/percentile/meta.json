@@ -1,0 +1,14 @@
+{
+  "id": "percentile",
+  "title": "Percentile with linear interpolation",
+  "split": "final",
+  "category": "quick-fix-trap",
+  "difficulty": "easy",
+  "pitfall": "Array.prototype.sort() without a comparator sorts numbers as strings, which looks right for single-digit data.",
+  "outputs": ["percentile.js"],
+  "visible_test_argv": ["node", "--test", "percentile.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "percentile.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "percentile.gate.test.js", "percentile.audit.test.js"],
+  "naive": true
+}

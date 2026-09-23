@@ -1,0 +1,14 @@
+{
+  "id": "template-render",
+  "title": "Render a mustache-style template",
+  "split": "final",
+  "category": "parsing",
+  "difficulty": "medium",
+  "pitfall": "Dotted paths, HTML escaping with a raw form, escaped braces, and never leaking inherited properties like constructor.",
+  "outputs": ["render.js"],
+  "visible_test_argv": ["node", "--test", "render.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "render.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "render.gate.test.js", "render.audit.test.js"],
+  "naive": true
+}

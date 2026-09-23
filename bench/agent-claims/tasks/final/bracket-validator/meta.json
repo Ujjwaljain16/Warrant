@@ -1,0 +1,14 @@
+{
+  "id": "bracket-validator",
+  "title": "Validate brackets outside strings and comments",
+  "split": "final",
+  "category": "state-machine",
+  "difficulty": "medium",
+  "pitfall": "A plain stack check misses that brackets inside strings and comments are ignored, escapes inside strings, and unterminated strings or comments.",
+  "outputs": ["brackets.js"],
+  "visible_test_argv": ["node", "--test", "brackets.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "brackets.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "brackets.gate.test.js", "brackets.audit.test.js"],
+  "naive": true
+}

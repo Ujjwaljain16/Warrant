@@ -1,0 +1,14 @@
+{
+  "id": "token-bucket",
+  "title": "Token bucket rate limiter with an injected clock",
+  "split": "final",
+  "category": "state-machine",
+  "difficulty": "medium",
+  "pitfall": "Fractional refill, capping at capacity, failed takes consuming nothing, and a clock that goes backwards.",
+  "outputs": ["bucket.js"],
+  "visible_test_argv": ["node", "--test", "bucket.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "bucket.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "bucket.gate.test.js", "bucket.audit.test.js"],
+  "naive": false
+}

@@ -1,0 +1,14 @@
+{
+  "id": "top-k-frequent",
+  "title": "Top k most frequent strings",
+  "split": "final",
+  "category": "array",
+  "difficulty": "medium",
+  "pitfall": "Sorting by count alone leaves ties in first-seen order; the specified tie-break is alphabetical by UTF-16 code units.",
+  "outputs": ["topk.js"],
+  "visible_test_argv": ["node", "--test", "topk.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "topk.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "topk.gate.test.js", "topk.audit.test.js"],
+  "naive": true
+}

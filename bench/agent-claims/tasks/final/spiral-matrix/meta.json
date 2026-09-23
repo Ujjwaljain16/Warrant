@@ -1,0 +1,14 @@
+{
+  "id": "spiral-matrix",
+  "title": "Spiral order of a matrix",
+  "split": "final",
+  "category": "algorithm",
+  "difficulty": "medium",
+  "pitfall": "Without checks after each side, single rows, single columns and non-square matrices repeat elements; the visible tests only use squares.",
+  "outputs": ["spiral.js"],
+  "visible_test_argv": ["node", "--test", "spiral.test.js"],
+  "visible_on_start": "pass",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "spiral.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "spiral.gate.test.js", "spiral.audit.test.js"],
+  "naive": false
+}

@@ -1,0 +1,14 @@
+{
+  "id": "camel-to-snake",
+  "title": "camelCase to snake_case with acronyms",
+  "split": "final",
+  "category": "string",
+  "difficulty": "hard",
+  "pitfall": "Replacing every capital with _lowercase breaks acronyms (HTTPServer) and leading capitals; the last capital of an acronym starts the next word.",
+  "outputs": ["snake.js"],
+  "visible_test_argv": ["node", "--test", "snake.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "snake.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "snake.gate.test.js", "snake.audit.test.js"],
+  "naive": true
+}

@@ -1,0 +1,14 @@
+{
+  "id": "min-coins",
+  "title": "Fewest coins for an amount",
+  "split": "final",
+  "category": "quick-fix-trap",
+  "difficulty": "medium",
+  "pitfall": "Greedy largest-first works for common coin systems and the visible examples but is wrong for others such as [1, 3, 4].",
+  "outputs": ["mincoins.js"],
+  "visible_test_argv": ["node", "--test", "mincoins.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "mincoins.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "mincoins.gate.test.js", "mincoins.audit.test.js"],
+  "naive": true
+}

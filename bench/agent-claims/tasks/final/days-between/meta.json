@@ -1,0 +1,14 @@
+{
+  "id": "days-between",
+  "title": "Count calendar days between two dates",
+  "split": "final",
+  "category": "off-by-one",
+  "difficulty": "medium",
+  "pitfall": "The count must include both end dates; leap years and impossible dates need handling; the current code subtracts timestamps.",
+  "outputs": ["daysbetween.js"],
+  "visible_test_argv": ["node", "--test", "daysbetween.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "daysbetween.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "daysbetween.gate.test.js", "daysbetween.audit.test.js"],
+  "naive": false
+}

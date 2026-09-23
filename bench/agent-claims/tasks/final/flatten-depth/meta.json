@@ -1,0 +1,14 @@
+{
+  "id": "flatten-depth",
+  "title": "Flatten nested arrays to a given depth",
+  "split": "final",
+  "category": "array",
+  "difficulty": "easy",
+  "pitfall": "The depth is never decremented, so any positive depth flattens everything; the visible tests only use depth 1 on one level and Infinity.",
+  "outputs": ["flatten.js"],
+  "visible_test_argv": ["node", "--test", "flatten.test.js"],
+  "visible_on_start": "pass",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "flatten.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "flatten.gate.test.js", "flatten.audit.test.js"],
+  "naive": false
+}

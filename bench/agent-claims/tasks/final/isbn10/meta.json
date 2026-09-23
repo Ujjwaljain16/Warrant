@@ -1,0 +1,14 @@
+{
+  "id": "isbn10",
+  "title": "Validate ISBN-10 numbers",
+  "split": "final",
+  "category": "insufficient-visible",
+  "difficulty": "medium",
+  "pitfall": "The check character can be X (value 10) but only in the last position; separators are ignored; length must be exactly 10 after removing them.",
+  "outputs": ["isbn.js"],
+  "visible_test_argv": ["node", "--test", "isbn.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "isbn.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "isbn.gate.test.js", "isbn.audit.test.js"],
+  "naive": true
+}

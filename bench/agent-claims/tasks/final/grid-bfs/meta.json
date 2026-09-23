@@ -1,0 +1,14 @@
+{
+  "id": "grid-bfs",
+  "title": "Shortest path on a grid",
+  "split": "final",
+  "category": "algorithm",
+  "difficulty": "medium",
+  "pitfall": "Breadth-first search with a visited set; coordinates, walls at start/end, out-of-range input and large open grids need care.",
+  "outputs": ["gridpath.js"],
+  "visible_test_argv": ["node", "--test", "gridpath.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "gridpath.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "gridpath.gate.test.js", "gridpath.audit.test.js"],
+  "naive": false
+}

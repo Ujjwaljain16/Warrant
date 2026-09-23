@@ -1,0 +1,14 @@
+{
+  "id": "promise-pool",
+  "title": "Run async jobs with a concurrency limit",
+  "split": "final",
+  "category": "async",
+  "difficulty": "hard",
+  "pitfall": "Processing in fixed batches wastes slots; a failure must stop new starts and reject; results must keep input order.",
+  "outputs": ["pool.js"],
+  "visible_test_argv": ["node", "--test", "pool.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "pool.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "pool.gate.test.js", "pool.audit.test.js"],
+  "naive": false
+}

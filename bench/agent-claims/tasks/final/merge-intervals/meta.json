@@ -1,0 +1,14 @@
+{
+  "id": "merge-intervals",
+  "title": "Merge overlapping and touching intervals",
+  "split": "final",
+  "category": "array",
+  "difficulty": "medium",
+  "pitfall": "Touching intervals (end equals next start) must merge, numeric sorting is required, and a contained interval must not shrink the end.",
+  "outputs": ["intervals.js"],
+  "visible_test_argv": ["node", "--test", "intervals.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "intervals.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "intervals.gate.test.js", "intervals.audit.test.js"],
+  "naive": true
+}

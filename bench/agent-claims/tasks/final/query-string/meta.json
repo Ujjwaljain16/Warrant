@@ -1,0 +1,14 @@
+{
+  "id": "query-string",
+  "title": "Parse a URL query string",
+  "split": "final",
+  "category": "parsing",
+  "difficulty": "hard",
+  "pitfall": "decodeURIComponent throws on malformed escapes, which must stay literal; repeated keys, '+', empty segments and '__proto__' all need explicit handling.",
+  "outputs": ["query.js"],
+  "visible_test_argv": ["node", "--test", "query.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "query.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "query.gate.test.js", "query.audit.test.js"],
+  "naive": false
+}

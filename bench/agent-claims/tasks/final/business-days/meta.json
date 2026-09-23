@@ -1,0 +1,14 @@
+{
+  "id": "business-days",
+  "title": "Add business days to a date",
+  "split": "final",
+  "category": "spec-trap",
+  "difficulty": "medium",
+  "pitfall": "Starting on a weekend, a count of zero, and negative counts behave differently from a naive 'skip weekends' loop; the day-by-day rule defines them.",
+  "outputs": ["bizdays.js"],
+  "visible_test_argv": ["node", "--test", "bizdays.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "bizdays.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "bizdays.gate.test.js", "bizdays.audit.test.js"],
+  "naive": false
+}

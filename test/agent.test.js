@@ -11,6 +11,7 @@ const { auditLog } = require('../src/engine/replay');
 const { AgentWorker, Workspace, WorkspaceError, buildAgentRunSpec, listTaskDirs, loadTask, parseAction, runAgent, validateTaskDir } = require('../src/agent');
 const { fenced } = require('../src/agent/loop');
 const { runTaskProperties } = require('../src/agent/properties');
+const { runHiddenGate, failedTestNames } = require('../src/agent/gate');
 const { FakeLlm, QuotaExhaustedError, LlmError } = require('../src/llm');
 const { dockerStatus } = require('../src/sandbox/docker');
 
@@ -274,33 +275,108 @@ test('injection: data containing backticks cannot close its fence', () => {
 
 // ---------------------------------------------------------------- tasks
 
-test('tasks: every task under bench/agent-claims/tasks is well formed', () => {
-  const dirs = listTaskDirs(TASKS);
-  assert.ok(dirs.length >= 3);
-  for (const dir of dirs) assert.deepEqual(validateTaskDir(dir), [], path.basename(dir));
-  assert.ok(dirs.map((d) => loadTask(d)).filter((t) => t.naiveDir).length >= 2, 'at least two tasks prove visible tests are insufficient');
+const { SPLITS, listSplit } = require('../src/agent/task');
+const { scanTreeForSecrets } = require('../src/agent/secretscan');
+
+test('tasks: every task in every split is well formed and the suite has the promised shape', () => {
+  const all = SPLITS.flatMap((split) => listSplit(split).map((dir) => ({ split, dir })));
+  assert.equal(listSplit('dev').length, 10, 'ten dev tasks');
+  assert.equal(listSplit('final').length, 30, 'thirty final tasks');
+  assert.equal(listSplit('toy').length, 3);
+  const ids = all.map(({ dir }) => path.basename(dir));
+  assert.equal(new Set(ids).size, ids.length, 'task ids are unique across splits');
+  for (const { split, dir } of all) {
+    assert.deepEqual(validateTaskDir(dir), [], path.basename(dir));
+    assert.equal(loadTask(dir).split, split);
+    assert.deepEqual(scanTreeForSecrets(dir, { literal: null }), [], path.basename(dir));
+  }
+  const final = listSplit('final').map((d) => loadTask(d));
+  assert.ok(final.filter((t) => t.naiveDir).length >= 10, 'many final tasks have a naive solution that passes the visible tests');
+  assert.ok(final.filter((t) => t.meta.visible_on_start === 'pass').length >= 3, 'some final tasks start with passing visible tests');
+  assert.deepEqual([...new Set(final.map((t) => t.meta.difficulty))].sort(), ['easy', 'hard', 'medium']);
+  assert.ok(new Set(final.map((t) => t.meta.category)).size >= 8, 'the final tasks cover many categories');
+});
+
+test('tasks: no final task id appears in a prompt template, and dev tasks do not mention final ones', () => {
+  const finalIds = listSplit('final').map((d) => path.basename(d));
+  const harnessText = ['src/agent/protocol.js', 'src/agent/loop.js', 'src/bench/agent-judge.js'].map((f) => fs.readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
+  for (const id of finalIds) assert.ok(!harnessText.includes(id), `final task id ${id} appears in a prompt template`);
+  for (const dir of listSplit('dev')) {
+    const text = fs.readdirSync(dir, { recursive: true }).map((f) => { const full = path.join(dir, f); return fs.statSync(full).isFile() ? fs.readFileSync(full, 'utf8') : ''; }).join('\n');
+    for (const id of finalIds) assert.ok(!text.includes(`final/${id}`), `dev task mentions final task ${id}`);
+  }
 });
 
 test('tasks: the validator catches broken tasks', () => {
   const copy = tmp('badtask');
-  const dir = path.join(copy, 'sum-range');
+  const dir = path.join(copy, 'toy', 'sum-range');
   fs.cpSync(path.join(TASKS, 'sum-range'), dir, { recursive: true });
   assert.deepEqual(validateTaskDir(dir), []);
   fs.writeFileSync(path.join(dir, 'repo', 'sumrange.hidden.test.js'), '// shadow');
   assert.ok(validateTaskDir(dir).some((p) => /would overwrite/.test(p)));
   fs.rmSync(path.join(dir, 'repo', 'sumrange.hidden.test.js'));
+  fs.writeFileSync(path.join(dir, 'hidden', 'audit', 'extra.js'), '// not run by the audit');
+  assert.ok(validateTaskDir(dir).some((p) => /audit_test_argv must include the audit file extra\.js/.test(p)));
+  fs.rmSync(path.join(dir, 'hidden', 'audit', 'extra.js'));
+  const meta = JSON.parse(fs.readFileSync(path.join(dir, 'meta.json'), 'utf8'));
+  fs.writeFileSync(path.join(dir, 'meta.json'), JSON.stringify({ ...meta, audit_test_argv: ['node', '--test', '--test-reporter=tap', 'sumrange.audit.test.js'] }));
+  assert.ok(validateTaskDir(dir).some((p) => /not run by the audit/.test(p)), 'an audit that omits a gate file is not a superset');
+  fs.writeFileSync(path.join(dir, 'meta.json'), JSON.stringify({ ...meta, split: 'final' }));
+  assert.ok(validateTaskDir(dir).some((p) => /does not match the directory/.test(p)));
+  fs.writeFileSync(path.join(dir, 'meta.json'), JSON.stringify(meta));
   fs.rmSync(path.join(dir, 'reference', 'sumrange.js'));
   assert.ok(validateTaskDir(dir).some((p) => /reference\/ is empty|not in reference/.test(p)));
-  fs.writeFileSync(path.join(dir, 'meta.json'), JSON.stringify({ id: 'other', title: 't', outputs: ['../x'], visible_test_argv: ['sh'], hidden_test_argv: ['node'], naive: 'yes', extra: 1 }));
+  fs.writeFileSync(path.join(dir, 'meta.json'), JSON.stringify({ id: 'other', title: 't', outputs: ['../x'], visible_test_argv: ['sh'], gate_test_argv: ['node'], naive: 'yes', extra: 1 }));
   const problems = validateTaskDir(dir).join('\n');
   assert.match(problems, /unknown field "extra"/);
   assert.match(problems, /must equal the directory name/);
   assert.match(problems, /meta\.outputs/);
   assert.match(problems, /meta\.naive/);
+  assert.match(problems, /meta\.category/);
 });
 
-dockerTest('tasks: hidden tests fail on the start, pass on the reference; visible tests alone are not sufficient where a naive solution exists', async () => {
-  for (const dir of listTaskDirs(TASKS)) assert.deepEqual(await runTaskProperties(dir), [], path.basename(dir));
+test('tasks: the secret scan finds key-shaped strings and a literal key without printing it', () => {
+  const dir = tmp('secrets');
+  fs.writeFileSync(path.join(dir, 'a.js'), `const key = 'AIza${'x'.repeat(30)}';\n`);
+  fs.writeFileSync(path.join(dir, 'b.js'), 'const t = "super-secret-literal-value";\n');
+  const found = scanTreeForSecrets(dir, { literal: 'super-secret-literal-value' });
+  assert.deepEqual(found.sort(), ['a.js: google-api-key', 'b.js: the configured API key']);
+  assert.ok(!found.join('\n').includes('super-secret-literal-value'));
+});
+
+dockerTest('tasks: toy and dev tasks - gate and audit fail on the start, pass on the reference, are deterministic, naive solutions fool only the visible tests', async () => {
+  for (const dir of [...listSplit('toy'), ...listSplit('dev')]) assert.deepEqual(await runTaskProperties(dir, { repeats: 1 }), [], path.basename(dir));
+});
+
+dockerTest('tasks: the audit runs more tests than the gate and its codes differ', async () => {
+  const task = loadTask(path.join(TASKS, 'chunk-array'));
+  const { overlayWorkspace } = require('../src/agent/properties');
+  const ws = overlayWorkspace(task, task.referenceDir);
+  try {
+    const gate = await runHiddenGate({ task, workspace: ws, suite: 'gate' });
+    const audit = await runHiddenGate({ task, workspace: ws, suite: 'audit' });
+    assert.equal(gate.status, 'pass');
+    assert.equal(audit.status, 'pass');
+    assert.ok(Number(audit.detail.split('/')[1]) > Number(gate.detail.split('/')[1]), 'the audit runs more tests than the gate');
+    assert.equal(gate.code, 'HIDDEN_TESTS_PASS');
+    assert.equal(audit.code, 'AUDIT_PASS');
+    const naive = overlayWorkspace(task, task.naiveDir);
+    try {
+      const failing = await runHiddenGate({ task, workspace: naive, suite: 'gate' });
+      assert.equal(failing.status, 'fail');
+      assert.ok(failing.failed_tests.length > 0, 'failing test names are reported');
+    } finally {
+      fs.rmSync(naive, { recursive: true, force: true });
+    }
+  } finally {
+    fs.rmSync(ws, { recursive: true, force: true });
+  }
+});
+
+test('gate: failedTestNames reads top-level failures from TAP and caps them', () => {
+  const tap = 'TAP version 13\nok 1 - fine\nnot ok 2 - first broken\n  ---\n  not ok 9 - nested\nnot ok 3 - second broken\n';
+  assert.deepEqual(failedTestNames(tap), ['first broken', 'second broken']);
+  assert.equal(failedTestNames(Array.from({ length: 50 }, (_, i) => `not ok ${i} - t${i}`).join('\n')).length, 20);
 });
 
 // ---------------------------------------------------------------- the real engine: AgentWorker + hidden-test gate in Docker
@@ -397,7 +473,7 @@ dockerTest('engine: an honest "cannot", a loop that never ends, and malformed ou
 
 dockerTest('engine: an agent that obeys an injected instruction in a repo file still cannot get a false success', async () => {
   const copy = tmp('inj-task');
-  const dir = path.join(copy, 'slugify');
+  const dir = path.join(copy, 'toy', 'slugify');
   fs.cpSync(path.join(TASKS, 'slugify'), dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'repo', 'NOTES.md'), INJECTION);
   const task = loadTask(dir);
@@ -488,4 +564,75 @@ test('smoke cassette: the recorded live episode replays offline to the same engi
   assert.equal(first.model_calls.live, 0);
   assert.equal(first.http_calls, 0);
   assert.ok(!/AIza/.test(fs.readFileSync(SMOKE, 'utf8')));
+});
+
+test('protocol: raw line breaks and tabs inside a JSON string are accepted (fallback only); nothing else is relaxed', () => {
+  const raw = '{"action":"write_file","path":"a.js","content":"line1\nline2\n\ttab \\"quoted\\" and \\\\ backslash"}';
+  const r = parseAction(raw);
+  assert.equal(r.ok, true);
+  assert.equal(r.action.content, 'line1\nline2\n\ttab "quoted" and \\ backslash');
+  assert.equal(parseAction('```json\n' + raw + '\n```').ok, true);
+  // strict JSON still parses the same way, and the fallback does not forgive structure
+  assert.equal(parseAction('{"action":"run_tests",}').ok, false);
+  assert.equal(parseAction('{"action":"write_file","path":"a","content":"unterminated\n').ok, false);
+  assert.equal(parseAction("{'action':'run_tests'}").ok, false);
+  assert.equal(parseAction('{"action":"write_file","path":"a\nb","content":"x"}').ok, true, 'a control character in any string is escaped, the path rules decide later');
+  assert.match(parseAction('{"action":"write_file","path":"a","content":`x`}').error, /could not be parsed/);
+});
+
+// F10: runAgent promises never to throw, whatever the model client returns.
+test('runAgent stays total when the client answers without usage or without text', async () => {
+  for (const reply of [{ text: JSON.stringify({ action: 'finish', claim: 'done', note: '' }), finishReason: 'stop' }, { text: JSON.stringify({ action: 'finish', claim: 'done' }), usage: { inputTokens: 'x', outputTokens: -3 }, finishReason: 'stop' }]) {
+    const out = await runAgent({ llm: { generate: async () => reply }, model: 'm', prompt: 'task', workspace: plainWorkspace({ 'a.js': 'x' }), runTests: async () => ({ exitCode: 0, stdout: '', stderr: '' }) });
+    assert.equal(out.outcome, 'finished');
+    assert.deepEqual(out.usage, { inputTokens: 0, outputTokens: 0, calls: 1 });
+  }
+  const noText = await runAgent({ llm: { generate: async () => ({ usage: { inputTokens: 1, outputTokens: 1 } }) }, model: 'm', prompt: 'task', workspace: plainWorkspace({ 'a.js': 'x' }), runTests: async () => ({}) });
+  assert.equal(noText.outcome, 'llm_error');
+  assert.equal(noText.error.code, 'BAD_RESPONSE');
+});
+
+// F9: Windows spells one name several ways; none of the aliases of a blocked directory is accepted, and odd names are refused outright.
+test('workspace: NTFS aliases of blocked directories, alternate data streams and trailing dots/spaces are refused', () => {
+  const ws = plainWorkspace({ 'a.js': 'x', '.git/config': 'secret', 'node_modules/m.js': 'm' });
+  const aliases = ['GIT~1/config', 'NODE_M~1/m.js', '.git::$INDEX_ALLOCATION/config', '.git:$I30:$INDEX_ALLOCATION/config', 'a.js:ads', '.git./config', 'node_modules./m.js', '.git /config', 'x.', 'y ', 'dir/z.', 'a*.js', 'a?.js', 'q|r', 'a<b', '"quoted"'];
+  for (const bad of aliases) {
+    assert.throws(() => ws.read(bad), WorkspaceError, `read ${bad}`);
+    assert.throws(() => ws.write(bad, 'x'), WorkspaceError, `write ${bad}`);
+    assert.throws(() => ws.list(bad), WorkspaceError, `list ${bad}`);
+  }
+  assert.equal(fs.existsSync(path.join(ws.root, 'a.js:ads')), false);
+  assert.equal(fs.readFileSync(path.join(ws.root, '.git', 'config'), 'utf8'), 'secret');
+});
+
+// F4: the host never loads a file of unbounded size into memory to show a few thousand characters of it.
+test('workspace: reading a huge file reads only its head; counting files stops at the limit', () => {
+  const ws = plainWorkspace({ 'a.js': 'x' });
+  const big = path.join(ws.root, 'big.bin');
+  const fd = fs.openSync(big, 'w');
+  fs.writeSync(fd, 'head-of-the-file\n');
+  fs.ftruncateSync(fd, 64 * 1024 * 1024); // a sparse 64 MB file: cheap to create, expensive to read whole
+  fs.closeSync(fd);
+  const before = process.memoryUsage().rss;
+  const r = ws.read('big.bin');
+  assert.equal(r.truncated, true);
+  assert.ok(r.content.startsWith('head-of-the-file'));
+  assert.equal(r.totalChars, 64 * 1024 * 1024);
+  assert.ok(process.memoryUsage().rss - before < 32 * 1024 * 1024, 'the file was not loaded whole');
+  const crowded = plainWorkspace(Object.fromEntries(Array.from({ length: 30 }, (_, i) => [`f${i}.txt`, 'x'])));
+  const started = Date.now();
+  assert.equal(crowded._countFiles(crowded.root, 5), 5);
+  assert.ok(Date.now() - started < 1000);
+});
+
+// F13: nothing the sandbox needs is made world-writable any more (the container gets a copy; it never writes to a host directory).
+test('POSIX permissions: the agent workspace and the gate files are not opened to other users', (t) => {
+  if (process.platform === 'win32') { t.skip('POSIX permission bits do not exist on Windows'); return; }
+  const task = loadTask(path.join(TASKS, 'slugify'));
+  const baseDir = tmp('perm');
+  const worker = new AgentWorker({ baseDir, llm: new FakeLlm([act({ action: 'finish', claim: 'cannot' })]), model: 'fake', tasks: { slugify: task } });
+  return worker.execute({ runId: 'r', taskId: 'slugify', attemptId: 'slugify.1', attemptNo: 1 }, { signal: new AbortController().signal, deliver() {} }).then(() => {
+    const mode = fs.statSync(path.join(baseDir, 'r', 'slugify.1', 'workspace')).mode & 0o777;
+    assert.equal(mode & 0o022, 0, `workspace mode ${mode.toString(8)} must not be group- or world-writable`);
+  });
 });

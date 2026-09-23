@@ -1,0 +1,14 @@
+{
+  "id": "ini-parse",
+  "title": "Parse INI-style configuration",
+  "split": "final",
+  "category": "parsing",
+  "difficulty": "medium",
+  "pitfall": "Split only at the first =, trim, handle quotes and CRLF, merge repeated sections, and report bad lines with their line number.",
+  "outputs": ["ini.js"],
+  "visible_test_argv": ["node", "--test", "ini.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "ini.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "ini.gate.test.js", "ini.audit.test.js"],
+  "naive": true
+}

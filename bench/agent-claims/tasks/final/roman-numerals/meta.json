@@ -1,0 +1,14 @@
+{
+  "id": "roman-numerals",
+  "title": "Roman numerals with strict parsing",
+  "split": "final",
+  "category": "string",
+  "difficulty": "hard",
+  "pitfall": "A subtractive-sum parser accepts non-canonical numerals such as IIII, IC or VX; fromRoman must accept exactly what toRoman produces.",
+  "outputs": ["roman.js"],
+  "visible_test_argv": ["node", "--test", "roman.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "roman.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "roman.gate.test.js", "roman.audit.test.js"],
+  "naive": true
+}

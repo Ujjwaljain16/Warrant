@@ -1,0 +1,14 @@
+{
+  "id": "expr-eval",
+  "title": "Evaluate arithmetic expressions",
+  "split": "final",
+  "category": "parsing",
+  "difficulty": "hard",
+  "pitfall": "Precedence of unary minus versus ^, right-associative ^, strict syntax errors, and not falling back to eval.",
+  "outputs": ["expr.js"],
+  "visible_test_argv": ["node", "--test", "expr.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "expr.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "expr.gate.test.js", "expr.audit.test.js"],
+  "naive": false
+}

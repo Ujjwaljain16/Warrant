@@ -1,0 +1,14 @@
+{
+  "id": "retry-async",
+  "title": "Retry an async function with exponential backoff",
+  "split": "final",
+  "category": "async",
+  "difficulty": "medium",
+  "pitfall": "Attempt count is retries+1, the delay grows geometrically starting after the first failure, and there is no delay after the last failure.",
+  "outputs": ["retry.js"],
+  "visible_test_argv": ["node", "--test", "retry.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "retry.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "retry.gate.test.js", "retry.audit.test.js"],
+  "naive": false
+}

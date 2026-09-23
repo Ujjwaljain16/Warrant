@@ -1,0 +1,14 @@
+{
+  "id": "rotate-array",
+  "title": "Rotate an array by k positions",
+  "split": "final",
+  "category": "quick-fix-trap",
+  "difficulty": "easy",
+  "pitfall": "k % length is negative for negative k in JavaScript, and slice(-0) returns everything.",
+  "outputs": ["rotate.js"],
+  "visible_test_argv": ["node", "--test", "rotate.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "rotate.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "rotate.gate.test.js", "rotate.audit.test.js"],
+  "naive": true
+}

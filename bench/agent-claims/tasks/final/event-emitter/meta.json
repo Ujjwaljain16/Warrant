@@ -1,0 +1,14 @@
+{
+  "id": "event-emitter",
+  "title": "Event emitter with safe iteration",
+  "split": "final",
+  "category": "state-machine",
+  "difficulty": "medium",
+  "pitfall": "Removing a listener (especially a once listener) while emitting must not skip or repeat listeners; changes apply to the next emit.",
+  "outputs": ["emitter.js"],
+  "visible_test_argv": ["node", "--test", "emitter.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "emitter.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "emitter.gate.test.js", "emitter.audit.test.js"],
+  "naive": true
+}

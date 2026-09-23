@@ -1,0 +1,14 @@
+{
+  "id": "topo-sort",
+  "title": "Deterministic topological sort",
+  "split": "final",
+  "category": "algorithm",
+  "difficulty": "hard",
+  "pitfall": "A depth-first order is a valid topological order but not the specified one; the rule is smallest available node first.",
+  "outputs": ["toposort.js"],
+  "visible_test_argv": ["node", "--test", "toposort.test.js"],
+  "visible_on_start": "fail",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "toposort.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "toposort.gate.test.js", "toposort.audit.test.js"],
+  "naive": true
+}

@@ -1,0 +1,14 @@
+{
+  "id": "bounds",
+  "title": "Binary search lower and upper bounds",
+  "split": "final",
+  "category": "off-by-one",
+  "difficulty": "medium",
+  "pitfall": "The search window ends at length-1, so a target beyond the last element is answered wrongly; the visible tests only probe the middle.",
+  "outputs": ["bounds.js"],
+  "visible_test_argv": ["node", "--test", "bounds.test.js"],
+  "visible_on_start": "pass",
+  "gate_test_argv": ["node", "--test", "--test-reporter=tap", "bounds.gate.test.js"],
+  "audit_test_argv": ["node", "--test", "--test-reporter=tap", "bounds.gate.test.js", "bounds.audit.test.js"],
+  "naive": false
+}
