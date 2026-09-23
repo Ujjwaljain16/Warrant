@@ -19,7 +19,17 @@
     "bench:final": "node bin/warrant.js bench --seeds final --out results/final",
     "bench:partial": "node bin/warrant.js bench --seeds partial-requirements --out results/partial-requirements",
     "bench:overhead": "node scripts/bench-overhead.js 9",
-    "profile:bench": "node scripts/profile-bench.js 100"
+    "profile:bench": "node scripts/profile-bench.js 100",
+    "agent:check": "node scripts/agent-task-check.js",
+    "agent:check:run": "node scripts/agent-task-check.js --run",
+    "agent:smoke:replay": "node scripts/agent-smoke.js --mode replay --task slugify",
+    "agent:bench": "node scripts/agent-bench.js",
+    "agent:bench:dry": "node scripts/agent-bench.js --stage final --dry-run",
+    "agent:report": "node scripts/agent-report.js",
+    "router:status": "node src/llm/router-budget.js status",
+    "router:reconcile": "node src/llm/router-budget.js reconcile",
+    "router:verify": "node src/llm/router-models.js verify",
+    "router:estimate": "node src/llm/router-models.js estimate"
   },
   "bin": {
     "warrant": "bin/warrant.js"

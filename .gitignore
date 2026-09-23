@@ -9,3 +9,9 @@ coverage/
 .warrant/
 results/dev/
 examples/receipt/ledger.txt
+*.key
+results/agent-claims/dev/
+results/agent-claims/dev-replay/
+results/agent-claims/final-replay/
+bench/agent-claims/cassettes/dev/
+*.pem
