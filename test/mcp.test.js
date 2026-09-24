@@ -734,8 +734,22 @@ test('only one run at a time; a second request is rejected, and the slot frees w
   assert.equal(status.termination, 'wall_clock_cap');
   await assertTreeGone(w.stateDir, runId);
 
+  // The slot is free if this run starts at all. The sync wait here is only 200 ms, which a slow machine may not finish the run in,
+  // so a run that is still going is followed to its end instead of being treated as a failure.
   const next = await c.call('warrant_run', { spec: 'demo-pipeline' });
-  assert.equal(next.data.status, 'succeeded', `the slot was released: ${JSON.stringify(next.data)}`);
+  assert.equal(next.isError, false, `the slot was released: ${JSON.stringify(next.data)}`);
+  if (next.data.finished === false) {
+    let after;
+    for (let i = 0; i < 300; i++) {
+      after = (await c.call('warrant_status', { run_id: next.data.run_id })).data;
+      if (after.state !== 'running') break;
+      await sleep(100);
+    }
+    assert.equal(after.state, 'finished');
+    assert.notEqual(after.termination, 'error');
+  } else {
+    assert.equal(next.data.status, 'succeeded');
+  }
   await c.finish();
 });
 
