@@ -779,3 +779,41 @@ test('per-call ceilings: output limit, worst-case dollars and a model that ignor
   assert.match(fs.readFileSync(path.join(path.dirname(budget.file), 'calls.jsonl'), 'utf8'), /"outcome":"output_overrun"/);
   assert.equal((await client.generate({ ...REQ, messages: [{ role: 'user', content: 'next' }] })).text, 'hello', 'an honest reply still works afterwards');
 });
+
+// ------------------------------------------------------------------ wiring in the runner and the cassette
+
+test('runner wiring: --router plans the two scheduled agents and the router judge with a cost against the cap, and refuses unscheduled ids', async () => {
+  const run = require('../src/bench/agent-run');
+  const root = tmp('runner');
+  const lines = [];
+  const { exitCode } = await run.runBench({ stage: 'dev', router: true, dryRun: true, root, out: (l) => lines.push(l), env: {} });
+  assert.equal(exitCode, 0);
+  const text = lines.join('\n');
+  for (const m of ['anthropic/claude-haiku-5.5', 'openai/gpt-5.4-mini', 'deepseek/deepseek-v4.1-flash']) assert.ok(text.includes(m), m);
+  assert.ok(!text.includes('google/gemini-3.8-flash'), 'the optional model is not scheduled');
+  assert.match(text, /hard cap \(margin|0\.40 USD hard cap/);
+  assert.deepEqual(fs.readdirSync(root), [], 'a dry run creates no files');
+  assert.deepEqual([...run.PROTOCOL.router_models], ['anthropic/claude-haiku-5.5', 'openai/gpt-5.4-mini']);
+  for (const router of run.PROTOCOL.router_models) assert.equal(run.PROTOCOL.judges[router], 'deepseek/deepseek-v4.1-flash');
+  await assert.rejects(run.runBench({ stage: 'dev', dryRun: true, root, models: ['deepseek/deepseek-v4.1-flash'], out: () => {}, env: {} }), /not in the protocol/);
+  await assert.rejects(run.runBench({ stage: 'dev', dryRun: true, root, models: ['openai/gpt-5.4'], out: () => {}, env: {} }), /not in the protocol/);
+  const optional = [];
+  await run.runBench({ stage: 'dev', dryRun: true, root, models: ['google/gemini-3.8-flash'], out: (l) => optional.push(l), env: {} });
+  assert.ok(optional.join('\n').includes('google/gemini-3.8-flash (router)'), 'the optional model can still be named explicitly');
+});
+
+test('cassette provenance: a router reply keeps servedModel, requestId and costUsd and replays them; other clients are unchanged', async () => {
+  const file = path.join(tmp('prov'), 'p.jsonl');
+  const inner = { generate: async () => ({ text: 'a', usage: { inputTokens: 1, outputTokens: 1 }, finishReason: 'stop', servedModel: MODEL, requestId: 'req-1', costUsd: 1e-6, secret: 'never stored' }) };
+  const rec = new CassetteClient({ file, mode: 'record', storeRequest: false, inner });
+  const first = await rec.generate(REQ);
+  assert.equal(first.servedModel, MODEL);
+  const line = JSON.parse(fs.readFileSync(file, 'utf8').trim());
+  assert.deepEqual(line.response, { text: 'a', usage: { inputTokens: 1, outputTokens: 1 }, finishReason: 'stop', servedModel: MODEL, requestId: 'req-1', costUsd: 1e-6 });
+  const replayed = await new CassetteClient({ file, mode: 'replay', storeRequest: false }).generate(REQ);
+  assert.deepEqual(replayed, first);
+
+  const plain = path.join(tmp('prov'), 'q.jsonl');
+  await new CassetteClient({ file: plain, mode: 'record', storeRequest: false, inner: { generate: async () => ({ text: 'b', usage: { inputTokens: 2, outputTokens: 3 }, finishReason: 'stop' }) } }).generate(REQ);
+  assert.deepEqual(Object.keys(JSON.parse(fs.readFileSync(plain, 'utf8').trim()).response).sort(), ['finishReason', 'text', 'usage']);
+});

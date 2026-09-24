@@ -1,8 +1,8 @@
 # The router arm: a third-party OpenAI-compatible router with a hard spend cap
 
-Status: **adapter, ledger and tests built and verified live with seven calls costing $0.000064 (the user then lowered the plan: $0.40 cap, two scheduled agents); not yet wired into the benchmark
-runner** (the patch is in the hand-over, `C:\dev\handover\router-adapter.md`, and is not applied to the tree). No benchmark
-number has been measured through the router.
+Status: **adapter, ledger and tests built and verified live with seven calls costing $0.000064 (the user then lowered the plan: $0.40 cap, two scheduled agents); wired into the benchmark runner
+(`--router` in `scripts/agent-bench.js` and `src/bench/agent-run.js`) and the cassette layer, and covered by an offline dry-run test; no
+episode has run through the router yet. No benchmark number has been measured through it.
 
 ## Why
 
@@ -15,7 +15,7 @@ the vendors' list prices. That credit is the only money this project may spend, 
 | `src/llm/openai-compat.js` | `OpenAICompatClient`: an `LlmClient` over `POST /chat/completions` (non-streaming) |
 | `src/llm/router-budget.js` | `RouterBudget`: the persistent, cross-process spend ledger and the hard cap; `/credits` reading and reconciliation |
 | `src/llm/router-models.js` | the allowlist, `GET /models` verification and cache, cost arithmetic, the dry-run estimator, the key loader |
-| `test/router.test.js` | 43 offline tests against a local mock router (random port, child processes for the ledger) |
+| `test/router.test.js` | 45 offline tests against a local mock router (random port, child processes for the ledger) |
 
 ## Identity caveat (read this before quoting any result)
 
@@ -99,7 +99,7 @@ Inspect with `node src/llm/router-budget.js status` (offline) and `WARRANT_LIVE=
   `completion_tokens` already include it (a 16-token limit was consumed entirely: empty text, `finish_reason: length`), so judge calls need a
   generous `maxOutputTokens` (the protocol's 4096 is fine). Its `total_tokens` is larger than prompt + completion but billing followed prompt + completion.
   Haiku and GPT reported no hidden reasoning.
-* **Latency (one trivial call each)**: deepseek 2.7 s, gemini 2.6-7.2 s, claude-haiku 14.6 s, gpt-5.4-mini 36.0 s. Variance is unknown; the runner patch uses two to three episodes in parallel per model.
+* **Latency (one trivial call each)**: deepseek 2.7 s, gemini 2.6-7.2 s, claude-haiku 14.6 s, gpt-5.4-mini 36.0 s. Variance is unknown; the runner runs three episodes in parallel per router agent.
 
 Not verified: whether the models really are what they say; behaviour under rate limiting (no 429 was seen live; the retry/Retry-After logic is tested only
 against the mock); behaviour at 100k-token prompts; whether `usage.cost` can exceed the price table in practice; the router's retention of prompts.
@@ -119,10 +119,10 @@ const llm = new CassetteClient({ file: 'bench/agent-claims/cassettes/final/anthr
 The cassette key is the sha256 of `{model, system, messages, maxOutputTokens, temperature}` with the **router model id**
 (`anthropic/claude-haiku-5.5`) in `model`, so router cassettes can never collide with, or be replayed as, a direct-Gemini one; headers and the key are not part of it.
 Replay never calls the client, so it makes no HTTP request and spends nothing. A failed or mismatched call throws before `CassetteClient` appends anything.
-`CassetteClient` stores `text`, `usage` and `finishReason`; the optional provenance patch also stores `servedModel`, `requestId` and `costUsd` in the response
-(the same data is always written to `calls.jsonl`).
+`CassetteClient` stores `text`, `usage` and `finishReason`; for a router reply it also stores `servedModel`, `requestId` and `costUsd` in the response
+(other clients' cassettes are unchanged; the same data is always written to `calls.jsonl`).
 
-With the runner patch from the hand-over:
+With the runner (`--router`):
 
 ```bash
 node scripts/agent-bench.js --stage final --router --dry-run          # plan and cost estimate; no call
