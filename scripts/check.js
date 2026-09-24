@@ -74,7 +74,9 @@ if (process.argv[2] === '--secrets-only') {
 }
 
 const files = walk(ROOT);
-const jsFiles = files.filter((f) => f.endsWith('.js'));
+// Code written by the models under test (results/agent-claims/*/run-data) is data, not ours: it may be broken or contain TODOs by design.
+// It stays in the secret scan above, but is not syntax- or hygiene-checked.
+const jsFiles = files.filter((f) => f.endsWith('.js') && !rel(f).startsWith('results/agent-claims/'));
 
 // 1. Syntax
 for (const file of jsFiles) {
