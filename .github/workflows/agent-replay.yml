@@ -1,0 +1,76 @@
+name: Agent results (keyless)
+
+# Needs no API key and spends nothing. It checks that the committed agent-claims results can be re-derived without the models:
+#   1. the report and charts are a pure function of the committed run files;
+#   2. replaying the committed cassettes through the real gate (Docker on the runner) reproduces the recorded outcomes.
+# Live runs are not done here: they need quota-bound keys and a spend ledger that a fresh runner does not have.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'results/agent-claims/**'
+      - 'bench/agent-claims/**'
+      - 'src/**'
+      - 'scripts/agent-*.js'
+      - '.github/workflows/agent-replay.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'results/agent-claims/**'
+      - 'bench/agent-claims/**'
+      - 'src/**'
+      - 'scripts/agent-*.js'
+      - '.github/workflows/agent-replay.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report-reproducibility:
+    name: report equals regeneration from committed run files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+
+      - name: Regenerate and compare
+        run: |
+          if [ ! -f results/agent-claims/final/runs.jsonl ]; then
+            echo "no committed final results yet; nothing to compare"
+            exit 0
+          fi
+          node scripts/agent-report.js results/agent-claims/final
+          git diff --exit-code -- results/agent-claims/final
+
+  replay:
+    name: replay committed cassettes through the gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+
+      - name: Replay (offline, no keys in the environment)
+        run: |
+          if [ ! -d bench/agent-claims/cassettes/final ]; then
+            echo "no committed final cassettes yet; nothing to replay"
+            exit 0
+          fi
+          node scripts/agent-bench.js --stage final --replay --no-judge
+
+      - name: Compare replayed outcomes with the committed run
+        run: |
+          if [ ! -f results/agent-claims/final-replay/runs.jsonl ]; then exit 0; fi
+          node scripts/agent-report.js results/agent-claims/final-replay
+          echo "committed:"; grep -c . results/agent-claims/final/runs.jsonl
+          echo "replayed:";  grep -c . results/agent-claims/final-replay/runs.jsonl
