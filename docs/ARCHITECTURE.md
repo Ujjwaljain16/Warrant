@@ -63,6 +63,16 @@ Results arrive through `ctx.deliver`, which a transport may call more than once
 (at-least-once delivery). A rejected promise models a crash. A promise that never
 settles models a hang. The engine, not the worker, decides what any of that means.
 
+### Agent worker
+
+`AgentWorker` (`src/agent/worker.js`) is a Worker whose attempt is a model-driven episode in `<attempt>/workspace`. The agent's
+`finish` claim is mapped onto the envelope: `done` becomes `success` with the declared output files, and everything else becomes
+`failure` with `AGENT_CANNOT`, `MAX_STEPS`, `PROTOCOL_ERROR`, `LLM_ERROR` or `QUOTA_EXHAUSTED`. The task's only requirement is a
+`command` verifier running `scripts/agent-gate.js`, which judges the declared outputs of the agent's workspace with the `hidden/gate` tests in two
+Docker containers (the code under test in one, the tests and the verdict in the other, joined by a host-relayed line protocol; see `docs/AGENT_BENCHMARK.md`). The claim is an input to
+the gate and never a verdict. The experiment built on this (tasks, runner, analysis) is described in
+[AGENT_BENCHMARK.md](AGENT_BENCHMARK.md) and its protocol in [AGENT_CLAIMS_PROTOCOL.md](AGENT_CLAIMS_PROTOCOL.md).
+
 ## Trust boundaries
 
 1. **Worker output is untrusted data.** Envelopes are schema-checked; artifact names are validated
@@ -103,9 +113,9 @@ stateDiagram-v2
 
 ## Invariants
 
-Checked after the fact, independently of the engine, by `auditLog` in `src/engine/replay.js` (run on every gated benchmark trial and by `warrant verify-log --spec`), and exercised by `engine.test.js`, `resume.test.js` and `bench.test.js`.
+Checked after the fact, independently of the engine, by `auditLog` in `src/engine/replay.js` (one implementation, `src/engine/audit-core.js`, shared with the MCP verify tool and the viewer; run on every gated benchmark trial and by `warrant verify-log --spec`), and exercised by `engine.test.js`, `resume.test.js`, `bench.test.js`, `viewer.test.js` and `mcp.test.js`. Besides I1-I8 it rejects logs that tell an impossible story: events for attempts that never started, a success whose claimed result and verdict name different digests, a `run_started` that is not first or carries another spec's digest, and a `run_finished` that is not last or disagrees with the settled tasks.
 
-- **I1** `succeeded` implies a recorded gate verdict with every requirement passing, bound to the digest of that attempt's artifacts.
+- **I1** `succeeded` implies a recorded gate verdict with every requirement passing, bound to the digest of that attempt's artifacts, and a claimed result (or an applied reconcile) with the same digest.
 - **I2** A task is dispatched only when every dependency is `succeeded`.
 - **I3** Attempts per task never exceed the budget; in-flight attempts never exceed the concurrency cap.
 - **I4** Terminal states absorb: no transition leaves them (other than the `unknown` reconcile path).
@@ -130,7 +140,7 @@ evidence. `ReceiptWorker` extends `CommandWorker` for commands that opt in with 
 
 | File | Written by | When | Meaning |
 |---|---|---|---|
-| `attempt.json` | host | before the process starts; again with the pid; again with the exit code | this attempt got as far as starting; which process; how it ended |
+| `<attempt>.host.json` (next to the attempt directory, not inside it) | host | before the process starts; again with the pid; again with the exit code | this attempt got as far as starting; which process; how it ended |
 | `effect.intent` | command | just before the external effect | the effect may have begun |
 | `receipt.json` | command | last, atomically, after the effect and all declared outputs | `{version, idempotency_key, outputs: {name: sha256}}` |
 

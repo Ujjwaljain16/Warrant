@@ -187,6 +187,26 @@ Protocol, evidence rules and limits (the command's honesty is trusted; receipts 
 crash-safe, not power-loss-safe): [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#reconcile-from-receipts-receiptworker).
 Example: [examples/receipt](examples/receipt).
 
+## Agent claims (experimental)
+
+`src/agent`, `src/llm` and `src/sandbox` run a model-driven agent as a warrant Worker and gate its "done" claim with hidden tests
+executed in a locked-down Docker container (no network, read-only root, memory, CPU and process limits). `bench/agent-claims/` holds
+40 original JavaScript tasks (10 development, 30 held-out final), each with visible tests, hidden gate tests, a stricter audit suite
+(used only to measure the gate, never to gate) and a reference solution. [docs/AGENT_CLAIMS_PROTOCOL.md](docs/AGENT_CLAIMS_PROTOCOL.md)
+fixes the experiment before any held-out run: the models, how a claim is scored against four verification strategies (trust the claim,
+the agent's own visible tests, an LLM judge, the hidden-test gate), the statistics, and what result would mean the gate does not help.
+
+```bash
+npm run agent:check:run     # prove the properties of all 43 tasks inside the sandbox (several minutes; needs Docker)
+npm run agent:bench:dry     # print the planned final-stage work, expected calls and quota days; makes no call
+npm run agent:smoke:replay  # replay one recorded live episode offline
+WARRANT_LIVE=1 node scripts/agent-bench.js --stage dev   # live calls, needs a Gemini key; see the protocol
+npm run agent:report -- results/agent-claims/<stage>     # summary.json, REPORT.md and charts from the results files
+```
+
+**Status: no held-out measurement exists yet.** The only live runs so far are one 8-call smoke episode and a development-stage run
+that debugs the harness; neither says anything about any model. Design notes: [docs/AGENT_BENCHMARK.md](docs/AGENT_BENCHMARK.md).
+
 ## Layout
 
 ```
@@ -195,7 +215,11 @@ src/engine    engine (gated policy), envelope parsing, replay/audit/resume, base
 src/log       hash-chained run log
 src/workers   subprocess worker; receipt-based reconcile adapter
 src/sim       virtual clock, seeded fault plans, ground-truth world, fake worker
-src/bench     workloads, metrics, stats, runner, aggregation, report
+src/bench     workloads, metrics, stats, runner, aggregation, report; agent-* = the agent-claims runner, judge and analysis
+src/agent     model-driven agent loop, AgentWorker, hidden-test gate, task format
+src/llm       provider-neutral LLM client (Gemini adapter, quota handling, cassettes)
+src/sandbox   Docker sandbox for model-written code
+bench/agent-claims  tasks (dev, final, toy), cassettes
 src/cli       command line
 third_party/  verbatim upstream files (never edited; hashes checked by `npm run check`)
 ```
@@ -212,6 +236,9 @@ as your user. Run untrusted workers in a container or VM. Details and residual r
 
 - The benchmark uses simulated workers and assumed fault rates. It shows how the policies behave under that
   fault model, not how any real model behaves.
+- The agent-claims experiment (above) has a frozen protocol and a tested harness but no held-out run yet; until it is run, nothing in
+  this repository measures how often a real model's "done" is wrong. Its Linux/POSIX sandbox path (permissions on bind mounts) has
+  not been exercised.
 - The gate is only as strong as the requirements you write. Missing requirements mean missing guarantees.
 - After an orchestrator crash, worker processes it had started are not tracked; non-repeatable tasks that were in
   flight are resolved through `reconcile` or end `unknown`. Only tasks marked `"receipt": true` have a `reconcile`; any

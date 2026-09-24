@@ -1,8 +1,9 @@
 # Agent claims benchmark: design notes
 
-Status: **plumbing only.** This document describes how the pieces fit and what the protocol will be. It reports no
-measurement. The one recorded episode in `bench/agent-claims/cassettes/` exists to test record/replay, not to say
-anything about any model.
+Status: **harness and tasks built; no measurement reported.** This document describes how the pieces fit. The experimental
+protocol (what is measured, outcome definitions, statistics, what would count as a negative result) is
+[AGENT_CLAIMS_PROTOCOL.md](AGENT_CLAIMS_PROTOCOL.md). The one recorded episode in `bench/agent-claims/cassettes/` exists to test
+record/replay; the dev-stage runs exist to debug the harness. Neither says anything about any model.
 
 ## Question
 
@@ -22,16 +23,19 @@ settle as `succeeded` through a passing gate verdict, so a false claim is never 
             +-----------------|--------------------------------------^----------+
                               v                                      |
               runAgent loop (src/agent/loop.js)           scripts/agent-gate.js
-              |  LlmClient.generate (src/llm)             |  pristine repo + declared outputs + hidden tests
-              |  Workspace (confined copy of repo/)        |  -> fresh temp dir -> Docker sandbox -> TAP counts
-              |  run_tests -> Docker sandbox  <------------+
+              |  LlmClient.generate (src/llm)             |  solution container (agent's outputs, no tests)
+              |  Workspace (confined copy of repo/)        |       ^ TCP on a shared loopback (no host in between) v
+              |  run_tests -> Docker sandbox  <------------+  verdict container (hidden tests; prints the verdict)
 ```
 
 * **`src/llm/`**: `LlmClient.generate({model, system, messages, maxOutputTokens, temperature}) -> {text, usage, finishReason}`.
   Adapters: `GeminiClient` (REST, `fetch`), `CassetteClient` (record/replay wrapper), `FakeLlm` (scripted, for tests).
 * **`src/agent/`**: the model-agnostic loop, the strict JSON action protocol, the confined `Workspace`, the task format,
   the hidden-test gate, and `AgentWorker` (warrant's Worker contract, see `docs/ARCHITECTURE.md`).
-* **`src/sandbox/`**: one function, `runInSandbox`, used for both the agent's `run_tests` tool and the gate.
+* **`src/sandbox/`**: `runInSandbox` (the agent's `run_tests` tool) and `spawnSandbox` (the gate's two interactive containers). Files are
+  copied into the container's tmpfs through stdin by a small supervisor (`boot.js`); nothing from the host is mounted.
+* **`src/gate/`**: the host side of a gate run (`relay.js`: starts the two containers, enforces the time limit, reads the verdict) and the code that runs inside the two gate containers (`container/`): the membrane that lets a
+  hidden test call a solution that lives in another container, the verdict side (`v-main.js`) and the solution side (`s-main.js`).
 * **`bench/agent-claims/`**: tasks, cassettes.
 * **`scripts/`**: `agent-task-check.js` (format + executable task properties), `agent-gate.js` (the gate, used as a
   `command` verifier), `agent-smoke.js` (one episode, record or replay).
@@ -55,15 +59,22 @@ rejected with a corrective message; three consecutive (or eight total) rejection
 
 ### Gate design
 
-The gate does **not** run tests inside the agent's workspace. `scripts/agent-gate.js` assembles a fresh directory from
+The gate does **not** run tests inside the agent's workspace, and it does **not** run the agent's code in the process that judges it.
+`scripts/agent-gate.js` (version `split-1`, `src/agent/gate.js`) starts two containers per hidden test file:
 
-1. the pristine starting `repo/`,
-2. only the task's declared `outputs` copied from the workspace (regular files, no links, size-capped),
-3. the `hidden/` tests,
+* the **solution container** holds the pristine starting `repo/` with the task's declared `outputs` replaced by the agent's files (regular
+  files, no links, size-capped). It has no hidden test and no verdict channel;
+* the **verdict container** holds the `hidden/gate/` tests (for the audit suite, also `hidden/audit/`) and the pristine non-output files, and runs
+  them with the real `node:test` and `assert`. A test's `require('./solution')` returns a proxy of the module in the other container;
+  the two containers talk over one TCP connection on a loopback they share (the verdict container joins the solution container's network
+  namespace, which has no other network), without the host in between.
 
-and runs the hidden tests there, in the sandbox, with the TAP reporter. A pass requires exit code 0, at least one test,
-and every test passing. Consequently the agent cannot pass by editing the visible tests, shadowing modules with extra
-files, or writing a `package.json`; only correct declared outputs count. The warrant requirement is an ordinary
+The verdict is one JSON line printed by the verdict container with a per-run nonce. A pass requires the verdict process to exit 0, every test
+to pass (none skipped, cancelled or pending), exactly the tests pinned in `bench/agent-claims/gate-manifest.json` (by name and order), and the solution
+process still alive when the verdict is complete. Consequently the agent cannot pass by editing the visible tests, shadowing modules with extra
+files, writing a `package.json`, exiting the test process, patching `assert`, printing a verdict, or reading the hidden tests; only correct
+declared outputs count. `docs/AGENT_CLAIMS_PROTOCOL.md` section 2.5 is the precise description; `docs/THREAT_MODEL.md` T18 lists what remains.
+A gate run costs two container start-ups (the verdict container can only start once the solution container is running) plus about half a millisecond per proxied call. The warrant requirement is an ordinary
 `command` verifier whose argv is `node scripts/agent-gate.js <task-dir>` with the attempt directory as cwd. The gate also
 writes `gate-result.json` there. It distinguishes `fail` from `error` (sandbox unavailable); the engine's command
 verifier only sees the exit code, so an infrastructure error reads as a failed gate. That fails safe (it can never
@@ -72,11 +83,25 @@ produce a false success) but must be excluded from rates; a real run should pref
 
 ### Task format
 
-`bench/agent-claims/tasks/<id>/` holds `prompt.md`, `repo/` (the only thing the agent sees, including visible tests),
-`hidden/`, `reference/` (a correct solution: output files only), optional `naive/` (a plausible solution that passes the
-visible tests but not the hidden ones) and `meta.json`. `scripts/agent-task-check.js --run` proves, in the sandbox, that
-hidden tests fail on the starting repo, pass on `reference/`, and, where `naive/` exists, that visible tests alone are not
-sufficient. `test/agent.test.js` runs the same check for every task.
+`bench/agent-claims/tasks/dev/<id>/` (10 tasks, harness debugging) and `bench/agent-claims/tasks/final/<id>/` (30 held-out tasks); three
+toy tasks used by the plumbing tests live in `bench/agent-claims/toy/`. A task holds `prompt.md`, `repo/` (the only thing the
+agent sees, including visible tests), `hidden/gate/` (the warrant gate), `hidden/audit/` (extra, stricter tests, never used to
+gate: the audit suite is gate + audit files, a superset by construction, and only measures how often the gate accepts wrong
+work), `reference/` (a correct solution: output files only), optional `naive/` (a plausible solution that passes the visible tests
+but not the gate) and `meta.json` (split, category, a-priori difficulty, expected pitfall, test commands, whether the visible
+tests pass on the starting repo). `scripts/agent-task-check.js --run` proves, for every task and inside the sandbox, with every suite run
+twice: gate and audit fail on the starting repo, both pass on `reference/`, the visible tests are in the documented state, a
+`naive/` solution passes the visible tests and fails the gate, results are deterministic, ids are unique and no secret-shaped
+string is present. `test/agent.test.js` runs the same properties for the toy and dev tasks and the static checks for all of them.
+
+### Experiment runner and analysis
+
+`scripts/agent-bench.js` (`npm run agent:bench`) runs the protocol: resumable over (task, model, repeat), quota-aware (stops at 90% of every
+model's daily limit and says when to resume), `--dry-run`, `--replay` (offline from the per-run cassettes), and a judge phase. Each run
+goes through the real `Engine` + `AgentWorker` + gate; the harness additionally measures the gate, the audit and the visible tests on
+the final workspace of *every* run so the other verification strategies can be scored on the same episodes. `scripts/agent-report.js`
+(`src/bench/agent-*.js`) turns `runs.jsonl` and `judgments.jsonl` into `summary.json`, `REPORT.md` and SVG charts with no hand-typed number;
+it is unit-tested on synthetic results (`test/agent-bench.test.js`).
 
 ## Cassettes
 
@@ -102,10 +127,11 @@ JSONL, append-only, one line per model call:
   `GEMINI_API_KEY`, else `%USERPROFILE%\.warrant\gemini.key`) a live call fails with a message naming both places.
 * Limits per model (RPM / TPM / RPD) are in `src/llm/limits.js`. An in-process sliding-window limiter enforces RPM and
   TPM (input tokens, estimated before the call and corrected from `usageMetadata`).
-* A per-model daily counter is persisted under `%USERPROFILE%\.warrant\quota\calls-<Pacific date>.json` (outside the
-  repository). Every HTTP request, retries included, is counted. The Pacific date follows Google's midnight-Pacific reset.
+* A per-model daily counter is persisted under `%USERPROFILE%\.warrant\quota\` (outside the repository): one append-only file
+  `calls-<Pacific date>-<model>.log` per model and day (one byte per HTTP request, so concurrent processes never lose a count) and an
+  `exhausted-<date>-<model>` marker. Counts in the older `calls-<date>.json` format are still read. Every HTTP request, retries included, is counted. The Pacific date follows Google's midnight-Pacific reset.
 * `429` is retried with exponential backoff and jitter, honouring `Retry-After` and the provider's `retryDelay` as a
-  floor. A `429` that indicates the daily quota (or a counter at the limit) raises `QuotaExhaustedError`, marks the model
+  floor, up to 120 s; a longer request fails with `RATE_LIMITED` instead of sleeping. A `429` that indicates the daily quota (or a counter at the limit) raises `QuotaExhaustedError`, marks the model
   exhausted for the day, and the worker reports `QUOTA_EXHAUSTED` (non-retryable) so a long run can stop and resume
   after the reset, replaying finished episodes from cassettes.
 * `GeminiClient({maxCalls})` is a hard per-process cap for scripted runs.
@@ -116,19 +142,28 @@ JSONL, append-only, one line per model call:
 ## Sandbox
 
 ```
-docker run --rm --name warrant-<pid>-<rand> --network none --memory 256m --memory-swap 256m --cpus 1 --pids-limit 128
-  --user node --read-only --cap-drop ALL --security-opt no-new-privileges --tmpfs /tmp:rw,nosuid,size=64m
-  --mount type=bind,source=<workspace>,target=/work -w /work -e HOME=/tmp -e CI=1  node:22-alpine <argv>
+docker run --rm --init -i --name warrant-<pid>-<rand> --label warrant=1 --network none --memory 256m --memory-swap 256m --cpus 1
+  --pids-limit 128 --ulimit fsize=16777216:16777216 --ulimit nofile=512:512 --user node --read-only --cap-drop ALL
+  --security-opt no-new-privileges --tmpfs /tmp:rw,nosuid,size=64m
+  --tmpfs /work:rw,nosuid,size=64m,nr_inodes=4096,mode=0755,uid=1000,gid=1000 -w /work -e HOME=/tmp -e CI=1
+  node:22-alpine node -e <supervisor> <options json>        # files arrive on stdin
 ```
 
-* `--mount` instead of `-v` avoids drive-letter colon ambiguity on Windows; paths containing `,` or `"` are refused.
-* Timeout, abort and output-cap overflow all end with `docker rm -f <name>`; killing the client process alone would
-  leave the container running.
-* The docker CLI gets a small allow-list of profile variables; API keys and other host environment never reach it or the
-  container. Tests (`test/sandbox.test.js`) cover: no network, read-only root, no writes outside `/work` and `/tmp`,
-  host siblings invisible, timeout and abort kill the container, memory limit, pids limit, output cap, unprivileged user
-  with no capabilities. They skip, naming the reason, when Docker or the image is unavailable.
-
+* **No host directory is mounted.** The supervisor (`src/sandbox/boot.js`) reads a bundle of files from stdin into the `/work` tmpfs, starts the
+  command there, enforces a deadline of its own (10 s after the host's, so it still fires if the orchestrator is killed), and in the gate connects
+  descriptors 3 and 4 of the command to a TCP connection on the loopback it shares with the other gate container. What a container writes can not reach the host disk (16 MiB per file,
+  64 MB and 4096 inodes in total), and no host path (user name included) is visible inside, in `/proc/self/mountinfo` or elsewhere.
+  `runInSandbox({ workspace, mode: 'bind' })` (the default, kept for the tests that read what a container wrote) still bind-mounts the workspace
+  with `--mount type=bind`; the agent worker, the gate and the task checker use `mode: 'copy'`.
+* Timeout, abort and output-cap overflow all end with `docker rm -f <name>`; killing the client process alone would leave the container running.
+  Containers carry `--label warrant=1`; `scripts/agent-bench.js` removes labelled containers older than 15 minutes when it starts.
+* At most two containers run at once on the machine, across processes (a lock-file semaphore, `src/sandbox/slots.js`; the docker CLI fails under memory pressure); a gate pair takes both slots. `WARRANT_SANDBOX_CONCURRENCY` changes the limit.
+* The image defaults to `node:22-alpine`; `WARRANT_SANDBOX_IMAGE` (e.g. `node:22-alpine@sha256:...`) pins it. `meta.json` of a benchmark run records the
+  image id and repository digest actually used.
+* The docker CLI gets a small allow-list of profile variables; API keys and other host environment never reach it or the container. Tests
+  (`test/sandbox.test.js`) cover: no network, read-only root, no writes outside `/work` and `/tmp`, host siblings invisible, timeout and abort kill the
+  container, memory limit, pids limit, output cap, unprivileged user with no capabilities, no host mount, a 300 MB writer, 20 000 files, mountinfo,
+  the deadline without the host, the stale-container sweep. They skip, naming the reason, when Docker or the image is unavailable.
 ## Threat notes
 
 * **Data, not instructions.** File contents and test output reach the model inside labelled, fenced tool results (the
@@ -148,16 +183,6 @@ docker run --rm --name warrant-<pid>-<rand> --network none --memory 256m --memor
   or browsing this repository could see them; the planned protocol treats the suite as a measurement instrument for
   current models and states that limitation.
 
-## Planned protocol (outline, not yet run)
+## Protocol
 
-1. A suite of small synthetic JS tasks, each with visible tests that deliberately under-specify and hidden tests that
-   encode the stated requirements. Validated by `agent-task-check.js --run`.
-2. Models: free-tier Flash-Lite and Gemma 4 variants as agents; a stronger model only for sparse judge spot-checks of
-   hidden-test fairness, within its 20 requests/day.
-3. Per task and model: N independent episodes (temperature above zero for variance, recorded to cassettes), one attempt
-   each (`max_attempts: 1`).
-4. Report, with confidence intervals: false-claim rate (`done` and gate fail), honest-success rate, honest-`cannot` rate,
-   unclaimed failures (step limit, protocol error), and the share of "visible tests passed but hidden failed" among false
-   claims. Compare with a baseline that trusts the claim.
-5. Long runs resume across days: finished episodes replay from cassettes; `QUOTA_EXHAUSTED` stops the run cleanly.
-6. Stratify by whether the agent ran `run_tests` before claiming, and by task difficulty.
+See [AGENT_CLAIMS_PROTOCOL.md](AGENT_CLAIMS_PROTOCOL.md).

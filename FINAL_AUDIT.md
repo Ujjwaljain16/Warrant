@@ -167,8 +167,14 @@ parent are not tracked); receipts survive a process crash, not power loss.
 - Reconcile exists for one adapter: `ReceiptWorker`, a generic external-command adapter (`"exec": {"receipt": true}`,
   `docs/ARCHITECTURE.md`, `examples/receipt`). Crash-after-effect recovery through the real engine with real subprocesses is
   tested (worker-level, orchestrator-level via `resume`, died before and after the effect, tampered and forged receipts, a
-  live process); 6 targeted mutants of its decision rules were all caught **[verified]**. **No adapter for an agent runtime
-  exists and no real model was run [not done]**; any other command task still ends `unknown`.
+  live process); 6 targeted mutants of its decision rules were all caught **[verified]**. `reconcile` still exists only for that adapter: the agent worker has none, so any other command task still ends
+  `unknown` **[not done]**.
+- Agent claims experiment (addendum after this audit): an `AgentWorker` (model-driven episode as a warrant Worker), a Docker sandbox, a
+  hidden-test gate, 40 original tasks with gate and audit suites, a protocol written before any held-out run (`docs/AGENT_CLAIMS_PROTOCOL.md`), a resumable runner
+  and an analysis pipeline exist; the tests (including the Docker-dependent ones) pass offline with scripted models on Windows
+  **[verified]**, and a development-stage run against three free-tier models exercised the harness live (it debugs the harness and is
+  not a measurement). **No held-out run exists, so nothing measures how often a real model's claim of success is wrong [not done]**.
+  The sandbox's POSIX permission path and the CI definitions for it were not exercised **[not done]**.
 - CI workflow written but **never executed on GitHub-hosted runners**. The same commands ran on Windows and in a Linux
   container (section 6) **[verified]**; no macOS run and no `ubuntu-latest` run **[not done]**.
 - `LICENSE` names "Ujjwaljain16" for new work; replace with your legal name if desired.
