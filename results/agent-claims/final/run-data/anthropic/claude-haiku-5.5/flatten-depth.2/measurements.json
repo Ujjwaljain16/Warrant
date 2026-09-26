@@ -1,0 +1,114 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1524,
+  "files": [
+   {
+    "testFile": "flatten.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 21,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3843
+    },
+    "tests": 8,
+    "names": [
+     "the default depth is exactly one",
+     "a given depth stops at that level",
+     "depth 0 is a shallow copy",
+     "nested arrays beyond the depth are the same objects",
+     "null and undefined are kept; empty arrays vanish when flattened",
+     "invalid depth is a RangeError",
+     "items must be an array",
+     "the input is never modified"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "12/12",
+  "gate": "split-1",
+  "ms": 3705,
+  "files": [
+   {
+    "testFile": "flatten.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 21,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3843
+    },
+    "tests": 8,
+    "names": [
+     "the default depth is exactly one",
+     "a given depth stops at that level",
+     "depth 0 is a shallow copy",
+     "nested arrays beyond the depth are the same objects",
+     "null and undefined are kept; empty arrays vanish when flattened",
+     "invalid depth is a RangeError",
+     "items must be an array",
+     "the input is never modified"
+    ]
+   },
+   {
+    "testFile": "flatten.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 5,
+     "served": 10,
+     "snaps": 10,
+     "bytes": 34422
+    },
+    "tests": 4,
+    "names": [
+     "audit: objects that look like arrays are not flattened",
+     "audit: depth 3 on a five-level structure",
+     "audit: strings are not flattened into characters",
+     "audit: moderately deep nesting with Infinity"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1493,
+  "files": [
+   {
+    "testFile": "flatten.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 21,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3843
+    },
+    "tests": 8,
+    "names": [
+     "the default depth is exactly one",
+     "a given depth stops at that level",
+     "depth 0 is a shallow copy",
+     "nested arrays beyond the depth are the same objects",
+     "null and undefined are kept; empty arrays vanish when flattened",
+     "invalid depth is a RangeError",
+     "items must be an array",
+     "the input is never modified"
+    ]
+   }
+  ]
+ }
+}

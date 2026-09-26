@@ -1,0 +1,107 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 6301,
+  "files": [
+   {
+    "testFile": "roman.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 8049,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 462562
+    },
+    "tests": 6,
+    "names": [
+     "toRoman on tricky values",
+     "toRoman range checks",
+     "fromRoman rejects non-canonical numerals with SyntaxError",
+     "fromRoman accepts the canonical forms",
+     "every value round-trips",
+     "fromRoman of a non-string is a TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 9293,
+  "files": [
+   {
+    "testFile": "roman.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 8049,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 462562
+    },
+    "tests": 6,
+    "names": [
+     "toRoman on tricky values",
+     "toRoman range checks",
+     "fromRoman rejects non-canonical numerals with SyntaxError",
+     "fromRoman accepts the canonical forms",
+     "every value round-trips",
+     "fromRoman of a non-string is a TypeError"
+    ]
+   },
+   {
+    "testFile": "roman.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 6813,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 377654
+    },
+    "tests": 3,
+    "names": [
+     "audit: strings of valid letters that are not what toRoman produces",
+     "audit: the only strings fromRoman accepts are the 3999 canonical ones",
+     "audit: results are plain numbers"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 4437,
+  "files": [
+   {
+    "testFile": "roman.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 8049,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 462562
+    },
+    "tests": 6,
+    "names": [
+     "toRoman on tricky values",
+     "toRoman range checks",
+     "fromRoman rejects non-canonical numerals with SyntaxError",
+     "fromRoman accepts the canonical forms",
+     "every value round-trips",
+     "fromRoman of a non-string is a TypeError"
+    ]
+   }
+  ]
+ }
+}

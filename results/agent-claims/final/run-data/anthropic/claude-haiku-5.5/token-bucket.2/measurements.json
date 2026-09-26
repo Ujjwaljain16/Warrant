@@ -1,0 +1,114 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 4832,
+  "files": [
+   {
+    "testFile": "bucket.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 150,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 6619
+    },
+    "tests": 8,
+    "names": [
+     "refill is fractional",
+     "the bucket never holds more than its capacity",
+     "a failed take consumes nothing",
+     "taking several tokens at once; n larger than capacity is simply refused",
+     "the first call starts the clock; a huge first timestamp changes nothing",
+     "a clock that goes backwards neither refills nor loses time",
+     "available does not consume",
+     "argument validation"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "12/12",
+  "gate": "split-1",
+  "ms": 6794,
+  "files": [
+   {
+    "testFile": "bucket.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 150,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 6619
+    },
+    "tests": 8,
+    "names": [
+     "refill is fractional",
+     "the bucket never holds more than its capacity",
+     "a failed take consumes nothing",
+     "taking several tokens at once; n larger than capacity is simply refused",
+     "the first call starts the clock; a huge first timestamp changes nothing",
+     "a clock that goes backwards neither refills nor loses time",
+     "available does not consume",
+     "argument validation"
+    ]
+   },
+   {
+    "testFile": "bucket.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 34,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1453
+    },
+    "tests": 4,
+    "names": [
+     "audit: a fractional capacity",
+     "audit: negative timestamps work like any other time",
+     "audit: a second take at the same instant sees no refill",
+     "audit: refill after a failed take starts from the failed take time"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1881,
+  "files": [
+   {
+    "testFile": "bucket.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 150,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 6619
+    },
+    "tests": 8,
+    "names": [
+     "refill is fractional",
+     "the bucket never holds more than its capacity",
+     "a failed take consumes nothing",
+     "taking several tokens at once; n larger than capacity is simply refused",
+     "the first call starts the clock; a huge first timestamp changes nothing",
+     "a clock that goes backwards neither refills nor loses time",
+     "available does not consume",
+     "argument validation"
+    ]
+   }
+  ]
+ }
+}

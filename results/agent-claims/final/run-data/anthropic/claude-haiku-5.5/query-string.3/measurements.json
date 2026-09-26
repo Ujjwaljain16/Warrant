@@ -1,0 +1,82 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 0/7 passed",
+  "failed_tests": [
+   "percent-decoding as UTF-8, and plus as space",
+   "malformed escapes stay literal and do not disturb valid ones",
+   "empty segments, missing equals signs and empty keys",
+   "only the first equals sign splits",
+   "repeated keys",
+   "keys that would collide with Object.prototype",
+   "non-strings throw TypeError"
+  ],
+  "gate": "split-1",
+  "ms": 1001,
+  "files": [
+   {
+    "testFile": "query.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 8,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 499
+    },
+    "tests": 7,
+    "names": [
+     "percent-decoding as UTF-8, and plus as space",
+     "malformed escapes stay literal and do not disturb valid ones",
+     "empty segments, missing equals signs and empty keys",
+     "only the first equals sign splits",
+     "repeated keys",
+     "keys that would collide with Object.prototype",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 0/7 passed",
+  "failed_tests": [
+   "percent-decoding as UTF-8, and plus as space",
+   "malformed escapes stay literal and do not disturb valid ones",
+   "empty segments, missing equals signs and empty keys",
+   "only the first equals sign splits",
+   "repeated keys",
+   "keys that would collide with Object.prototype",
+   "non-strings throw TypeError"
+  ],
+  "gate": "split-1",
+  "ms": 1028,
+  "files": [
+   {
+    "testFile": "query.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 8,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 499
+    },
+    "tests": 7,
+    "names": [
+     "percent-decoding as UTF-8, and plus as space",
+     "malformed escapes stay literal and do not disturb valid ones",
+     "empty segments, missing equals signs and empty keys",
+     "only the first equals sign splits",
+     "repeated keys",
+     "keys that would collide with Object.prototype",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ },
+ "visible": "fail",
+ "engine_gate_result": null
+}

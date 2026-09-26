@@ -1,0 +1,108 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 952,
+  "files": [
+   {
+    "testFile": "rotate.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 24,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2574
+    },
+    "tests": 6,
+    "names": [
+     "negative k rotates left",
+     "rotating by a multiple of the length changes nothing",
+     "empty and single-item arrays",
+     "the result is always a new array and the input is unchanged",
+     "k must be an integer",
+     "items must be an array"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "10/10",
+  "gate": "split-1",
+  "ms": 1968,
+  "files": [
+   {
+    "testFile": "rotate.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 24,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2574
+    },
+    "tests": 6,
+    "names": [
+     "negative k rotates left",
+     "rotating by a multiple of the length changes nothing",
+     "empty and single-item arrays",
+     "the result is always a new array and the input is unchanged",
+     "k must be an integer",
+     "items must be an array"
+    ]
+   },
+   {
+    "testFile": "rotate.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 43,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 4449
+    },
+    "tests": 4,
+    "names": [
+     "audit: very large and very negative k",
+     "audit: negative zero",
+     "audit: rotating right then left restores the array",
+     "audit: elements keep identity"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 1018,
+  "files": [
+   {
+    "testFile": "rotate.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 24,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2574
+    },
+    "tests": 6,
+    "names": [
+     "negative k rotates left",
+     "rotating by a multiple of the length changes nothing",
+     "empty and single-item arrays",
+     "the result is always a new array and the input is unchanged",
+     "k must be an integer",
+     "items must be an array"
+    ]
+   }
+  ]
+ }
+}

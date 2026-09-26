@@ -1,0 +1,111 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "7/7",
+  "gate": "split-1",
+  "ms": 1737,
+  "files": [
+   {
+    "testFile": "truncate.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 24,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1642
+    },
+    "tests": 7,
+    "names": [
+     "text of exactly max characters is unchanged",
+     "the ellipsis counts toward the limit",
+     "a custom ellipsis",
+     "tabs and newlines are boundaries too",
+     "a first word that is too long is cut hard",
+     "multiple spaces do not leave trailing whitespace before the ellipsis",
+     "invalid arguments"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "11/11",
+  "gate": "split-1",
+  "ms": 5504,
+  "files": [
+   {
+    "testFile": "truncate.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 24,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1642
+    },
+    "tests": 7,
+    "names": [
+     "text of exactly max characters is unchanged",
+     "the ellipsis counts toward the limit",
+     "a custom ellipsis",
+     "tabs and newlines are boundaries too",
+     "a first word that is too long is cut hard",
+     "multiple spaces do not leave trailing whitespace before the ellipsis",
+     "invalid arguments"
+    ]
+   },
+   {
+    "testFile": "truncate.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 78,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 9281
+    },
+    "tests": 4,
+    "names": [
+     "audit: max equal to the ellipsis length gives just the ellipsis",
+     "audit: result length never exceeds max",
+     "audit: a boundary exactly at the limit is used",
+     "audit: the cut falls on the last allowed boundary, not the first"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "7/7",
+  "gate": "split-1",
+  "ms": 1032,
+  "files": [
+   {
+    "testFile": "truncate.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 24,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1642
+    },
+    "tests": 7,
+    "names": [
+     "text of exactly max characters is unchanged",
+     "the ellipsis counts toward the limit",
+     "a custom ellipsis",
+     "tabs and newlines are boundaries too",
+     "a first word that is too long is cut hard",
+     "multiple spaces do not leave trailing whitespace before the ellipsis",
+     "invalid arguments"
+    ]
+   }
+  ]
+ }
+}

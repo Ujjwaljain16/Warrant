@@ -1,0 +1,111 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 7/9 passed",
+  "failed_tests": [
+   "shouldRetry can stop early with the error of that attempt",
+   "invalid arguments reject"
+  ],
+  "gate": "split-1",
+  "ms": 1046,
+  "files": [
+   {
+    "testFile": "retry.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 16,
+     "served": 48,
+     "snaps": 0,
+     "bytes": 23675
+    },
+    "tests": 9,
+    "names": [
+     "exponential delays, retries + 1 attempts, no sleep after the last failure",
+     "default options: 3 retries, 100 ms, factor 2",
+     "a success stops everything and passes the attempt number",
+     "success on the first attempt never sleeps",
+     "retries of zero means a single attempt",
+     "a synchronous throw counts as a failed attempt",
+     "shouldRetry can stop early with the error of that attempt",
+     "delayMs of 0 and factor 1",
+     "invalid arguments reject"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 7/9 passed",
+  "failed_tests": [
+   "shouldRetry can stop early with the error of that attempt",
+   "invalid arguments reject"
+  ],
+  "gate": "split-1",
+  "ms": 983,
+  "files": [
+   {
+    "testFile": "retry.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 16,
+     "served": 48,
+     "snaps": 0,
+     "bytes": 23675
+    },
+    "tests": 9,
+    "names": [
+     "exponential delays, retries + 1 attempts, no sleep after the last failure",
+     "default options: 3 retries, 100 ms, factor 2",
+     "a success stops everything and passes the attempt number",
+     "success on the first attempt never sleeps",
+     "retries of zero means a single attempt",
+     "a synchronous throw counts as a failed attempt",
+     "shouldRetry can stop early with the error of that attempt",
+     "delayMs of 0 and factor 1",
+     "invalid arguments reject"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 7/9 passed",
+  "failed_tests": [
+   "shouldRetry can stop early with the error of that attempt",
+   "invalid arguments reject"
+  ],
+  "gate": "split-1",
+  "ms": 1030,
+  "files": [
+   {
+    "testFile": "retry.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 16,
+     "served": 48,
+     "snaps": 0,
+     "bytes": 23675
+    },
+    "tests": 9,
+    "names": [
+     "exponential delays, retries + 1 attempts, no sleep after the last failure",
+     "default options: 3 retries, 100 ms, factor 2",
+     "a success stops everything and passes the attempt number",
+     "success on the first attempt never sleeps",
+     "retries of zero means a single attempt",
+     "a synchronous throw counts as a failed attempt",
+     "shouldRetry can stop early with the error of that attempt",
+     "delayMs of 0 and factor 1",
+     "invalid arguments reject"
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,99 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 5/6 passed",
+  "failed_tests": [
+   "code unit order, not locale order"
+  ],
+  "gate": "split-1",
+  "ms": 3870,
+  "files": [
+   {
+    "testFile": "topk.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 20,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2155
+    },
+    "tests": 6,
+    "names": [
+     "ties are broken alphabetically",
+     "code unit order, not locale order",
+     "counts dominate the tie-break",
+     "k of zero and empty input",
+     "the input is not modified",
+     "argument checks"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 5/6 passed",
+  "failed_tests": [
+   "code unit order, not locale order"
+  ],
+  "gate": "split-1",
+  "ms": 1815,
+  "files": [
+   {
+    "testFile": "topk.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 20,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2155
+    },
+    "tests": 6,
+    "names": [
+     "ties are broken alphabetically",
+     "code unit order, not locale order",
+     "counts dominate the tie-break",
+     "k of zero and empty input",
+     "the input is not modified",
+     "argument checks"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 5/6 passed",
+  "failed_tests": [
+   "code unit order, not locale order"
+  ],
+  "gate": "split-1",
+  "ms": 1135,
+  "files": [
+   {
+    "testFile": "topk.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 20,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2155
+    },
+    "tests": 6,
+    "names": [
+     "ties are broken alphabetically",
+     "code unit order, not locale order",
+     "counts dominate the tie-break",
+     "k of zero and empty input",
+     "the input is not modified",
+     "argument checks"
+    ]
+   }
+  ]
+ }
+}

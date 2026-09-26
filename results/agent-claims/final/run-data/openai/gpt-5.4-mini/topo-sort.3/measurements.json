@@ -1,0 +1,82 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 2/8 passed",
+  "failed_tests": [
+   "smallest available node first",
+   "names that only appear as dependencies are nodes",
+   "a diamond",
+   "cycles throw an Error with code CYCLE",
+   "duplicates in a list are harmless; the empty graph",
+   "the graph is not modified"
+  ],
+  "gate": "split-1",
+  "ms": 3241,
+  "files": [
+   {
+    "testFile": "toposort.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 17,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3050
+    },
+    "tests": 8,
+    "names": [
+     "smallest available node first",
+     "names that only appear as dependencies are nodes",
+     "a diamond",
+     "independent nodes are sorted",
+     "cycles throw an Error with code CYCLE",
+     "duplicates in a list are harmless; the empty graph",
+     "the graph is not modified",
+     "argument checks"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 2/8 passed",
+  "failed_tests": [
+   "smallest available node first",
+   "names that only appear as dependencies are nodes",
+   "a diamond",
+   "cycles throw an Error with code CYCLE",
+   "duplicates in a list are harmless; the empty graph",
+   "the graph is not modified"
+  ],
+  "gate": "split-1",
+  "ms": 3900,
+  "files": [
+   {
+    "testFile": "toposort.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 17,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3050
+    },
+    "tests": 8,
+    "names": [
+     "smallest available node first",
+     "names that only appear as dependencies are nodes",
+     "a diamond",
+     "independent nodes are sorted",
+     "cycles throw an Error with code CYCLE",
+     "duplicates in a list are harmless; the empty graph",
+     "the graph is not modified",
+     "argument checks"
+    ]
+   }
+  ]
+ },
+ "visible": "fail",
+ "engine_gate_result": null
+}

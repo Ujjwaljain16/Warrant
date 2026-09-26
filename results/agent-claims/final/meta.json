@@ -1,0 +1,114 @@
+{
+  "stage": "final",
+  "replay": false,
+  "protocol": {
+    "file": "docs/AGENT_CLAIMS_PROTOCOL.md",
+    "commit": "9bf14d27b364358878fd271756147a4eb94cabd5",
+    "sha256": "ed8315c05369653d9a6abc5cd358c7de665aa0f494e5bb30f43de34c90ea659e"
+  },
+  "git": {
+    "commit": "d1e029fe7c4964aba25eb66cc7fd6fdc21d4165a",
+    "dirty": false,
+    "dirty_paths": []
+  },
+  "settings": {
+    "version": 1,
+    "models": [
+      "gemini-3.5-flash-lite",
+      "gemini-3.1-flash-lite",
+      "gemma-4-31b-it"
+    ],
+    "router_models": [
+      "anthropic/claude-haiku-5.5",
+      "openai/gpt-5.4-mini"
+    ],
+    "judges": {
+      "gemini-3.5-flash-lite": "gemma-4-31b-it",
+      "gemini-3.1-flash-lite": "gemma-4-31b-it",
+      "gemma-4-31b-it": "gemini-3.1-flash-lite",
+      "google/gemini-3.8-flash": "deepseek/deepseek-v4.1-flash",
+      "anthropic/claude-haiku-5.5": "deepseek/deepseek-v4.1-flash",
+      "openai/gpt-5.4-mini": "deepseek/deepseek-v4.1-flash"
+    },
+    "spot_judge": "gemini-3.8-flash",
+    "repeats": {
+      "dev": 2,
+      "final": 3
+    },
+    "agent": {
+      "temperature": 1,
+      "maxSteps": 20,
+      "maxOutputTokens": 8192,
+      "maxToolOutputChars": 6000,
+      "maxConsecutiveProtocolErrors": 3,
+      "maxTotalProtocolErrors": 8
+    },
+    "judge": {
+      "temperature": 0,
+      "maxOutputTokens": 4096
+    },
+    "wall_clock_ms": 3600000,
+    "request_timeout_ms": 300000,
+    "concurrency": {
+      "gemma-4-31b-it": 4,
+      "google/gemini-3.8-flash": 2,
+      "anthropic/claude-haiku-5.5": 3,
+      "openai/gpt-5.4-mini": 3
+    },
+    "gate_timeout_ms": 150000,
+    "test_timeout_ms": 60000,
+    "max_attempts_per_run": 3,
+    "stop_fraction": 0.9,
+    "hard_stop_fraction": 0.95,
+    "planning": {
+      "calls_per_run": 10,
+      "input_tokens_per_call": 2500,
+      "output_tokens_per_call": 500,
+      "judge_input_tokens": 2500,
+      "judge_output_tokens": 200
+    }
+  },
+  "node": "v22.19.0",
+  "docker_image_id": "sha256:7c3b093add7c43400ee83b815ab2cda98794a10045bcf76ce9bb2f89b97cbc5c",
+  "docker_image": {
+    "image": "node:22-alpine",
+    "id": "sha256:7c3b093add7c43400ee83b815ab2cda98794a10045bcf76ce9bb2f89b97cbc5c",
+    "digest": "node@sha256:0a7108bf6c7bf5de370ffb1a3ed6be93d405b43ff159f681a8d18c0e2bc2e402"
+  },
+  "gate": {
+    "version": "split-1",
+    "manifest_sha256": "44ba97d96491bdebb1cd2d26cf37e610a1e73743f962a4b18666d5e3a199de77"
+  },
+  "task_hashes": {
+    "bounds": "90f6100e40d6003402cd172867ab9aa385e021f2859c8ff5e6e34bc2c28355d5",
+    "bracket-validator": "f2631187e2c4c183ab072c2813c446ba324fa65a36d165c5b9b80eebe27f3506",
+    "business-days": "53d1d5b0dc6532cbea97d62a33ca68114af5e68def7afad8444a21056a95e3f9",
+    "camel-to-snake": "e6795c7d05b87000558e61d4d8592bb7ad5ba145dc867ae386592f5b55f17178",
+    "cron-match": "780efd9370e371e6124537a0c23963d620b05d2a8bdf6f7031bdf60c78150150",
+    "days-between": "0ef568a4ac7ccfc6c779f735a1b0e5a4aac3d9eb6dad1b4841a43f583ebdfca5",
+    "event-emitter": "6b80a879c0fb8903d2b9367995593c4eb5c4620ee13edc2cfb2cd3a1a07cf3b3",
+    "expr-eval": "a3f6ac4f99db7ebc9a29e75b37f12eedb66a558dbaadcdf54255cbfa054cc5eb",
+    "flatten-depth": "ca74e8f7466186ca6631a4f628cb74a45f11a8d198d534ff11044c1b0165f40c",
+    "grid-bfs": "160eed0bdf0f2d136d86828c5593245ab2cbcceb7fd9dddcc12a8e5f5bc52111",
+    "ini-parse": "cd7ea00da76ec8b9f0c5b2e3571915a94acdb012af28e3d69ad18b14cfe19d20",
+    "isbn10": "494ad45f61edf5758c8a31aed81315691454192070cec49412bad1daf5bae576",
+    "memoize-async": "bea685c86fe5b57a2631fe711f644264bb6d1a426da0a901d6d82bd933eb7daa",
+    "merge-intervals": "eee4f59b64a7825f4205f3300eb2c98950ec06c6d33926e800375ccf9667f12d",
+    "min-coins": "27ec21146d6be4c01ea6e5124d79d2e11a4f59f7320d8335fcb93668c0054210",
+    "money-format": "42af1c1b15ccf3c11c5f3ea9f64be57e7050db92de422079e5e185c4940f415b",
+    "percentile": "cfe0ecf48cea686f83e6d8a2339216ff3b8e5fd06b8a1384e0a2ab4e89ba55bb",
+    "promise-pool": "72ccefdf4c4f693fd0d6a352c3d80c6eff2c7a337ceefbbdf509c6d4298cc07d",
+    "query-string": "fee7a79a298d4fbee0c98efd43761d1734c12ac27e18c1e12dc3e7de4e9dba8b",
+    "retry-async": "11819efbe499075404b0af0aeaf84fe78d06b6e607d5866d54bf8d54d883b570",
+    "roman-numerals": "e5336bef105df04bbbe1c12c661aa2ef81cc7e5bededed8ae4f53e2ae131e2d3",
+    "rotate-array": "d15ae800c8343b284b0c9e43f4e6356f062991232cce8aa638c3a6296c37cd21",
+    "semver-compare": "914dafe07ed1d0c89542716100ceecb5c5e8f06d2594406b40d2fff6f55cbc45",
+    "spiral-matrix": "0739b29f1cd0b05b38802b6ab1911a2fbe09c04c3e33e4f5eb39cec9a804b675",
+    "template-render": "a68dc7cc33417bed65a0b07a2193613ae8ed1df682ab85b2c3087adbb00e47cd",
+    "token-bucket": "7311834ee183abbfd60c18e205cc7a49a832b2c9b906d63ee7325f1438d77010",
+    "top-k-frequent": "133cb8acd3d7eedca582743dfdd5bcafd701677faafc946a2fca737da0e81464",
+    "topo-sort": "c6bcc11d756ef7f286f071e88881b111148b3f79240e2960ff1e6c474adf3b76",
+    "truncate-words": "e8a187677c5010c0fbfd9bdc720da1c85de206529b1bb49168813d594ab06e36",
+    "word-wrap": "e49c45582a2ee3c886e7e36529b21a80e53fb8db26e9900177a0066aad767d6d"
+  }
+}

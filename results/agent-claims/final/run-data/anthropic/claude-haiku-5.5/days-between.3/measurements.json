@@ -1,0 +1,105 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "5/5",
+  "gate": "split-1",
+  "ms": 1012,
+  "files": [
+   {
+    "testFile": "daysbetween.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 42,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3027
+    },
+    "tests": 5,
+    "names": [
+     "leap days count",
+     "spans across months and years",
+     "an earlier end date is a RangeError",
+     "malformed or impossible dates are a RangeError",
+     "non-strings are a TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1936,
+  "files": [
+   {
+    "testFile": "daysbetween.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 42,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3027
+    },
+    "tests": 5,
+    "names": [
+     "leap days count",
+     "spans across months and years",
+     "an earlier end date is a RangeError",
+     "malformed or impossible dates are a RangeError",
+     "non-strings are a TypeError"
+    ]
+   },
+   {
+    "testFile": "daysbetween.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 11,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 775
+    },
+    "tests": 4,
+    "names": [
+     "audit: century years",
+     "audit: 1900-02-29 and 2100-02-29 do not exist, 2000-02-29 does",
+     "audit: a long span",
+     "audit: month ends"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "5/5",
+  "gate": "split-1",
+  "ms": 1021,
+  "files": [
+   {
+    "testFile": "daysbetween.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 42,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3027
+    },
+    "tests": 5,
+    "names": [
+     "leap days count",
+     "spans across months and years",
+     "an earlier end date is a RangeError",
+     "malformed or impossible dates are a RangeError",
+     "non-strings are a TypeError"
+    ]
+   }
+  ]
+ }
+}

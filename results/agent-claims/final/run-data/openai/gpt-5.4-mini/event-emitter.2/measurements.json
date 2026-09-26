@@ -1,0 +1,132 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 0/9 passed",
+  "failed_tests": [
+   "a once listener does not make the next listener skip",
+   "a listener added during emit waits for the next emit",
+   "a listener removed during emit still runs in that emit",
+   "a once listener never runs twice, even if it emits the same event",
+   "off removes one registration, the earliest",
+   "unsubscribe functions remove exactly their own registration, once",
+   "a throwing listener stops the emit and propagates",
+   "events are independent and emit reports listeners",
+   "argument types"
+  ],
+  "gate": "split-1",
+  "ms": 923,
+  "files": [
+   {
+    "testFile": "emitter.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 28,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1785
+    },
+    "tests": 9,
+    "names": [
+     "a once listener does not make the next listener skip",
+     "a listener added during emit waits for the next emit",
+     "a listener removed during emit still runs in that emit",
+     "a once listener never runs twice, even if it emits the same event",
+     "off removes one registration, the earliest",
+     "unsubscribe functions remove exactly their own registration, once",
+     "a throwing listener stops the emit and propagates",
+     "events are independent and emit reports listeners",
+     "argument types"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 0/9 passed",
+  "failed_tests": [
+   "a once listener does not make the next listener skip",
+   "a listener added during emit waits for the next emit",
+   "a listener removed during emit still runs in that emit",
+   "a once listener never runs twice, even if it emits the same event",
+   "off removes one registration, the earliest",
+   "unsubscribe functions remove exactly their own registration, once",
+   "a throwing listener stops the emit and propagates",
+   "events are independent and emit reports listeners",
+   "argument types"
+  ],
+  "gate": "split-1",
+  "ms": 1741,
+  "files": [
+   {
+    "testFile": "emitter.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 28,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1785
+    },
+    "tests": 9,
+    "names": [
+     "a once listener does not make the next listener skip",
+     "a listener added during emit waits for the next emit",
+     "a listener removed during emit still runs in that emit",
+     "a once listener never runs twice, even if it emits the same event",
+     "off removes one registration, the earliest",
+     "unsubscribe functions remove exactly their own registration, once",
+     "a throwing listener stops the emit and propagates",
+     "events are independent and emit reports listeners",
+     "argument types"
+    ]
+   }
+  ]
+ },
+ "visible": "fail",
+ "engine_gate_result": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 0/9 passed",
+  "failed_tests": [
+   "a once listener does not make the next listener skip",
+   "a listener added during emit waits for the next emit",
+   "a listener removed during emit still runs in that emit",
+   "a once listener never runs twice, even if it emits the same event",
+   "off removes one registration, the earliest",
+   "unsubscribe functions remove exactly their own registration, once",
+   "a throwing listener stops the emit and propagates",
+   "events are independent and emit reports listeners",
+   "argument types"
+  ],
+  "gate": "split-1",
+  "ms": 5895,
+  "files": [
+   {
+    "testFile": "emitter.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 28,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1785
+    },
+    "tests": 9,
+    "names": [
+     "a once listener does not make the next listener skip",
+     "a listener added during emit waits for the next emit",
+     "a listener removed during emit still runs in that emit",
+     "a once listener never runs twice, even if it emits the same event",
+     "off removes one registration, the earliest",
+     "unsubscribe functions remove exactly their own registration, once",
+     "a throwing listener stops the emit and propagates",
+     "events are independent and emit reports listeners",
+     "argument types"
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,111 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 7/9 passed",
+  "failed_tests": [
+   "negative zero is zero",
+   "unknown currencies, including inherited property names"
+  ],
+  "gate": "split-1",
+  "ms": 927,
+  "files": [
+   {
+    "testFile": "money.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 32,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1862
+    },
+    "tests": 9,
+    "names": [
+     "negative amounts put the sign before the symbol",
+     "thousands separators in every group size",
+     "two decimals are always shown",
+     "yen has no decimals",
+     "the other currencies",
+     "large safe integers are exact",
+     "negative zero is zero",
+     "invalid amounts",
+     "unknown currencies, including inherited property names"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 7/9 passed",
+  "failed_tests": [
+   "negative zero is zero",
+   "unknown currencies, including inherited property names"
+  ],
+  "gate": "split-1",
+  "ms": 1687,
+  "files": [
+   {
+    "testFile": "money.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 32,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1862
+    },
+    "tests": 9,
+    "names": [
+     "negative amounts put the sign before the symbol",
+     "thousands separators in every group size",
+     "two decimals are always shown",
+     "yen has no decimals",
+     "the other currencies",
+     "large safe integers are exact",
+     "negative zero is zero",
+     "invalid amounts",
+     "unknown currencies, including inherited property names"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 7/9 passed",
+  "failed_tests": [
+   "negative zero is zero",
+   "unknown currencies, including inherited property names"
+  ],
+  "gate": "split-1",
+  "ms": 1036,
+  "files": [
+   {
+    "testFile": "money.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 32,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1862
+    },
+    "tests": 9,
+    "names": [
+     "negative amounts put the sign before the symbol",
+     "thousands separators in every group size",
+     "two decimals are always shown",
+     "yen has no decimals",
+     "the other currencies",
+     "large safe integers are exact",
+     "negative zero is zero",
+     "invalid amounts",
+     "unknown currencies, including inherited property names"
+    ]
+   }
+  ]
+ }
+}

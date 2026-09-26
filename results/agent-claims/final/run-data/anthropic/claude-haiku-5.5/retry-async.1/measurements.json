@@ -1,0 +1,118 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1053,
+  "files": [
+   {
+    "testFile": "retry.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 26,
+     "served": 41,
+     "snaps": 0,
+     "bytes": 22542
+    },
+    "tests": 9,
+    "names": [
+     "exponential delays, retries + 1 attempts, no sleep after the last failure",
+     "default options: 3 retries, 100 ms, factor 2",
+     "a success stops everything and passes the attempt number",
+     "success on the first attempt never sleeps",
+     "retries of zero means a single attempt",
+     "a synchronous throw counts as a failed attempt",
+     "shouldRetry can stop early with the error of that attempt",
+     "delayMs of 0 and factor 1",
+     "invalid arguments reject"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "14/14",
+  "gate": "split-1",
+  "ms": 2054,
+  "files": [
+   {
+    "testFile": "retry.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 26,
+     "served": 41,
+     "snaps": 0,
+     "bytes": 22542
+    },
+    "tests": 9,
+    "names": [
+     "exponential delays, retries + 1 attempts, no sleep after the last failure",
+     "default options: 3 retries, 100 ms, factor 2",
+     "a success stops everything and passes the attempt number",
+     "success on the first attempt never sleeps",
+     "retries of zero means a single attempt",
+     "a synchronous throw counts as a failed attempt",
+     "shouldRetry can stop early with the error of that attempt",
+     "delayMs of 0 and factor 1",
+     "invalid arguments reject"
+    ]
+   },
+   {
+    "testFile": "retry.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 6,
+     "served": 16,
+     "snaps": 0,
+     "bytes": 6853
+    },
+    "tests": 5,
+    "names": [
+     "audit: a fractional factor above 1",
+     "audit: the sleep function is awaited before the next attempt",
+     "audit: non-Error rejections are passed through unchanged",
+     "audit: the real timer works for small delays",
+     "audit: the options object is not modified"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1105,
+  "files": [
+   {
+    "testFile": "retry.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 26,
+     "served": 41,
+     "snaps": 0,
+     "bytes": 22542
+    },
+    "tests": 9,
+    "names": [
+     "exponential delays, retries + 1 attempts, no sleep after the last failure",
+     "default options: 3 retries, 100 ms, factor 2",
+     "a success stops everything and passes the attempt number",
+     "success on the first attempt never sleeps",
+     "retries of zero means a single attempt",
+     "a synchronous throw counts as a failed attempt",
+     "shouldRetry can stop early with the error of that attempt",
+     "delayMs of 0 and factor 1",
+     "invalid arguments reject"
+    ]
+   }
+  ]
+ }
+}

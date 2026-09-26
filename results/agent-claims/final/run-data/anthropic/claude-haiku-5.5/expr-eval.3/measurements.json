@@ -1,0 +1,108 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 8/9 passed",
+  "failed_tests": [
+   "power is right-associative and binds tighter than unary minus"
+  ],
+  "gate": "split-1",
+  "ms": 2032,
+  "files": [
+   {
+    "testFile": "expr.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 59,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3369
+    },
+    "tests": 9,
+    "names": [
+     "power is right-associative and binds tighter than unary minus",
+     "unary signs may repeat",
+     "left associativity of - / %",
+     "remainder follows JavaScript",
+     "decimals, nesting and whitespace",
+     "division and remainder by zero are a RangeError",
+     "malformed input is a SyntaxError",
+     "the evaluator does not run code",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 8/9 passed",
+  "failed_tests": [
+   "power is right-associative and binds tighter than unary minus"
+  ],
+  "gate": "split-1",
+  "ms": 1259,
+  "files": [
+   {
+    "testFile": "expr.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 59,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3369
+    },
+    "tests": 9,
+    "names": [
+     "power is right-associative and binds tighter than unary minus",
+     "unary signs may repeat",
+     "left associativity of - / %",
+     "remainder follows JavaScript",
+     "decimals, nesting and whitespace",
+     "division and remainder by zero are a RangeError",
+     "malformed input is a SyntaxError",
+     "the evaluator does not run code",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 8/9 passed",
+  "failed_tests": [
+   "power is right-associative and binds tighter than unary minus"
+  ],
+  "gate": "split-1",
+  "ms": 1305,
+  "files": [
+   {
+    "testFile": "expr.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 59,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3369
+    },
+    "tests": 9,
+    "names": [
+     "power is right-associative and binds tighter than unary minus",
+     "unary signs may repeat",
+     "left associativity of - / %",
+     "remainder follows JavaScript",
+     "decimals, nesting and whitespace",
+     "division and remainder by zero are a RangeError",
+     "malformed input is a SyntaxError",
+     "the evaluator does not run code",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ }
+}

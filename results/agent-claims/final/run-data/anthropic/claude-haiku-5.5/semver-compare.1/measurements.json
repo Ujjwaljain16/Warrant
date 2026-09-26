@@ -1,0 +1,112 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "7/7",
+  "gate": "split-1",
+  "ms": 1396,
+  "files": [
+   {
+    "testFile": "semver.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 121,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 8738
+    },
+    "tests": 7,
+    "names": [
+     "a pre-release is lower than its release",
+     "the ascending chain of pre-release precedence",
+     "numeric identifiers are compared as numbers, text as ASCII",
+     "build metadata is ignored",
+     "core versions are compared numerically left to right",
+     "invalid versions throw SyntaxError",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "12/12",
+  "gate": "split-1",
+  "ms": 5823,
+  "files": [
+   {
+    "testFile": "semver.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 121,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 8738
+    },
+    "tests": 7,
+    "names": [
+     "a pre-release is lower than its release",
+     "the ascending chain of pre-release precedence",
+     "numeric identifiers are compared as numbers, text as ASCII",
+     "build metadata is ignored",
+     "core versions are compared numerically left to right",
+     "invalid versions throw SyntaxError",
+     "non-strings throw TypeError"
+    ]
+   },
+   {
+    "testFile": "semver.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 137,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 9234
+    },
+    "tests": 5,
+    "names": [
+     "audit: very large components are compared exactly",
+     "audit: zero is a valid component and a valid numeric identifier",
+     "audit: identifiers with digits and letters mixed are text",
+     "audit: antisymmetry on a sample",
+     "audit: trailing hyphens and digits inside identifiers"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "7/7",
+  "gate": "split-1",
+  "ms": 1187,
+  "files": [
+   {
+    "testFile": "semver.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 121,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 8738
+    },
+    "tests": 7,
+    "names": [
+     "a pre-release is lower than its release",
+     "the ascending chain of pre-release precedence",
+     "numeric identifiers are compared as numbers, text as ASCII",
+     "build metadata is ignored",
+     "core versions are compared numerically left to right",
+     "invalid versions throw SyntaxError",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ }
+}

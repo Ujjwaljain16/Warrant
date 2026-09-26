@@ -1,0 +1,73 @@
+{"at":"2026-10-16T13:20:33.415Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":31756,"costUsd":0.0002055}
+{"at":"2026-10-16T13:21:35.484Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":42926,"costUsd":0.00003645}
+{"at":"2026-10-16T13:23:32.189Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":65004,"costUsd":0.000083633}
+{"at":"2026-10-16T13:27:02.680Z","type":"ok","model":"anthropic/claude-haiku-5.5","attempt":0,"ms":83404,"costUsd":0.000047057}
+{"at":"2026-10-16T13:27:25.413Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":128129,"costUsd":0.000083115}
+{"at":"2026-10-16T13:27:25.456Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":104280,"costUsd":0.000042885}
+{"at":"2026-10-16T13:28:50.086Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":48755,"costUsd":0.00014999}
+{"at":"2026-10-16T13:29:51.377Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":45830,"costUsd":0.000035348}
+{"at":"2026-10-16T13:32:55.187Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":43438,"costUsd":0.000036158}
+{"at":"2026-10-16T13:34:00.803Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":122299,"costUsd":0.000041175}
+{"at":"2026-10-16T13:34:14.063Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":63041,"costUsd":0.000041445}
+{"at":"2026-10-16T13:35:22.799Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":62333,"costUsd":0.000055237}
+{"at":"2026-10-16T13:35:49.318Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":63637,"costUsd":0.000034807}
+{"at":"2026-10-16T13:35:59.418Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":63267,"costUsd":0.000080078}
+{"at":"2026-10-16T13:37:17.394Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":67095,"costUsd":0.00021292}
+{"at":"2026-10-16T13:37:59.667Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":105837,"costUsd":0.000040545}
+{"at":"2026-10-16T13:39:25.314Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":63705,"costUsd":0.00006426}
+{"at":"2026-10-16T13:43:56.620Z","type":"ok","model":"openai/gpt-5.4-mini","attempt":0,"ms":57128,"costUsd":0.00020659}
+{"at":"2026-10-16T13:56:59.817Z","type":"http_error","model":"gemini-3.8-flash","attempt":0,"ms":3157,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T13:57:06.518Z","type":"http_error","model":"gemini-3.8-flash","attempt":1,"ms":6025,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T13:57:08.981Z","type":"http_error","model":"gemini-3.8-flash","attempt":2,"ms":1325,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T13:57:14.848Z","type":"http_error","model":"gemini-3.8-flash","attempt":3,"ms":1903,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T13:57:22.844Z","type":"http_error","model":"gemini-3.8-flash","attempt":4,"ms":2484,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T13:57:38.875Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":42198,"costUsd":0.000142499}
+{"at":"2026-10-16T14:00:32.927Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":32426,"costUsd":0.000140498}
+{"at":"2026-10-16T14:03:58.870Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":39321,"costUsd":0.000139337}
+{"at":"2026-10-16T14:06:17.574Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":30292,"costUsd":0.000138846}
+{"at":"2026-10-16T14:07:48.752Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":36607,"costUsd":0.000115287}
+{"at":"2026-10-16T14:11:18.577Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":40053,"costUsd":0.000140611}
+{"at":"2026-10-16T14:11:55.843Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":36278,"costUsd":0.000141997}
+{"at":"2026-10-16T14:20:51.492Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":53821,"costUsd":0.000138514}
+{"at":"2026-10-16T14:21:21.572Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":30036,"costUsd":0.000139688}
+{"at":"2026-10-16T14:26:55.734Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":33676,"costUsd":0.00013742}
+{"at":"2026-10-16T14:30:38.837Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":35511,"costUsd":0.000105349}
+{"at":"2026-10-16T14:32:53.377Z","type":"http_error","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":27275,"status":400,"message":"The request was rejected by a content safety filter."}
+{"at":"2026-10-16T14:32:53.378Z","type":"judge_error","run":"final/anthropic/claude-haiku-5.5/token-bucket/1","variant":"B","code":"HTTP_ERROR","message":"HTTP 400: The request was rejected by a content safety filter."}
+{"at":"2026-10-16T14:33:35.180Z","type":"http_error","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":25645,"status":400,"message":"The request was rejected by a content safety filter."}
+{"at":"2026-10-16T14:33:35.180Z","type":"judge_error","run":"final/anthropic/claude-haiku-5.5/top-k-frequent/1","variant":"A","code":"HTTP_ERROR","message":"HTTP 400: The request was rejected by a content safety filter."}
+{"at":"2026-10-16T14:34:30.724Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":31546,"costUsd":0.00008842}
+{"at":"2026-10-16T14:35:55.169Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":37745,"costUsd":0.000140506}
+{"at":"2026-10-16T14:40:31.636Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":49918,"costUsd":0.000134697}
+{"at":"2026-10-16T14:48:29.650Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":42810,"costUsd":0.00013823}
+{"at":"2026-10-16T14:50:41.619Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":38476,"costUsd":0.000129521}
+{"at":"2026-10-16T14:52:13.269Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":41108,"costUsd":0.000140287}
+{"at":"2026-10-16T14:52:44.197Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":30894,"costUsd":0.00014015}
+{"at":"2026-10-16T14:53:23.233Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":39017,"costUsd":0.000141535}
+{"at":"2026-10-16T14:53:54.021Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":30751,"costUsd":0.000140352}
+{"at":"2026-10-16T15:01:32.889Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":42032,"costUsd":0.000051247}
+{"at":"2026-10-16T15:05:34.429Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":43755,"costUsd":0.000140555}
+{"at":"2026-10-16T15:29:44.702Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":32139,"costUsd":0.000138684}
+{"at":"2026-10-16T15:30:19.122Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":34396,"costUsd":0.000139858}
+{"at":"2026-10-16T15:30:50.946Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":31789,"costUsd":0.000138918}
+{"at":"2026-10-16T15:31:48.246Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":31062,"costUsd":0.000141527}
+{"at":"2026-10-16T15:32:38.547Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":50272,"costUsd":0.000140571}
+{"at":"2026-10-16T15:34:09.636Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":33852,"costUsd":0.000126641}
+{"at":"2026-10-16T15:36:09.058Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":32345,"costUsd":0.000139915}
+{"at":"2026-10-16T15:36:43.462Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":34363,"costUsd":0.000128249}
+{"at":"2026-10-16T15:37:47.535Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":64036,"costUsd":0.000142118}
+{"at":"2026-10-16T15:38:25.418Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":37847,"costUsd":0.000140822}
+{"at":"2026-10-16T15:39:49.485Z","type":"http_error","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":26750,"status":400,"message":"The request was rejected by a content safety filter."}
+{"at":"2026-10-16T15:39:49.485Z","type":"judge_error","run":"final/anthropic/claude-haiku-5.5/flatten-depth/3","variant":"A","code":"HTTP_ERROR","message":"HTTP 400: The request was rejected by a content safety filter."}
+{"at":"2026-10-16T15:40:10.185Z","type":"http_error","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":20683,"status":400,"message":"The request was rejected by a content safety filter."}
+{"at":"2026-10-16T15:40:10.185Z","type":"judge_error","run":"final/anthropic/claude-haiku-5.5/flatten-depth/3","variant":"B","code":"HTTP_ERROR","message":"HTTP 400: The request was rejected by a content safety filter."}
+{"at":"2026-10-16T15:42:07.656Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":30355,"costUsd":0.000142361}
+{"at":"2026-10-16T15:50:09.317Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":35681,"costUsd":0.000139234}
+{"at":"2026-10-16T15:52:00.637Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":31630,"costUsd":0.000139542}
+{"at":"2026-10-16T15:52:31.650Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":30972,"costUsd":0.000128023}
+{"at":"2026-10-16T15:53:29.499Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":34661,"costUsd":0.000140684}
+{"at":"2026-10-16T15:53:56.390Z","type":"http_error","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":26842,"status":400,"message":"The request was rejected by a content safety filter."}
+{"at":"2026-10-16T15:53:56.390Z","type":"judge_error","run":"final/anthropic/claude-haiku-5.5/retry-async/3","variant":"B","code":"HTTP_ERROR","message":"HTTP 400: The request was rejected by a content safety filter."}
+{"at":"2026-10-16T15:57:14.142Z","type":"http_error","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":25241,"status":400,"message":"The request was rejected by a content safety filter."}
+{"at":"2026-10-16T15:57:14.142Z","type":"judge_error","run":"final/anthropic/claude-haiku-5.5/token-bucket/3","variant":"A","code":"HTTP_ERROR","message":"HTTP 400: The request was rejected by a content safety filter."}
+{"at":"2026-10-16T15:59:06.018Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":33162,"costUsd":0.000142993}

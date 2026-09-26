@@ -1,0 +1,108 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 6/8 passed",
+  "failed_tests": [
+   "only own properties of objects and arrays are read",
+   "a backslash makes a tag literal"
+  ],
+  "gate": "split-1",
+  "ms": 901,
+  "files": [
+   {
+    "testFile": "render.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 27,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 4014
+    },
+    "tests": 8,
+    "names": [
+     "dotted paths and array indexes",
+     "values are HTML-escaped unless triple braces are used",
+     "falsy values are rendered, null and undefined are not",
+     "only own properties of objects and arrays are read",
+     "a backslash makes a tag literal",
+     "invalid tags stay as written",
+     "adjacent tags and text without tags",
+     "argument types"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 6/8 passed",
+  "failed_tests": [
+   "only own properties of objects and arrays are read",
+   "a backslash makes a tag literal"
+  ],
+  "gate": "split-1",
+  "ms": 917,
+  "files": [
+   {
+    "testFile": "render.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 27,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 4014
+    },
+    "tests": 8,
+    "names": [
+     "dotted paths and array indexes",
+     "values are HTML-escaped unless triple braces are used",
+     "falsy values are rendered, null and undefined are not",
+     "only own properties of objects and arrays are read",
+     "a backslash makes a tag literal",
+     "invalid tags stay as written",
+     "adjacent tags and text without tags",
+     "argument types"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 6/8 passed",
+  "failed_tests": [
+   "only own properties of objects and arrays are read",
+   "a backslash makes a tag literal"
+  ],
+  "gate": "split-1",
+  "ms": 4690,
+  "files": [
+   {
+    "testFile": "render.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 27,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 4014
+    },
+    "tests": 8,
+    "names": [
+     "dotted paths and array indexes",
+     "values are HTML-escaped unless triple braces are used",
+     "falsy values are rendered, null and undefined are not",
+     "only own properties of objects and arrays are read",
+     "a backslash makes a tag literal",
+     "invalid tags stay as written",
+     "adjacent tags and text without tags",
+     "argument types"
+    ]
+   }
+  ]
+ }
+}

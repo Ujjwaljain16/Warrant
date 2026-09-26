@@ -1,0 +1,107 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 912,
+  "files": [
+   {
+    "testFile": "topk.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 21,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2278
+    },
+    "tests": 6,
+    "names": [
+     "ties are broken alphabetically",
+     "code unit order, not locale order",
+     "counts dominate the tie-break",
+     "k of zero and empty input",
+     "the input is not modified",
+     "argument checks"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1832,
+  "files": [
+   {
+    "testFile": "topk.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 21,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2278
+    },
+    "tests": 6,
+    "names": [
+     "ties are broken alphabetically",
+     "code unit order, not locale order",
+     "counts dominate the tie-break",
+     "k of zero and empty input",
+     "the input is not modified",
+     "argument checks"
+    ]
+   },
+   {
+    "testFile": "topk.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 5,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 585
+    },
+    "tests": 3,
+    "names": [
+     "audit: a long tie group is fully sorted",
+     "audit: three levels of counts with ties inside each level",
+     "audit: empty string and unusual strings are ordinary"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 1012,
+  "files": [
+   {
+    "testFile": "topk.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 21,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2278
+    },
+    "tests": 6,
+    "names": [
+     "ties are broken alphabetically",
+     "code unit order, not locale order",
+     "counts dominate the tie-break",
+     "k of zero and empty input",
+     "the input is not modified",
+     "argument checks"
+    ]
+   }
+  ]
+ }
+}

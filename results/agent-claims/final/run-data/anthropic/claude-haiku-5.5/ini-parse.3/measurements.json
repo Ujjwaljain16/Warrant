@@ -1,0 +1,122 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "10/10",
+  "gate": "split-1",
+  "ms": 3594,
+  "files": [
+   {
+    "testFile": "ini.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 21,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1579
+    },
+    "tests": 10,
+    "names": [
+     "only the first = splits; values are trimmed; empty values",
+     "quoted values keep their spaces; quotes are removed",
+     "no inline comments",
+     "comments are recognised after trimming",
+     "repeated sections merge and repeated keys replace",
+     "section names are trimmed and top-level keys come first",
+     "CRLF line endings",
+     "values are strings and the objects have no prototype",
+     "syntax errors carry the 1-based line number",
+     "the empty text and non-strings"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "16/16",
+  "gate": "split-1",
+  "ms": 5495,
+  "files": [
+   {
+    "testFile": "ini.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 21,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1579
+    },
+    "tests": 10,
+    "names": [
+     "only the first = splits; values are trimmed; empty values",
+     "quoted values keep their spaces; quotes are removed",
+     "no inline comments",
+     "comments are recognised after trimming",
+     "repeated sections merge and repeated keys replace",
+     "section names are trimmed and top-level keys come first",
+     "CRLF line endings",
+     "values are strings and the objects have no prototype",
+     "syntax errors carry the 1-based line number",
+     "the empty text and non-strings"
+    ]
+   },
+   {
+    "testFile": "ini.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 7,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 435
+    },
+    "tests": 6,
+    "names": [
+     "audit: a single quote character is not a quoted value",
+     "audit: keys with spaces and symbols",
+     "audit: a section named like a key and the same name as a top-level key",
+     "audit: the first error wins",
+     "audit: a header with trailing spaces and a comment-like value",
+     "audit: a key line with only an equals sign and spaces is an empty key"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "10/10",
+  "gate": "split-1",
+  "ms": 3726,
+  "files": [
+   {
+    "testFile": "ini.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 21,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1579
+    },
+    "tests": 10,
+    "names": [
+     "only the first = splits; values are trimmed; empty values",
+     "quoted values keep their spaces; quotes are removed",
+     "no inline comments",
+     "comments are recognised after trimming",
+     "repeated sections merge and repeated keys replace",
+     "section names are trimmed and top-level keys come first",
+     "CRLF line endings",
+     "values are strings and the objects have no prototype",
+     "syntax errors carry the 1-based line number",
+     "the empty text and non-strings"
+    ]
+   }
+  ]
+ }
+}

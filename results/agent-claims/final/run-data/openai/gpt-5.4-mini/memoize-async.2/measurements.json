@@ -1,0 +1,111 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 5/8 passed",
+  "failed_tests": [
+   "a rejection is not cached; waiting callers all see it",
+   "a synchronous throw is a rejection and is not cached",
+   "the returned function always returns a promise"
+  ],
+  "gate": "split-1",
+  "ms": 4728,
+  "files": [
+   {
+    "testFile": "memo.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 33,
+     "served": 15,
+     "snaps": 0,
+     "bytes": 4491
+    },
+    "tests": 8,
+    "names": [
+     "concurrent calls with one key share a single invocation",
+     "a rejection is not cached; waiting callers all see it",
+     "a synchronous throw is a rejection and is not cached",
+     "the returned function always returns a promise",
+     "keyFn decides the key; all arguments reach fn",
+     "different keys run independently and in parallel",
+     "keys are compared like Map keys",
+     "argument validation is immediate"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 5/8 passed",
+  "failed_tests": [
+   "a rejection is not cached; waiting callers all see it",
+   "a synchronous throw is a rejection and is not cached",
+   "the returned function always returns a promise"
+  ],
+  "gate": "split-1",
+  "ms": 3672,
+  "files": [
+   {
+    "testFile": "memo.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 33,
+     "served": 15,
+     "snaps": 0,
+     "bytes": 4491
+    },
+    "tests": 8,
+    "names": [
+     "concurrent calls with one key share a single invocation",
+     "a rejection is not cached; waiting callers all see it",
+     "a synchronous throw is a rejection and is not cached",
+     "the returned function always returns a promise",
+     "keyFn decides the key; all arguments reach fn",
+     "different keys run independently and in parallel",
+     "keys are compared like Map keys",
+     "argument validation is immediate"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 5/8 passed",
+  "failed_tests": [
+   "a rejection is not cached; waiting callers all see it",
+   "a synchronous throw is a rejection and is not cached",
+   "the returned function always returns a promise"
+  ],
+  "gate": "split-1",
+  "ms": 1014,
+  "files": [
+   {
+    "testFile": "memo.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 33,
+     "served": 15,
+     "snaps": 0,
+     "bytes": 4491
+    },
+    "tests": 8,
+    "names": [
+     "concurrent calls with one key share a single invocation",
+     "a rejection is not cached; waiting callers all see it",
+     "a synchronous throw is a rejection and is not cached",
+     "the returned function always returns a promise",
+     "keyFn decides the key; all arguments reach fn",
+     "different keys run independently and in parallel",
+     "keys are compared like Map keys",
+     "argument validation is immediate"
+    ]
+   }
+  ]
+ }
+}

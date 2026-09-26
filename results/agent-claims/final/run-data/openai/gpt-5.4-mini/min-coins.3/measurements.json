@@ -1,0 +1,107 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 925,
+  "files": [
+   {
+    "testFile": "mincoins.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 29,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3173
+    },
+    "tests": 6,
+    "names": [
+     "systems where the greedy choice is wrong",
+     "unreachable amounts",
+     "a coin of 1 makes every amount reachable",
+     "large amounts are fast and right",
+     "invalid arguments throw RangeError",
+     "the coins array is not modified"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 2424,
+  "files": [
+   {
+    "testFile": "mincoins.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 29,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3173
+    },
+    "tests": 6,
+    "names": [
+     "systems where the greedy choice is wrong",
+     "unreachable amounts",
+     "a coin of 1 makes every amount reachable",
+     "large amounts are fast and right",
+     "invalid arguments throw RangeError",
+     "the coins array is not modified"
+    ]
+   },
+   {
+    "testFile": "mincoins.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 675,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 79351
+    },
+    "tests": 3,
+    "names": [
+     "audit: agrees with an independent dynamic programme on many systems",
+     "audit: duplicates in coins are harmless and amount below every coin is impossible",
+     "audit: amount 0 with any valid coins"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 1573,
+  "files": [
+   {
+    "testFile": "mincoins.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 29,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3173
+    },
+    "tests": 6,
+    "names": [
+     "systems where the greedy choice is wrong",
+     "unreachable amounts",
+     "a coin of 1 makes every amount reachable",
+     "large amounts are fast and right",
+     "invalid arguments throw RangeError",
+     "the coins array is not modified"
+    ]
+   }
+  ]
+ }
+}

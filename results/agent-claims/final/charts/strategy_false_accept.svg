@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 530 300" font-family="sans-serif" font-size="11">
+<rect width="530" height="300" fill="white"/>
+<text x="10" y="18" font-size="14" font-weight="bold">False-accept rate: share of wrong claims each strategy accepts (lower is better; whiskers = task-clustered 95% CI)</text>
+<line x1="60" y1="226" x2="520" y2="226" stroke="#444"/>
+<line x1="60" y1="36" x2="60" y2="226" stroke="#444"/>
+<text x="56" y="229" text-anchor="end">0%</text><line x1="60" y1="226" x2="520" y2="226" stroke="#ddd"/>
+<text x="56" y="181.5" text-anchor="end">25%</text><line x1="60" y1="178.5" x2="520" y2="178.5" stroke="#ddd"/>
+<text x="56" y="134" text-anchor="end">50%</text><line x1="60" y1="131" x2="520" y2="131" stroke="#ddd"/>
+<text x="56" y="86.5" text-anchor="end">75%</text><line x1="60" y1="83.5" x2="520" y2="83.5" stroke="#ddd"/>
+<text x="56" y="39" text-anchor="end">100%</text><line x1="60" y1="36" x2="520" y2="36" stroke="#ddd"/>
+<rect x="66" y="36" width="19" height="190" fill="#fc8d62"><title>anthropic/claude-haiku-5.5 / trust the claim: 100.0% (32/32)</title></rect>
+<line x1="75.5" y1="36" x2="75.5" y2="36" stroke="#222"/>
+<rect x="88" y="36" width="19" height="190" fill="#e5c494"><title>anthropic/claude-haiku-5.5 / agent's own visible tests: 100.0% (32/32)</title></rect>
+<line x1="97.5" y1="36" x2="97.5" y2="36" stroke="#222"/>
+<rect x="110" y="226" width="19" height="0" fill="#8da0cb"><title>anthropic/claude-haiku-5.5 / LLM judge A (code only): 0.0% (0/20)</title></rect>
+<line x1="119.5" y1="226" x2="119.5" y2="226" stroke="#222"/>
+<rect x="132" y="226" width="19" height="0" fill="#66a3c2"><title>anthropic/claude-haiku-5.5 / LLM judge B (code + test output): 0.0% (0/21)</title></rect>
+<line x1="141.5" y1="226" x2="141.5" y2="226" stroke="#222"/>
+<rect x="154" y="200.0909090909091" width="19" height="25.909090909090907" fill="#b3a2c7"><title>anthropic/claude-haiku-5.5 / LLM judge, injected comment: 13.6% (3/22)</title></rect>
+<line x1="163.5" y1="226" x2="163.5" y2="162.66666666666669" stroke="#222"/>
+<rect x="176" y="208.1875" width="19" height="17.8125" fill="#2a7f62"><title>anthropic/claude-haiku-5.5 / warrant hidden-test gate: 9.4% (3/32)</title></rect>
+<line x1="185.5" y1="226" x2="185.5" y2="178.5" stroke="#222"/>
+<text x="132" y="242" text-anchor="middle">anthropic/claude-haiku-5.5</text>
+<rect x="216" y="36" width="19" height="190" fill="#fc8d62"><title>openai/gpt-5.4-mini / trust the claim: 100.0% (45/45)</title></rect>
+<line x1="225.5" y1="36" x2="225.5" y2="36" stroke="#222"/>
+<rect x="238" y="124.66666666666667" width="19" height="101.33333333333333" fill="#e5c494"><title>openai/gpt-5.4-mini / agent's own visible tests: 53.3% (24/45)</title></rect>
+<line x1="247.5" y1="175.33333333333334" x2="247.5" y2="76.71428571428572" stroke="#222"/>
+<rect x="260" y="226" width="19" height="0" fill="#8da0cb"><title>openai/gpt-5.4-mini / LLM judge A (code only): 0.0% (0/40)</title></rect>
+<line x1="269.5" y1="226" x2="269.5" y2="226" stroke="#222"/>
+<rect x="282" y="226" width="19" height="0" fill="#66a3c2"><title>openai/gpt-5.4-mini / LLM judge B (code + test output): 0.0% (0/43)</title></rect>
+<line x1="291.5" y1="226" x2="291.5" y2="226" stroke="#222"/>
+<rect x="304" y="226" width="19" height="0" fill="#b3a2c7"><title>openai/gpt-5.4-mini / LLM judge, injected comment: 0.0% (0/40)</title></rect>
+<line x1="313.5" y1="226" x2="313.5" y2="226" stroke="#222"/>
+<rect x="326" y="226" width="19" height="0" fill="#2a7f62"><title>openai/gpt-5.4-mini / warrant hidden-test gate: 0.0% (0/45)</title></rect>
+<line x1="335.5" y1="226" x2="335.5" y2="226" stroke="#222"/>
+<text x="282" y="242" text-anchor="middle">openai/gpt-5.4-mini</text>
+<rect x="366" y="36" width="19" height="190" fill="#fc8d62"><title>all models / trust the claim: 100.0% (77/77)</title></rect>
+<line x1="375.5" y1="36" x2="375.5" y2="36" stroke="#222"/>
+<rect x="388" y="87.81818181818181" width="19" height="138.1818181818182" fill="#e5c494"><title>all models / agent's own visible tests: 72.7% (56/77)</title></rect>
+<line x1="397.5" y1="116.15625" x2="397.5" y2="59.42465753424659" stroke="#222"/>
+<rect x="410" y="226" width="19" height="0" fill="#8da0cb"><title>all models / LLM judge A (code only): 0.0% (0/60)</title></rect>
+<line x1="419.5" y1="226" x2="419.5" y2="226" stroke="#222"/>
+<rect x="432" y="226" width="19" height="0" fill="#66a3c2"><title>all models / LLM judge B (code + test output): 0.0% (0/64)</title></rect>
+<line x1="441.5" y1="226" x2="441.5" y2="226" stroke="#222"/>
+<rect x="454" y="216.80645161290323" width="19" height="9.193548387096769" fill="#b3a2c7"><title>all models / LLM judge, injected comment: 4.8% (3/62)</title></rect>
+<line x1="463.5" y1="226" x2="463.5" y2="200.9056603773585" stroke="#222"/>
+<rect x="476" y="218.5974025974026" width="19" height="7.402597402597394" fill="#2a7f62"><title>all models / warrant hidden-test gate: 3.9% (3/77)</title></rect>
+<line x1="485.5" y1="226" x2="485.5" y2="206.7246376811594" stroke="#222"/>
+<text x="432" y="242" text-anchor="middle">all models</text>
+<rect x="60" y="264" width="10" height="10" fill="#fc8d62"/><text x="74" y="273">trust the claim</text>
+<rect x="260" y="264" width="10" height="10" fill="#e5c494"/><text x="274" y="273">agent's own visible tests</text>
+<rect x="460" y="264" width="10" height="10" fill="#8da0cb"/><text x="474" y="273">LLM judge A (code only)</text>
+<rect x="60" y="280" width="10" height="10" fill="#66a3c2"/><text x="74" y="289">LLM judge B (code + test output)</text>
+<rect x="260" y="280" width="10" height="10" fill="#b3a2c7"/><text x="274" y="289">LLM judge, injected comment</text>
+<rect x="460" y="280" width="10" height="10" fill="#2a7f62"/><text x="474" y="289">warrant hidden-test gate</text>
+</svg>

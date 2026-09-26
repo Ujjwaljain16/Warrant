@@ -1,0 +1,112 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1181,
+  "files": [
+   {
+    "testFile": "bounds.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 50,
+     "served": 207,
+     "snaps": 0,
+     "bytes": 12759
+    },
+    "tests": 8,
+    "names": [
+     "a target beyond the last element",
+     "a target before the first element",
+     "duplicates",
+     "an empty array",
+     "one element",
+     "reads at most 64 elements of a million",
+     "argument types",
+     "the input is not modified"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "10/10",
+  "gate": "split-1",
+  "ms": 2363,
+  "files": [
+   {
+    "testFile": "bounds.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 50,
+     "served": 207,
+     "snaps": 0,
+     "bytes": 12759
+    },
+    "tests": 8,
+    "names": [
+     "a target beyond the last element",
+     "a target before the first element",
+     "duplicates",
+     "an empty array",
+     "one element",
+     "reads at most 64 elements of a million",
+     "argument types",
+     "the input is not modified"
+    ]
+   },
+   {
+    "testFile": "bounds.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 551,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 67172
+    },
+    "tests": 2,
+    "names": [
+     "audit: agrees with a linear scan on many arrays and targets",
+     "audit: infinite targets"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1250,
+  "files": [
+   {
+    "testFile": "bounds.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 50,
+     "served": 207,
+     "snaps": 0,
+     "bytes": 12759
+    },
+    "tests": 8,
+    "names": [
+     "a target beyond the last element",
+     "a target before the first element",
+     "duplicates",
+     "an empty array",
+     "one element",
+     "reads at most 64 elements of a million",
+     "argument types",
+     "the input is not modified"
+    ]
+   }
+  ]
+ }
+}

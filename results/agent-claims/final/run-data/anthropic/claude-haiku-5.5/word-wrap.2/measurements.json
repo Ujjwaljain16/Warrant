@@ -1,0 +1,107 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 956,
+  "files": [
+   {
+    "testFile": "wrap.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 23,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1496
+    },
+    "tests": 6,
+    "names": [
+     "a line may be exactly width characters",
+     "a word longer than the width gets its own line",
+     "no empty first line when the first word is long",
+     "any whitespace between words counts as one space",
+     "leading and trailing whitespace is ignored; empty text gives no lines",
+     "width and text are validated"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 2526,
+  "files": [
+   {
+    "testFile": "wrap.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 23,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1496
+    },
+    "tests": 6,
+    "names": [
+     "a line may be exactly width characters",
+     "a word longer than the width gets its own line",
+     "no empty first line when the first word is long",
+     "any whitespace between words counts as one space",
+     "leading and trailing whitespace is ignored; empty text gives no lines",
+     "width and text are validated"
+    ]
+   },
+   {
+    "testFile": "wrap.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 10,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1068
+    },
+    "tests": 3,
+    "names": [
+     "audit: width 1 puts each word on its own line",
+     "audit: every line respects the width unless it is a single long word, and the words are preserved",
+     "audit: greedy, not balanced"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 3613,
+  "files": [
+   {
+    "testFile": "wrap.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 23,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1496
+    },
+    "tests": 6,
+    "names": [
+     "a line may be exactly width characters",
+     "a word longer than the width gets its own line",
+     "no empty first line when the first word is long",
+     "any whitespace between words counts as one space",
+     "leading and trailing whitespace is ignored; empty text gives no lines",
+     "width and text are validated"
+    ]
+   }
+  ]
+ }
+}

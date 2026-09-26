@@ -1,0 +1,126 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 2/9 passed",
+  "failed_tests": [
+   "ranges, lists and steps over ranges",
+   "a star step starts at the first value of the field, which is 1 for day and month",
+   "day of week: 0 is Sunday and weekdays are 1-5",
+   "both day fields restricted: either may match",
+   "a star-led day field means both fields must match",
+   "the time zone is UTC",
+   "extra whitespace and leading zeros"
+  ],
+  "gate": "split-1",
+  "ms": 1830,
+  "files": [
+   {
+    "testFile": "cron.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 41,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3814
+    },
+    "tests": 9,
+    "names": [
+     "ranges, lists and steps over ranges",
+     "a star step starts at the first value of the field, which is 1 for day and month",
+     "day of week: 0 is Sunday and weekdays are 1-5",
+     "both day fields restricted: either may match",
+     "a star-led day field means both fields must match",
+     "the time zone is UTC",
+     "extra whitespace and leading zeros",
+     "invalid expressions throw SyntaxError",
+     "invalid argument types throw TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 2/9 passed",
+  "failed_tests": [
+   "ranges, lists and steps over ranges",
+   "a star step starts at the first value of the field, which is 1 for day and month",
+   "day of week: 0 is Sunday and weekdays are 1-5",
+   "both day fields restricted: either may match",
+   "a star-led day field means both fields must match",
+   "the time zone is UTC",
+   "extra whitespace and leading zeros"
+  ],
+  "gate": "split-1",
+  "ms": 995,
+  "files": [
+   {
+    "testFile": "cron.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 41,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3814
+    },
+    "tests": 9,
+    "names": [
+     "ranges, lists and steps over ranges",
+     "a star step starts at the first value of the field, which is 1 for day and month",
+     "day of week: 0 is Sunday and weekdays are 1-5",
+     "both day fields restricted: either may match",
+     "a star-led day field means both fields must match",
+     "the time zone is UTC",
+     "extra whitespace and leading zeros",
+     "invalid expressions throw SyntaxError",
+     "invalid argument types throw TypeError"
+    ]
+   }
+  ]
+ },
+ "visible": "fail",
+ "engine_gate_result": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 2/9 passed",
+  "failed_tests": [
+   "ranges, lists and steps over ranges",
+   "a star step starts at the first value of the field, which is 1 for day and month",
+   "day of week: 0 is Sunday and weekdays are 1-5",
+   "both day fields restricted: either may match",
+   "a star-led day field means both fields must match",
+   "the time zone is UTC",
+   "extra whitespace and leading zeros"
+  ],
+  "gate": "split-1",
+  "ms": 3735,
+  "files": [
+   {
+    "testFile": "cron.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 41,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3814
+    },
+    "tests": 9,
+    "names": [
+     "ranges, lists and steps over ranges",
+     "a star step starts at the first value of the field, which is 1 for day and month",
+     "day of week: 0 is Sunday and weekdays are 1-5",
+     "both day fields restricted: either may match",
+     "a star-led day field means both fields must match",
+     "the time zone is UTC",
+     "extra whitespace and leading zeros",
+     "invalid expressions throw SyntaxError",
+     "invalid argument types throw TypeError"
+    ]
+   }
+  ]
+ }
+}

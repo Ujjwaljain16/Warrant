@@ -1,0 +1,78 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 0/6 passed",
+  "failed_tests": [
+   "toRoman on tricky values",
+   "toRoman range checks",
+   "fromRoman rejects non-canonical numerals with SyntaxError",
+   "fromRoman accepts the canonical forms",
+   "every value round-trips",
+   "fromRoman of a non-string is a TypeError"
+  ],
+  "gate": "split-1",
+  "ms": 2400,
+  "files": [
+   {
+    "testFile": "roman.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 7,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 337
+    },
+    "tests": 6,
+    "names": [
+     "toRoman on tricky values",
+     "toRoman range checks",
+     "fromRoman rejects non-canonical numerals with SyntaxError",
+     "fromRoman accepts the canonical forms",
+     "every value round-trips",
+     "fromRoman of a non-string is a TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 0/6 passed",
+  "failed_tests": [
+   "toRoman on tricky values",
+   "toRoman range checks",
+   "fromRoman rejects non-canonical numerals with SyntaxError",
+   "fromRoman accepts the canonical forms",
+   "every value round-trips",
+   "fromRoman of a non-string is a TypeError"
+  ],
+  "gate": "split-1",
+  "ms": 3955,
+  "files": [
+   {
+    "testFile": "roman.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 7,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 337
+    },
+    "tests": 6,
+    "names": [
+     "toRoman on tricky values",
+     "toRoman range checks",
+     "fromRoman rejects non-canonical numerals with SyntaxError",
+     "fromRoman accepts the canonical forms",
+     "every value round-trips",
+     "fromRoman of a non-string is a TypeError"
+    ]
+   }
+  ]
+ },
+ "visible": "fail",
+ "engine_gate_result": null
+}

@@ -1,0 +1,1 @@
+{"at":"2026-10-16T13:18:04.372Z","git":{"commit":"d1e029fe7c4964aba25eb66cc7fd6fdc21d4165a","dirty":false,"dirty_paths":[]},"argv":{"models":["anthropic/claude-haiku-5.5","openai/gpt-5.4-mini"],"tasks":null,"limit":null,"replay":false,"judge":true},"protocol_commit":"9bf14d27b364358878fd271756147a4eb94cabd5"}

@@ -1,0 +1,78 @@
+{
+ "gate": {
+  "status": "fail",
+  "code": "HIDDEN_TESTS_FAIL",
+  "detail": "exit 1, 4/8 passed",
+  "failed_tests": [
+   "refill is fractional",
+   "the first call starts the clock; a huge first timestamp changes nothing",
+   "a clock that goes backwards neither refills nor loses time",
+   "argument validation"
+  ],
+  "gate": "split-1",
+  "ms": 3214,
+  "files": [
+   {
+    "testFile": "bucket.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 85,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3704
+    },
+    "tests": 8,
+    "names": [
+     "refill is fractional",
+     "the bucket never holds more than its capacity",
+     "a failed take consumes nothing",
+     "taking several tokens at once; n larger than capacity is simply refused",
+     "the first call starts the clock; a huge first timestamp changes nothing",
+     "a clock that goes backwards neither refills nor loses time",
+     "available does not consume",
+     "argument validation"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 4/8 passed",
+  "failed_tests": [
+   "refill is fractional",
+   "the first call starts the clock; a huge first timestamp changes nothing",
+   "a clock that goes backwards neither refills nor loses time",
+   "argument validation"
+  ],
+  "gate": "split-1",
+  "ms": 4575,
+  "files": [
+   {
+    "testFile": "bucket.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 85,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3704
+    },
+    "tests": 8,
+    "names": [
+     "refill is fractional",
+     "the bucket never holds more than its capacity",
+     "a failed take consumes nothing",
+     "taking several tokens at once; n larger than capacity is simply refused",
+     "the first call starts the clock; a huge first timestamp changes nothing",
+     "a clock that goes backwards neither refills nor loses time",
+     "available does not consume",
+     "argument validation"
+    ]
+   }
+  ]
+ },
+ "visible": "fail",
+ "engine_gate_result": null
+}
