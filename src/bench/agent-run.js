@@ -458,7 +458,13 @@ async function runBench(options) {
       git: gitState, settings: PROTOCOL, node: process.version, docker_image_id: image.id, docker_image: image, gate: { version: GATE_VERSION, manifest_sha256: fileSha256(GATE_MANIFEST) }, task_hashes: taskHashes,
     }, null, 2)}\n`);
   }
-  writeFileAtomic(path.join(dir, 'plan.json'), `${JSON.stringify({ stage, models, tasks: taskIds, repeats, keys: items.map((i) => i.key) }, null, 1)}\n`);
+  // The results directory is filled by several invocations (one per model or quota day); the plan is the union of all of them, so the
+  // report compares what was recorded against everything planned and not only against the latest invocation.
+  const planFile = path.join(dir, 'plan.json');
+  const earlierPlan = fs.existsSync(planFile) ? JSON.parse(fs.readFileSync(planFile, 'utf8')) : null;
+  const plan = mergePlan(earlierPlan, { stage, models, tasks: taskIds, repeats, keys: items.map((i) => i.key) });
+  writeFileAtomic(planFile, `${JSON.stringify(plan, null, 1)}
+`);
   appendJsonl(path.join(dir, 'sessions.jsonl'), { at: new Date(now).toISOString(), git: gitState, argv: { models, tasks: options.tasks || null, limit: options.limit || null, replay, judge: options.judge !== false }, protocol_commit: guard ? guard.protocol_commit : null });
 
   const cassetteRoot = path.join(root, 'bench', 'agent-claims', 'cassettes', stage);
@@ -566,6 +572,13 @@ async function runBench(options) {
   return { exitCode, summary };
 }
 
+// The plan of a results directory is the union of the plans of every invocation that wrote to it (same stage and repeats).
+function mergePlan(earlier, next) {
+  if (!earlier || earlier.stage !== next.stage || earlier.repeats !== next.repeats) return next;
+  const union = (x, y) => [...x, ...y.filter((v) => !x.includes(v))];
+  return { stage: next.stage, models: union(earlier.models, next.models), tasks: union(earlier.tasks, next.tasks), repeats: next.repeats, keys: union(earlier.keys, next.keys) };
+}
+
 module.exports = Object.freeze({
-  PROTOCOL, PROTOCOL_FILE, QuotaGuard, finalStageGuard, gitInfo, makeSandbox, nextPacificReset, planRuns, readJsonl, runBench, testUse, treeHash, unfenceToolText,
+  PROTOCOL, PROTOCOL_FILE, QuotaGuard, finalStageGuard, gitInfo, makeSandbox, mergePlan, nextPacificReset, planRuns, readJsonl, runBench, testUse, treeHash, unfenceToolText,
 });

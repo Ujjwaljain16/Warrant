@@ -262,6 +262,15 @@ test('judge call: a reply cut off by the length limit is invalid, usage is repor
 
 // ---------------------------------------------------------------- runner pieces
 
+test('mergePlan: a later invocation adds to the plan instead of replacing it', () => {
+  const first = { stage: 'final', models: ['a', 'b'], tasks: ['t1', 't2'], repeats: 3, keys: ['final/a/t1/1', 'final/b/t1/1'] };
+  const second = { stage: 'final', models: ['c'], tasks: ['t1', 't2'], repeats: 3, keys: ['final/c/t1/1'] };
+  assert.deepEqual(run.mergePlan(first, second), { stage: 'final', models: ['a', 'b', 'c'], tasks: ['t1', 't2'], repeats: 3, keys: ['final/a/t1/1', 'final/b/t1/1', 'final/c/t1/1'] });
+  assert.deepEqual(run.mergePlan(run.mergePlan(first, second), second).keys.length, 3); // idempotent
+  assert.deepEqual(run.mergePlan(null, second), second);
+  assert.deepEqual(run.mergePlan({ ...first, stage: 'dev' }, second), second); // another stage or repeat count is not merged
+});
+
 test('planRuns: stable keys, repeat-major order', () => {
   const items = run.planRuns({ stage: 'dev', models: ['m1', 'm2'], taskIds: ['a', 'b'], repeats: 2 });
   assert.equal(items.length, 8);
