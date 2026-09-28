@@ -60,7 +60,7 @@ node bin/warrant.js verify-log .warrant/run-pipeline/run.log --spec examples/pip
 | Adapter for a specific agent runtime (Claude Code, Codex, ...) | **planned** (the `Worker` interface is the seam; the receipt adapter is a generic command adapter, not an agent integration) |
 | Signed log / receipts | planned |
 | OS-level sandboxing of workers | planned (see [threat model](docs/THREAT_MODEL.md)) |
-| Real-model evaluation | planned; the simulation says nothing about any real model |
+| Real-model evaluation (30 held-out tasks, two models via a third-party router, Gemini arm partial) | **done**, see [docs/AGENT_RESULTS.md](docs/AGENT_RESULTS.md); small, synthetic tasks, router model identity unverified |
 
 ## How a run works
 
@@ -204,8 +204,13 @@ WARRANT_LIVE=1 node scripts/agent-bench.js --stage dev   # live calls, needs a G
 npm run agent:report -- results/agent-claims/<stage>     # summary.json, REPORT.md and charts from the results files
 ```
 
-**Status: no held-out measurement exists yet.** The only live runs so far are one 8-call smoke episode and a development-stage run
-that debugs the harness; neither says anything about any model. Design notes: [docs/AGENT_BENCHMARK.md](docs/AGENT_BENCHMARK.md).
+**Result (held-out stage, 180 episodes, two models reached through a third-party router whose model identity is unverified):** the
+agents claimed "done" on 136 runs and 74 of those claims (54.4%, 95% CI 41.9% to 66.0%) failed the hidden tests; for
+`claude-haiku-5.5` it was 29 of 85 (34.1%), for `gpt-5.4-mini` 45 of 51 (88.2%). Trusting the claim accepted all 77 wrong claims, the
+agent's own visible tests accepted 56 of them (72.7%), and the hidden-test gate accepted 3 (3.9%, CI 0.0% to 10.1%). The three misses are
+reported, and the LLM judge could not be ranked because 142 of its 402 replies were cut off. Small, synthetic tasks; read
+[docs/AGENT_RESULTS.md](docs/AGENT_RESULTS.md) for the weaknesses before quoting any figure. Generated tables:
+[results/agent-claims/final/REPORT.md](results/agent-claims/final/REPORT.md). Design notes: [docs/AGENT_BENCHMARK.md](docs/AGENT_BENCHMARK.md).
 
 ## Layout
 
@@ -236,9 +241,9 @@ as your user. Run untrusted workers in a container or VM. Details and residual r
 
 - The benchmark uses simulated workers and assumed fault rates. It shows how the policies behave under that
   fault model, not how any real model behaves.
-- The agent-claims experiment (above) has a frozen protocol and a tested harness but no held-out run yet; until it is run, nothing in
-  this repository measures how often a real model's "done" is wrong. Its Linux/POSIX sandbox path (permissions on bind mounts) has
-  not been exercised.
+- The agent-claims experiment (above) is small: 30 synthetic tasks, two models behind a router that cannot be verified, one setting,
+  and a Gemini arm that is only partial because the free tier was overloaded. `gpt-5.4-mini`'s three repeats were byte-identical, so
+  its effective sample is 30 tasks. The LLM-judge comparison is inconclusive. See [docs/AGENT_RESULTS.md](docs/AGENT_RESULTS.md).
 - The gate is only as strong as the requirements you write. Missing requirements mean missing guarantees.
 - After an orchestrator crash, worker processes it had started are not tracked; non-repeatable tasks that were in
   flight are resolved through `reconcile` or end `unknown`. Only tasks marked `"receipt": true` have a `reconcile`; any
@@ -246,8 +251,8 @@ as your user. Run untrusted workers in a container or VM. Details and residual r
   effect, and it cannot tell a forged receipt from a true one.
 - Log lock reclamation relies on process liveness; pid reuse can make a stale lock look live (`breakLock` overrides).
 - Verified on Windows 11 / Node 22.19, and in a Linux container (Docker Desktop on WSL2, `node:22` image, Node 22.23, as root and as
-  an unprivileged user): check, tests, upstream parity, and byte-identical reproduction of both benchmarks. The CI definitions for
-  Linux and Windows are included but were **not executed on GitHub hosted runners**; there has been no macOS run.
+  an unprivileged user): check, tests, upstream parity, and byte-identical reproduction of both benchmarks. CI for
+  Linux and Windows has run on GitHub-hosted runners (`ubuntu-latest`, `windows-latest`, Node 22); there has been no macOS run.
 
 ## Attribution and what is original
 

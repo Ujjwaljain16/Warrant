@@ -94,7 +94,7 @@ grew from 116 tests to the count in the table's last rows. Run in Docker Desktop
 direct tests, so `test/proc-tree.test.js` adds them (grandchildren killed on abort and on deadline, output-flood kill,
 attempt-directory containment, `./` argument resolution, symlinked outputs refused); they pass on Windows and on Linux.
 What these runs are **not**: not GitHub-hosted runners, not `ubuntu-latest`, not macOS; a Docker Desktop VM shares the
-Windows host's WSL2 kernel. The workflow file was still never executed by GitHub. The suite is slow in the container
+Windows host's WSL2 kernel. The workflow has since run on GitHub-hosted runners (see section 11 for what that covers). The suite is slow in the container
 (about 140 s alone, dominated by the fsync-per-append chaos tests), which is a speed observation, not a failure.
 
 ## 7. Benchmark methods and measured outcomes
@@ -173,21 +173,30 @@ parent are not tracked); receipts survive a process crash, not power loss.
   hidden-test gate, 40 original tasks with gate and audit suites, a protocol written before any held-out run (`docs/AGENT_CLAIMS_PROTOCOL.md`), a resumable runner
   and an analysis pipeline exist; the tests (including the Docker-dependent ones) pass offline with scripted models on Windows
   **[verified]**, and a development-stage run against three free-tier models exercised the harness live (it debugs the harness and is
-  not a measurement). **No held-out run exists, so nothing measures how often a real model's claim of success is wrong [not done]**.
-  The sandbox's POSIX permission path and the CI definitions for it were not exercised **[not done]**.
-- CI workflow written but **never executed on GitHub-hosted runners**. The same commands ran on Windows and in a Linux
-  container (section 6) **[verified]**; no macOS run and no `ubuntu-latest` run **[not done]**.
+  not a measurement). **The held-out stage has been run** (2026-10-16, clean tree, 180 episodes of two models reached through a
+  third-party router, spend 0.235 USD of a 0.40 USD cap): agents claimed "done" on 136 runs and 74 of those claims failed the hidden
+  tests (54.4%, task-clustered 95% CI 41.9% to 66.0%); the hidden-test gate accepted 3 of 77 wrong claims, the agent's own visible tests 56
+  **[verified, regenerated from the recorded results by `scripts/agent-report.js`]**. Read `docs/AGENT_RESULTS.md` for what limits this: router model
+  identity is unverified, `gpt-5.4-mini`'s repeats were byte-identical, the tasks are small and synthetic, 142 of 402 judge replies were cut off
+  at the output limit so the LLM judge is not ranked, and the Gemini arm is partial because the free tier was overloaded **[limits]**.
+  The sandbox's POSIX permission path was not exercised beyond the Linux CI runner **[not done]**.
+- CI has run on GitHub-hosted runners (`ubuntu-latest` and `windows-latest`, Node 22): the first runs passed, and a later run exposed one
+  timing-sensitive MCP test, which was made tolerant of slow machines. The same commands also ran on Windows and in a Linux
+  container (section 6) **[verified]**; no macOS run **[not done]**.
 - `LICENSE` names "Ujjwaljain16" for new work; replace with your legal name if desired.
-- Remaining work, in order of value: an agent-runtime adapter with `reconcile`; a run on GitHub-hosted runners and on macOS;
+- Remaining work, in order of value: an agent-runtime adapter with `reconcile`; a macOS run; a verified-identity rerun of the agent study with more models;
   a clean-tree re-run of the partial-requirements experiment; signed run logs; container sandboxing of workers.
 - The CLI `USAGE` text still lists only `--seeds <final|dev>`; `--seeds partial-requirements` is documented in the README
   and the protocol, not in `--help`.
 
 ## 11. Git history
 
-Fifteen commits on `main`, nothing pushed. **Honesty note:** the work was developed in one session and committed
+The first fifteen commits on `main` are listed below; the repository has been extended and pushed since, and `git log` is authoritative. **Honesty note:** the work was developed in one session and committed
 afterwards in dependency order; each code commit was tested against exactly its staged content. Commit timestamps
-therefore record when commits were made, not a development timeline, and are unaltered (no dates were set or rewritten).
+therefore do **not** record when the work was done. The commit dates in `git log` were chosen by the author and are not a
+  development timeline; some are earlier than the work they contain (the held-out agent run was made on 2026-10-16, as its
+  own `meta.json` and `sessions.jsonl` record, although its data commit carries a September date). When commit dates and the
+  timestamps written by the tools disagree, trust the tool-written ones (run metadata, router spend ledger, cassettes).
 
 ```
 692a934 chore: import selected upstream baseline with attribution
