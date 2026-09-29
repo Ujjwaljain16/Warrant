@@ -21,10 +21,18 @@ action, keep spending after a cancel, or lose track of what happened.
 > orchestration policies on identical workloads and identical injected faults.
 
 This is deliberately narrower than a general agent framework. There is no agent
-marketplace, no skill catalog, no model-provider abstraction. The unit of work
+marketplace and no skill catalog. The unit of work
 is a **task** with explicit dependencies, an effect class, a deadline, a retry
 budget, and a list of **verification requirements** that the host (not the
 worker) evaluates.
+
+The project has two layers. The **core** (`src/core`, `src/engine`, `src/log`,
+`src/workers`, `src/sim`, `src/bench`) is the thesis above and was designed first,
+with simulated workers. On top of it sits a later, clearly separated **agent layer**
+(`src/agent`, `src/llm`, `src/sandbox`, `src/gate`, plus the MCP server, the run
+viewer and the demo): it runs a model-driven agent as a Worker, gates its "done"
+claim with hidden tests in a Docker sandbox, and measures that on real models. The
+agent layer tests the thesis; it does not widen the core.
 
 ## The core invariant
 
@@ -55,8 +63,8 @@ journal and its recovery decision table. Original in this repository: the gate
 and its branded-verdict invariant, the task state machine, the O(degree)
 scheduler, the async engine (deadlines, retry classification, cancellation,
 idempotent result ingestion), the replay/resume path, the stale-lock fix, the
-deterministic simulation and fault injector, the two baseline policies, and the
-benchmark harness with its statistics and report generator.
+deterministic simulation and fault injector, the baseline policies (five in the final
+benchmark), and the benchmark harness with its statistics and report generator.
 
 ## Success criteria
 
@@ -68,6 +76,10 @@ scenarios; the report states those scenarios.**
 
 ## Non-goals
 
-No multi-provider LLM abstraction; no dashboard; no skill/agent catalog; no
-distributed scheduler; no database. No claim about LLM output quality: the fake
-worker models *failure behavior*, not intelligence.
+No skill/agent catalog; no distributed scheduler; no database; no hosted dashboard
+(the run viewer is one offline static file). The simulation makes no claim about LLM
+output quality: the fake worker models *failure behavior*, not intelligence. The
+separate agent-claims study does measure real models, on a small synthetic task set,
+and says what limits it (`AGENT_RESULTS.md`). The LLM client is provider-neutral
+only to the extent that two adapters (Gemini direct, an OpenAI-compatible router)
+and recorded cassettes needed it.

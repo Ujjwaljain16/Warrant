@@ -23,6 +23,13 @@ The Gemini arm (`gemini-3.5-flash-lite`, `gemma-4-31b-it`, through Google's API 
 returning "high demand" errors, so it is **partial**; the generated report lists exactly which runs exist. Everything below is the
 router arm unless it says otherwise, and its numbers do not change when the Gemini runs are added.
 
+**How this relates to the protocol (read before quoting).** The protocol makes the three direct-API agents (`gemini-3.5-flash-lite`,
+`gemini-3.1-flash-lite`, `gemma-4-31b-it`) the primary arm and the pooled estimate, and says the router arm is "reported separately as a
+labelled extra, never pooled into it" (protocol section 2.2.1). The primary arm could not be completed on the free tier, and
+`gemini-3.1-flash-lite` was not scheduled in this run. So the numbers on this page come from the **router arm**, and the "all models" rows
+**pool its two models**, which is not what the protocol specified. The protocol's amendments section (13) is empty and the protocol file is
+frozen, so this paragraph is the record of that deviation. Read the decision-rule statement in finding 3 with it in mind.
+
 ## Findings
 
 **1. Agents claim success on wrong code often.** Of the claims of "done":
@@ -32,6 +39,10 @@ router arm unless it says otherwise, and its numbers do not change when the Gemi
 | claude-haiku-5.5 | 85 of 90 runs | 29 (34.1%) | 20.5% to 48.8% |
 | gpt-5.4-mini | 51 of 90 runs | 45 (88.2%) | 70.6% to 100% |
 | both | 136 | 74 (54.4%) | 41.9% to 66.0% |
+
+"Failed the hidden tests" is the gate's verdict (74 claims, the report's `FALSE_CLAIM`). The ground truth used for scoring every strategy is the
+stricter audit suite, which finds 3 more wrong claims that the gate accepted: 77 wrong claims in all (56.6%, CI 44.3% to 68.1%). Finding 3
+and the strategy tables use the 77; this table uses the 74 because it is the quantity the protocol calls the headline.
 
 **2. The two models fail differently.** Every one of Haiku's 29 false claims came right after its own visible-test run passed: it
 tested, saw green and stopped. `gpt-5.4-mini` said "cannot" in 36 runs (honest), but of its 51 claims 21 came while its own last
@@ -43,7 +54,8 @@ so they do not explain the result.
 **3. Checking the agent's own visible tests catches little.** Of the 77 claims the audit shows to be wrong, the visible tests accepted
 56 (72.7%, CI 57.8% to 87.7%). Trusting the claim accepts all 77. The hidden-test gate accepted 3 (3.9%, CI 0.0% to 10.1%). The
 paired differences, gate minus the other strategy: -96.1 points against trusting the claim (CI -100.0 to -89.7) and -68.8 points
-against the visible tests (CI -83.3 to -54.3). By the decision rules fixed in the protocol (section 7.3) the gate helps.
+against the visible tests (CI -83.3 to -54.3). The decision rules fixed in the protocol (section 7.3) say the gate helps on these numbers. They were written for the pooled direct-API arm, not for this
+router-arm pool (see "How this relates to the protocol" above), so treat that verdict as applying to this arm only.
 
 **4. The gate is not perfect, and the three misses are real.** Gate false accepts, all `claude-haiku-5.5`: `query-string` repeats 1 and 2
 (invalid UTF-8 not replaced by U+FFFD) and `promise-pool` repeat 3 (hangs under a stricter test; reproduced twice on a quiet machine, so it

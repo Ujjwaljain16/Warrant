@@ -1,9 +1,10 @@
 # Agent claims benchmark: design notes
 
-Status: **harness and tasks built; no measurement reported.** This document describes how the pieces fit. The experimental
-protocol (what is measured, outcome definitions, statistics, what would count as a negative result) is
-[AGENT_CLAIMS_PROTOCOL.md](AGENT_CLAIMS_PROTOCOL.md). The one recorded episode in `bench/agent-claims/cassettes/` exists to test
-record/replay; the dev-stage runs exist to debug the harness. Neither says anything about any model.
+Status: **harness built; the held-out stage has been run for the router arm and the direct Gemini arm is partial.** This document describes
+how the pieces fit. The experimental protocol (what is measured, outcome definitions, statistics, what would count as a negative
+result) is [AGENT_CLAIMS_PROTOCOL.md](AGENT_CLAIMS_PROTOCOL.md), and what the run found, with its limits and its deviations from the
+protocol, is [AGENT_RESULTS.md](AGENT_RESULTS.md). The one recorded episode in `bench/agent-claims/cassettes/` exists to test
+record/replay, and the dev-stage runs exist to debug the harness; neither says anything about any model.
 
 ## Question
 

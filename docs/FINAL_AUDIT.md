@@ -78,6 +78,9 @@ still running; artifact names that are Windows device names were accepted; bench
 tree. Documentation claims stronger than the code (lock "expiry", "atomic append", "null-prototype reviver") were
 corrected rather than left. A mutation survivor ("indeterminate verdict treated as pass") exposed a test gap that is now closed.
 
+The counts in this section are as of the commits named. Later work (agent, gate, sandbox, MCP, viewer, router and demo suites) grew `npm test` to roughly
+430 tests; the exact figure is whatever `npm test` prints. The Docker-dependent ones take several minutes and skip cleanly without Docker.
+
 ### Later additions: Linux container runs and new tests **[verified]**
 
 Work added after the commit above (uncommitted when written; the commits that introduce it are in `git log`). The suite
@@ -170,7 +173,7 @@ parent are not tracked); receipts survive a process crash, not power loss.
   live process); 6 targeted mutants of its decision rules were all caught **[verified]**. `reconcile` still exists only for that adapter: the agent worker has none, so any other command task still ends
   `unknown` **[not done]**.
 - Agent claims experiment (addendum after this audit): an `AgentWorker` (model-driven episode as a warrant Worker), a Docker sandbox, a
-  hidden-test gate, 40 original tasks with gate and audit suites, a protocol written before any held-out run (`docs/AGENT_CLAIMS_PROTOCOL.md`), a resumable runner
+  hidden-test gate, 43 original tasks with gate and audit suites (30 held-out final, 10 development, 3 toy), a protocol written before any held-out run (`docs/AGENT_CLAIMS_PROTOCOL.md`), a resumable runner
   and an analysis pipeline exist; the tests (including the Docker-dependent ones) pass offline with scripted models on Windows
   **[verified]**, and a development-stage run against three free-tier models exercised the harness live (it debugs the harness and is
   not a measurement). **The held-out stage has been run** (2026-10-16, clean tree, 180 episodes of two models reached through a
@@ -186,8 +189,7 @@ parent are not tracked); receipts survive a process crash, not power loss.
 - `LICENSE` names "Ujjwaljain16" for new work; replace with your legal name if desired.
 - Remaining work, in order of value: an agent-runtime adapter with `reconcile`; a macOS run; a verified-identity rerun of the agent study with more models;
   a clean-tree re-run of the partial-requirements experiment; signed run logs; container sandboxing of workers.
-- The CLI `USAGE` text still lists only `--seeds <final|dev>`; `--seeds partial-requirements` is documented in the README
-  and the protocol, not in `--help`.
+- The CLI `USAGE` text listed only `--seeds <final|dev>` when this audit was written; it now lists `dev`, `final` and `partial-requirements`.
 
 ## 11. Git history
 

@@ -1,7 +1,7 @@
 # Architecture
 
 This document describes the design implemented in this repository. The status of each
-module (implemented / experimental / planned) is tracked in the README.
+module (implemented / experimental / planned) is tracked in [OVERVIEW.md](OVERVIEW.md).
 
 ```mermaid
 flowchart LR
