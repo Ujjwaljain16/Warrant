@@ -16,7 +16,7 @@ usage:
   warrant run <spec.json> [--dir <workdir>] [--log <file>] [--concurrency <n>]
   warrant resume <spec.json> --log <file> [--dir <workdir>] [--concurrency <n>]
   warrant verify-log <log> [--spec <spec.json>]
-  warrant bench [--seeds <final|dev>] [--out <dir>] [--workloads <ids>] [--profiles <ids>]
+  warrant bench [--seeds <dev|final|partial-requirements>] [--out <dir>] [--workloads <ids>] [--profiles <ids>]
   warrant report <results-dir>
 
 exit codes: 0 success / consistent, 1 run did not succeed / log inconsistent, 2 usage or input error`;
