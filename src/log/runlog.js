@@ -4,7 +4,7 @@
 //
 // Derived from third_party/citadel/core/operations/journal.js (MIT, Seth Gammon). Kept from upstream:
 // contiguous sequence numbers, `prev` hash chaining over canonical JSON, fail-closed validation of every
-// entry on read. Changed (see UPSTREAM_PROVENANCE.md):
+// entry on read. Changed (see docs/UPSTREAM_PROVENANCE.md):
 //   * arbitrary typed events (allow-listed) instead of the fixed idempotency-checkpoint schema;
 //   * ONE writer lock held for the lifetime of the handle, with dead-owner reclamation, instead of a
 //     pid file created and removed around every append that is never reclaimed after a crash;
