@@ -18,3 +18,6 @@ bench/agent-claims/cassettes/dev/
 
 # MCP server state directory (npm run mcp)
 .warrant-mcp/
+
+# demo frames (tools/demo)
+tools/demo/.frames/
