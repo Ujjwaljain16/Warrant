@@ -46,6 +46,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Documentation links resolve and quoted numbers match the generated reports
+        run: npm run check:docs
+
       - name: Stored workload dataset equals regeneration
         run: |
           npm run gen:workloads

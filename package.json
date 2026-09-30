@@ -1,8 +1,8 @@
 {
   "name": "warrant",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Evidence-gated execution of bounded AI work, with a reproducible fault-injection benchmark",
+  "description": "Evidence-gated execution of bounded AI work: a hash-chained, crash-recoverable orchestrator, a fault-injection benchmark, and a hidden-test study of real model claims",
   "license": "MIT",
   "engines": {
     "node": ">=22"
@@ -11,6 +11,7 @@
     "test": "node --test --test-reporter=spec \"test/**/*.test.js\"",
     "test:upstream-parity": "node third_party/citadel/scripts/test-operation-recovery.js && node third_party/citadel/scripts/test-operation-chaos.js",
     "check": "node scripts/check.js",
+    "check:docs": "node scripts/check-docs.js",
     "coverage": "node --test --experimental-test-coverage --test-reporter=spec \"test/**/*.test.js\"",
     "example": "node bin/warrant.js run examples/pipeline/spec.json --dir .warrant",
     "example:lying": "node bin/warrant.js run examples/pipeline/spec-lying.json --dir .warrant",
@@ -29,9 +30,33 @@
     "router:status": "node src/llm/router-budget.js status",
     "router:reconcile": "node src/llm/router-budget.js reconcile",
     "router:verify": "node src/llm/router-models.js verify",
-    "router:estimate": "node src/llm/router-models.js estimate"
+    "router:estimate": "node src/llm/router-models.js estimate",
+    "mcp": "node bin/warrant-mcp.js --spec-dir examples/mcp/specs --state-dir .warrant-mcp",
+    "test:mcp": "node --test test/mcp.test.js",
+    "viewer:build": "node scripts/build-viewer.js",
+    "viewer:check": "node scripts/build-viewer.js --check && node scripts/gen-viewer-samples.js --check",
+    "demo:multi-agent": "node examples/multi-agent/run.js",
+    "demo:multi-agent:all": "node examples/multi-agent/run.js --all"
   },
   "bin": {
-    "warrant": "bin/warrant.js"
+    "warrant": "bin/warrant.js",
+    "warrant-mcp": "bin/warrant-mcp.js"
+  },
+  "keywords": [
+    "ai-agents",
+    "orchestration",
+    "verification",
+    "fault-injection",
+    "reliability",
+    "mcp",
+    "nodejs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ujjwaljain16/Warrant.git"
+  },
+  "homepage": "https://github.com/Ujjwaljain16/Warrant#readme",
+  "bugs": {
+    "url": "https://github.com/Ujjwaljain16/Warrant/issues"
   }
 }

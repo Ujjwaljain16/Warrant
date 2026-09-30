@@ -15,3 +15,6 @@ results/agent-claims/dev-replay/
 results/agent-claims/final-replay/
 bench/agent-claims/cassettes/dev/
 *.pem
+
+# MCP server state directory (npm run mcp)
+.warrant-mcp/
