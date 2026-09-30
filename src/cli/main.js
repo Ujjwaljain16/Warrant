@@ -56,6 +56,10 @@ function concurrencyOption(flags) {
 async function execute(kind, spec, flags, io, specFile) {
   const workDir = path.resolve(io.cwd, flags['--dir'] || '.warrant');
   const logFile = path.resolve(io.cwd, flags['--log'] || path.join(workDir, spec.run_id, 'run.log'));
+  // One log holds one run: a second `run` appended to an old log would leave it with two run_started entries, which verify-log rejects.
+  if (kind === 'run' && fs.existsSync(logFile) && fs.statSync(logFile).size > 0) {
+    throw new UsageError(`a run log already exists at ${logFile}; continue it with "warrant resume", or choose another --dir or --log`);
+  }
   const worker = new ReceiptWorker({ baseDir: path.join(workDir, 'attempts'), specDir: path.dirname(specFile) });
   const log = new FileRunLog(logFile);
   const opts = { worker, log, workDirFor: (a) => worker.workDirFor(a), concurrency: concurrencyOption(flags) };

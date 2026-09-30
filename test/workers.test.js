@@ -175,6 +175,20 @@ test('CLI: the shipped example succeeds, writes a log that verifies, and detects
   assert.equal(tampered.code, 1);
 });
 
+test('CLI: run refuses an existing log (resume continues it), and the two shipped examples keep separate logs', async () => {
+  const cwd = tmp('cli-twice');
+  const spec = path.join(EXAMPLE, 'spec.json');
+  assert.equal((await cli(['run', spec, '--dir', 'work'], cwd)).code, 0);
+  const again = await cli(['run', spec, '--dir', 'work'], cwd);
+  assert.equal(again.code, 2);
+  assert.match(again.err, /already exists/);
+  assert.match(again.err, /resume/);
+  // the honest and the lying pipeline run one after the other in the same directory, as the README shows, and the first log still verifies
+  assert.equal((await cli(['run', path.join(EXAMPLE, 'spec-lying.json'), '--dir', 'work'], cwd)).code, 1);
+  const verify = await cli(['verify-log', path.join(cwd, 'work', 'run-pipeline', 'run.log'), '--spec', spec], cwd);
+  assert.equal(verify.code, 0, verify.out);
+});
+
 test('CLI: the lying example exits non-zero and says which gate failed', async () => {
   const cwd = tmp('cli-lie');
   const run = await cli(['run', path.join(EXAMPLE, 'spec-lying.json'), '--dir', 'work'], cwd);
