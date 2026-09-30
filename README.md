@@ -41,7 +41,7 @@ were wrong** (56.6%, 95% CI 44.3% to 68.1%). What each check accepted of the wro
 | the agent's own visible tests | 72.7% (56 of 77) |
 | **warrant's hidden-test gate** | **3.9% (3 of 77), 95% CI 0.0% to 10.1%** |
 
-![false-accept rate by verification strategy](results/agent-claims/final/charts/strategy_false_accept.svg)
+![false-accept rate by verification strategy](results/agent-claims/final/router-arm/charts/strategy_false_accept.svg)
 
 **The rate depends heavily on the model.** A partial run of `gemini-3.5-flash-lite` (39 episodes, served directly by Google)
 had 2 wrong claims in 36 (5.6%, CI 0.0% to 14.7%), against 37.6% and 88.2% for the two router models, so the 57% describes
@@ -62,12 +62,15 @@ npm test                # 400+ tests, including a crash-at-every-log-boundary ch
 npm run check           # syntax, hygiene, secret scan, vendored-file provenance
 ```
 
-`npm run example:lying` exits non-zero and names the failed requirements:
+`npm run example:lying` exits 1 and prints a JSON report; the part that matters (trimmed):
 
+```json
+"sort":      { "status": "failed",  "code": "GATE_FAILED", "verification": { "failed": ["exact", "is-sorted"] } },
+"summarize": { "status": "blocked", "code": "DEPENDENCY_NOT_SUCCEEDED", "attempts": 0 }
 ```
-sort:      failed / GATE_FAILED   (requirements failed: exact, is-sorted)
-summarize: blocked                (never executed)
-```
+
+Each run writes one log under `.warrant/<run_id>/run.log`. Running the same example again says that its log already exists
+(`warrant resume` continues a run; delete `.warrant/` to start over).
 
 Re-audit a finished log's hash chain and invariants independently of the engine, or open it in the offline
 [run viewer](docs/VIEWER.md) (`viewer/run-viewer.html`, one static file, no server):
