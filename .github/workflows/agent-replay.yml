@@ -46,6 +46,7 @@ jobs:
             exit 0
           fi
           node scripts/agent-report.js results/agent-claims/final
+          node scripts/agent-report.js results/agent-claims/final --models anthropic/claude-haiku-5.5,openai/gpt-5.4-mini --out results/agent-claims/final/router-arm
           git diff --exit-code -- results/agent-claims/final
 
   replay:
