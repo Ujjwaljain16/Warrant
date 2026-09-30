@@ -1,0 +1,118 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1394,
+  "files": [
+   {
+    "testFile": "emitter.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 160,
+     "served": 17,
+     "snaps": 0,
+     "bytes": 10130
+    },
+    "tests": 9,
+    "names": [
+     "a once listener does not make the next listener skip",
+     "a listener added during emit waits for the next emit",
+     "a listener removed during emit still runs in that emit",
+     "a once listener never runs twice, even if it emits the same event",
+     "off removes one registration, the earliest",
+     "unsubscribe functions remove exactly their own registration, once",
+     "a throwing listener stops the emit and propagates",
+     "events are independent and emit reports listeners",
+     "argument types"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "14/14",
+  "gate": "split-1",
+  "ms": 2523,
+  "files": [
+   {
+    "testFile": "emitter.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 160,
+     "served": 17,
+     "snaps": 0,
+     "bytes": 10130
+    },
+    "tests": 9,
+    "names": [
+     "a once listener does not make the next listener skip",
+     "a listener added during emit waits for the next emit",
+     "a listener removed during emit still runs in that emit",
+     "a once listener never runs twice, even if it emits the same event",
+     "off removes one registration, the earliest",
+     "unsubscribe functions remove exactly their own registration, once",
+     "a throwing listener stops the emit and propagates",
+     "events are independent and emit reports listeners",
+     "argument types"
+    ]
+   },
+   {
+    "testFile": "emitter.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 56,
+     "served": 9,
+     "snaps": 0,
+     "bytes": 4064
+    },
+    "tests": 5,
+    "names": [
+     "audit: the same function registered with once and on",
+     "audit: off can remove a once listener before it runs",
+     "audit: arguments are passed to every listener, including once",
+     "audit: a once listener that throws is already removed",
+     "audit: listeners that unsubscribe themselves during emit"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1334,
+  "files": [
+   {
+    "testFile": "emitter.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 160,
+     "served": 17,
+     "snaps": 0,
+     "bytes": 10130
+    },
+    "tests": 9,
+    "names": [
+     "a once listener does not make the next listener skip",
+     "a listener added during emit waits for the next emit",
+     "a listener removed during emit still runs in that emit",
+     "a once listener never runs twice, even if it emits the same event",
+     "off removes one registration, the earliest",
+     "unsubscribe functions remove exactly their own registration, once",
+     "a throwing listener stops the emit and propagates",
+     "events are independent and emit reports listeners",
+     "argument types"
+    ]
+   }
+  ]
+ }
+}

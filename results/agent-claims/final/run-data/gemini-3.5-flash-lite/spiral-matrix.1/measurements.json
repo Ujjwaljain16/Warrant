@@ -1,0 +1,110 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "7/7",
+  "gate": "split-1",
+  "ms": 1428,
+  "files": [
+   {
+    "testFile": "spiral.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 19,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3763
+    },
+    "tests": 7,
+    "names": [
+     "a single row",
+     "a single column",
+     "wide and tall rectangles",
+     "a 4 x 4 matrix",
+     "empty matrices",
+     "ragged or non-array input is a TypeError",
+     "the input is not modified"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "10/10",
+  "gate": "split-1",
+  "ms": 2876,
+  "files": [
+   {
+    "testFile": "spiral.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 19,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3763
+    },
+    "tests": 7,
+    "names": [
+     "a single row",
+     "a single column",
+     "wide and tall rectangles",
+     "a 4 x 4 matrix",
+     "empty matrices",
+     "ragged or non-array input is a TypeError",
+     "the input is not modified"
+    ]
+   },
+   {
+    "testFile": "spiral.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 42,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 14595
+    },
+    "tests": 3,
+    "names": [
+     "audit: every size up to 6 x 6 visits each cell once, starting top-left, each step adjacent",
+     "audit: a 5 x 1 column, a 1 x 5 row, a 3 x 5 and a 5 x 3 matrix",
+     "audit: elements of any type are returned as they are"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "7/7",
+  "gate": "split-1",
+  "ms": 1523,
+  "files": [
+   {
+    "testFile": "spiral.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 19,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3763
+    },
+    "tests": 7,
+    "names": [
+     "a single row",
+     "a single column",
+     "wide and tall rectangles",
+     "a 4 x 4 matrix",
+     "empty matrices",
+     "ragged or non-array input is a TypeError",
+     "the input is not modified"
+    ]
+   }
+  ]
+ }
+}

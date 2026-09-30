@@ -71,3 +71,186 @@
 {"at":"2026-10-16T15:57:14.142Z","type":"http_error","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":25241,"status":400,"message":"The request was rejected by a content safety filter."}
 {"at":"2026-10-16T15:57:14.142Z","type":"judge_error","run":"final/anthropic/claude-haiku-5.5/token-bucket/3","variant":"A","code":"HTTP_ERROR","message":"HTTP 400: The request was rejected by a content safety filter."}
 {"at":"2026-10-16T15:59:06.018Z","type":"ok","model":"deepseek/deepseek-v4.1-flash","attempt":0,"ms":33162,"costUsd":0.000142993}
+{"at":"2026-10-16T17:54:21.230Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":70082}
+{"at":"2026-10-16T17:54:43.843Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":92613}
+{"at":"2026-10-16T17:54:52.617Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":101383}
+{"at":"2026-10-16T17:55:14.230Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":122997}
+{"at":"2026-10-16T17:56:30.820Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":76587}
+{"at":"2026-10-16T17:57:07.169Z","type":"http_error","model":"gemma-4-31b-it","attempt":0,"ms":143322,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T17:57:09.525Z","type":"http_error","model":"gemma-4-31b-it","attempt":1,"ms":1517,"status":500,"message":"Internal error encountered."}
+{"at":"2026-10-16T17:57:23.153Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":181911}
+{"at":"2026-10-16T17:57:52.741Z","type":"http_error","model":"gemma-4-31b-it","attempt":0,"ms":180104,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T17:58:16.658Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":53489}
+{"at":"2026-10-16T17:58:28.989Z","type":"ok","model":"gemma-4-31b-it","attempt":2,"ms":78221}
+{"at":"2026-10-16T17:58:58.968Z","type":"ok","model":"gemma-4-31b-it","attempt":1,"ms":65322}
+{"at":"2026-10-16T17:59:10.872Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":54209}
+{"at":"2026-10-16T17:59:18.039Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":167211}
+{"at":"2026-10-16T17:59:39.459Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":70456}
+{"at":"2026-10-16T18:00:38.373Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":99399}
+{"at":"2026-10-16T18:01:20.861Z","type":"http_error","model":"gemma-4-31b-it","attempt":0,"ms":101398,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:01:43.910Z","type":"http_error","model":"gemma-4-31b-it","attempt":0,"ms":152261,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:01:48.031Z","type":"http_error","model":"gemma-4-31b-it","attempt":0,"ms":149988,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:02:28.566Z","type":"ok","model":"gemma-4-31b-it","attempt":1,"ms":66750}
+{"at":"2026-10-16T18:02:45.783Z","type":"ok","model":"gemma-4-31b-it","attempt":1,"ms":61130}
+{"at":"2026-10-16T18:02:54.473Z","type":"ok","model":"gemma-4-31b-it","attempt":1,"ms":65795}
+{"at":"2026-10-16T18:03:51.513Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":57037}
+{"at":"2026-10-16T18:04:22.244Z","type":"http_error","model":"gemma-4-31b-it","attempt":0,"ms":113674,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:04:32.464Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":234069}
+{"at":"2026-10-16T18:04:40.756Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":114970}
+{"at":"2026-10-16T18:05:10.253Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":78255}
+{"at":"2026-10-16T18:05:46.722Z","type":"ok","model":"gemma-4-31b-it","attempt":1,"ms":83924}
+{"at":"2026-10-16T18:06:42.041Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":120814}
+{"at":"2026-10-16T18:06:56.639Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":69910}
+{"at":"2026-10-16T18:07:37.315Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":147059}
+{"at":"2026-10-16T18:07:56.764Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":60122}
+{"at":"2026-10-16T18:08:11.947Z","type":"http_error","model":"gemma-4-31b-it","attempt":0,"ms":219479,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:08:23.991Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":96260}
+{"at":"2026-10-16T18:09:43.664Z","type":"ok","model":"gemma-4-31b-it","attempt":1,"ms":90887}
+{"at":"2026-10-16T18:09:48.810Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":84816}
+{"at":"2026-10-16T18:09:53.185Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":135866}
+{"at":"2026-10-16T18:10:29.762Z","type":"http_error","model":"gemma-4-31b-it","attempt":0,"ms":152305,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:11:19.386Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":95718}
+{"at":"2026-10-16T18:11:40.598Z","type":"ok","model":"gemma-4-31b-it","attempt":1,"ms":70132}
+{"at":"2026-10-16T18:12:44.040Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":84115}
+{"at":"2026-10-16T18:12:53.157Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":184340}
+{"at":"2026-10-16T18:13:00.748Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":75717}
+{"at":"2026-10-16T18:13:34.356Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":45687}
+{"at":"2026-10-16T18:14:13.360Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":72610}
+{"at":"2026-10-16T18:14:14.527Z","type":"http_error","model":"gemma-4-31b-it","attempt":0,"ms":260895,"status":500,"message":"Internal error encountered."}
+{"at":"2026-10-16T18:14:53.501Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":40136}
+{"at":"2026-10-16T18:15:02.714Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":88355}
+{"at":"2026-10-16T18:15:52.908Z","type":"ok","model":"gemma-4-31b-it","attempt":1,"ms":97724}
+{"at":"2026-10-16T18:15:55.366Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":182179}
+{"at":"2026-10-16T18:16:12.298Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":78777}
+{"at":"2026-10-16T18:16:43.085Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":47717}
+{"at":"2026-10-16T18:17:02.577Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":35455}
+{"at":"2026-10-16T18:17:51.299Z","type":"ok","model":"gemma-4-31b-it","attempt":0,"ms":48715}
+{"at":"2026-10-16T18:17:59.801Z","type":"http_error","model":"gemma-4-31b-it","attempt":0,"ms":177075,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:20:10.875Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":0,"ms":108536}
+{"at":"2026-10-16T18:20:35.437Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":18005,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:20:46.619Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":10538}
+{"at":"2026-10-16T18:26:22.303Z","type":"network_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":270477,"message":"network error: fetch failed"}
+{"at":"2026-10-16T18:26:29.019Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":6007}
+{"at":"2026-10-16T18:27:00.430Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":13492,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:27:08.657Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":7569}
+{"at":"2026-10-16T18:27:45.092Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1039,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:27:51.751Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":5810}
+{"at":"2026-10-16T18:28:10.782Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":661,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:28:25.753Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":14448}
+{"at":"2026-10-16T18:28:28.637Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":2860,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:28:33.252Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":3763}
+{"at":"2026-10-16T18:28:48.982Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":7784,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:28:58.595Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":8912}
+{"at":"2026-10-16T18:29:00.459Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":897,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:29:09.961Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":8889}
+{"at":"2026-10-16T18:29:21.758Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":2147,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:29:30.071Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":7428}
+{"at":"2026-10-16T18:29:37.120Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":6463,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:29:44.882Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":6865}
+{"at":"2026-10-16T18:30:48.596Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":46199,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:31:01.920Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":12496}
+{"at":"2026-10-16T18:31:29.331Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1022,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:31:35.050Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":5196}
+{"at":"2026-10-16T18:35:50.686Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":64712,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:35:57.233Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":1,"ms":5749,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:36:13.529Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":2,"ms":15251,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:36:29.374Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":3,"ms":12088}
+{"at":"2026-10-16T18:40:45.679Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":3189,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:40:56.746Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":10386}
+{"at":"2026-10-16T18:41:31.748Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":2342,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:41:40.895Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":8278}
+{"at":"2026-10-16T18:43:02.811Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":4235,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:43:09.227Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":5536}
+{"at":"2026-10-16T18:44:30.213Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":5686,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:44:37.631Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":6606}
+{"at":"2026-10-16T18:45:23.075Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":6840,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:45:28.950Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":5059}
+{"at":"2026-10-16T18:45:36.813Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":7856,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:46:00.979Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":23189}
+{"at":"2026-10-16T18:46:22.197Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":2760,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:46:27.814Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":5059}
+{"at":"2026-10-16T18:47:19.689Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":10826,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:47:28.306Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":7843}
+{"at":"2026-10-16T18:47:29.131Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":811,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:47:32.189Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":1,"ms":2250,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:48:55.387Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":2,"ms":81358,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:48:59.535Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":3,"ms":2118,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:49:10.947Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":4,"ms":6236}
+{"at":"2026-10-16T18:49:26.268Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":3732,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:51:38.969Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":132094}
+{"at":"2026-10-16T18:52:10.497Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1315,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:52:15.223Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":4209}
+{"at":"2026-10-16T18:53:09.711Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":6841,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:53:15.849Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":5190}
+{"at":"2026-10-16T18:55:46.916Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":139602,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:55:50.602Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":3039}
+{"at":"2026-10-16T18:56:21.520Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":8892,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:56:26.242Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":4102}
+{"at":"2026-10-16T18:57:37.857Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":2400,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:57:45.718Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":6922}
+{"at":"2026-10-16T18:58:26.353Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":9224,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:58:29.725Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":2762}
+{"at":"2026-10-16T18:59:32.691Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":2464,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T18:59:37.597Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":4087}
+{"at":"2026-10-16T19:00:46.937Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1331,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:00:52.976Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":5246}
+{"at":"2026-10-16T19:00:56.237Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":3256,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:01:00.458Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":3427}
+{"at":"2026-10-16T19:01:02.403Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1941,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:01:07.959Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":4706}
+{"at":"2026-10-16T19:02:19.838Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1479,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:02:28.259Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":7705}
+{"at":"2026-10-16T19:03:44.491Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":11068,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:03:49.523Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":4485}
+{"at":"2026-10-16T19:04:29.336Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1921,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:04:34.550Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":4294}
+{"at":"2026-10-16T19:04:45.135Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":10017,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:05:00.886Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":15003}
+{"at":"2026-10-16T19:08:48.740Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":2968,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:08:55.570Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":6323}
+{"at":"2026-10-16T19:09:20.054Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":14330,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:09:27.570Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":6516}
+{"at":"2026-10-16T19:10:46.303Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":14741,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:10:53.785Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":6605}
+{"at":"2026-10-16T19:11:46.884Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":10884,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:11:51.610Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":3928}
+{"at":"2026-10-16T19:13:25.403Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":5407,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:13:30.838Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":4852}
+{"at":"2026-10-16T19:13:32.968Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1671,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:13:34.828Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":1,"ms":1000,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:13:42.104Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":2,"ms":5358}
+{"at":"2026-10-16T19:14:53.761Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":3133,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:15:00.541Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":6215}
+{"at":"2026-10-16T19:15:35.247Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":3950,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:15:39.297Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":1,"ms":3191,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:15:45.595Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":2,"ms":4393}
+{"at":"2026-10-16T19:15:48.069Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1940,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:15:52.176Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":1,"ms":3225,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:15:59.000Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":2,"ms":4940}
+{"at":"2026-10-16T19:16:14.797Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":3368,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:16:27.580Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":11926}
+{"at":"2026-10-16T19:16:28.942Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":856,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:16:37.899Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":8438}
+{"at":"2026-10-16T19:16:52.910Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":10565,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:16:55.757Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":1,"ms":1892,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:17:13.738Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":2,"ms":16110}
+{"at":"2026-10-16T19:17:15.594Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1852,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:17:19.407Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":1,"ms":3191,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:17:23.924Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":2,"ms":3296,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:17:32.844Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":3,"ms":5965}
+{"at":"2026-10-16T19:17:42.104Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":8772,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:17:47.450Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":4365}
+{"at":"2026-10-16T19:20:31.278Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":1203,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:20:33.024Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":1,"ms":827,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:20:38.649Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":2,"ms":4337}
+{"at":"2026-10-16T19:25:04.272Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":2319,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:25:09.929Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":4851}
+{"at":"2026-10-16T19:25:19.668Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":9219,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:25:26.214Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":5933}
+{"at":"2026-10-16T19:25:57.139Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":10410,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:26:04.017Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":1,"ms":5958,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:26:09.833Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":2,"ms":4182}
+{"at":"2026-10-16T19:26:30.516Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":20635,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:26:40.642Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":9219}
+{"at":"2026-10-16T19:27:55.196Z","type":"http_error","model":"gemini-3.5-flash-lite","attempt":0,"ms":20518,"status":503,"message":"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later."}
+{"at":"2026-10-16T19:27:59.804Z","type":"ok","model":"gemini-3.5-flash-lite","attempt":1,"ms":3938}

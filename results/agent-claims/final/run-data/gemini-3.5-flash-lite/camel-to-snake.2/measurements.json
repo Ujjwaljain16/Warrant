@@ -1,0 +1,105 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "5/5",
+  "gate": "split-1",
+  "ms": 1201,
+  "files": [
+   {
+    "testFile": "snake.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 22,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1308
+    },
+    "tests": 5,
+    "names": [
+     "acronyms are one word",
+     "a leading capital does not add a leading underscore",
+     "digits stay with the letters before them",
+     "existing underscores are kept and never doubled",
+     "empty string and non-strings"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 2609,
+  "files": [
+   {
+    "testFile": "snake.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 22,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1308
+    },
+    "tests": 5,
+    "names": [
+     "acronyms are one word",
+     "a leading capital does not add a leading underscore",
+     "digits stay with the letters before them",
+     "existing underscores are kept and never doubled",
+     "empty string and non-strings"
+    ]
+   },
+   {
+    "testFile": "snake.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 11,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 620
+    },
+    "tests": 4,
+    "names": [
+     "audit: classic mixed identifiers",
+     "audit: digit and capital alternation",
+     "audit: underscores at both ends",
+     "audit: a two-letter acronym followed by a word"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "5/5",
+  "gate": "split-1",
+  "ms": 1235,
+  "files": [
+   {
+    "testFile": "snake.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 22,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1308
+    },
+    "tests": 5,
+    "names": [
+     "acronyms are one word",
+     "a leading capital does not add a leading underscore",
+     "digits stay with the letters before them",
+     "existing underscores are kept and never doubled",
+     "empty string and non-strings"
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,118 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1089,
+  "files": [
+   {
+    "testFile": "cron.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 62,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 5903
+    },
+    "tests": 9,
+    "names": [
+     "ranges, lists and steps over ranges",
+     "a star step starts at the first value of the field, which is 1 for day and month",
+     "day of week: 0 is Sunday and weekdays are 1-5",
+     "both day fields restricted: either may match",
+     "a star-led day field means both fields must match",
+     "the time zone is UTC",
+     "extra whitespace and leading zeros",
+     "invalid expressions throw SyntaxError",
+     "invalid argument types throw TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "14/14",
+  "gate": "split-1",
+  "ms": 3737,
+  "files": [
+   {
+    "testFile": "cron.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 62,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 5903
+    },
+    "tests": 9,
+    "names": [
+     "ranges, lists and steps over ranges",
+     "a star step starts at the first value of the field, which is 1 for day and month",
+     "day of week: 0 is Sunday and weekdays are 1-5",
+     "both day fields restricted: either may match",
+     "a star-led day field means both fields must match",
+     "the time zone is UTC",
+     "extra whitespace and leading zeros",
+     "invalid expressions throw SyntaxError",
+     "invalid argument types throw TypeError"
+    ]
+   },
+   {
+    "testFile": "cron.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 1624,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 163968
+    },
+    "tests": 5,
+    "names": [
+     "audit: every minute of a day matches */5 exactly 288 times",
+     "audit: weekday business hours across a week",
+     "audit: a list mixing numbers and stepped ranges",
+     "audit: the day-of-month item list with the either rule",
+     "audit: a range with a step that overshoots the end"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1155,
+  "files": [
+   {
+    "testFile": "cron.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 62,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 5903
+    },
+    "tests": 9,
+    "names": [
+     "ranges, lists and steps over ranges",
+     "a star step starts at the first value of the field, which is 1 for day and month",
+     "day of week: 0 is Sunday and weekdays are 1-5",
+     "both day fields restricted: either may match",
+     "a star-led day field means both fields must match",
+     "the time zone is UTC",
+     "extra whitespace and leading zeros",
+     "invalid expressions throw SyntaxError",
+     "invalid argument types throw TypeError"
+    ]
+   }
+  ]
+ }
+}

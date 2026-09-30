@@ -1,0 +1,118 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "10/10",
+  "gate": "split-1",
+  "ms": 1603,
+  "files": [
+   {
+    "testFile": "gridpath.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 46,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 51526
+    },
+    "tests": 10,
+    "names": [
+     "the shortest route, not just any route",
+     "rows and columns are not swapped",
+     "same cell, walls at either end",
+     "moves are not diagonal",
+     "unreachable cells inside walls",
+     "a one-cell grid",
+     "a 200 x 200 open grid is fast",
+     "a serpentine corridor",
+     "bad positions are a RangeError",
+     "bad grids are a TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "12/12",
+  "gate": "split-1",
+  "ms": 2869,
+  "files": [
+   {
+    "testFile": "gridpath.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 46,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 51526
+    },
+    "tests": 10,
+    "names": [
+     "the shortest route, not just any route",
+     "rows and columns are not swapped",
+     "same cell, walls at either end",
+     "moves are not diagonal",
+     "unreachable cells inside walls",
+     "a one-cell grid",
+     "a 200 x 200 open grid is fast",
+     "a serpentine corridor",
+     "bad positions are a RangeError",
+     "bad grids are a TypeError"
+    ]
+   },
+   {
+    "testFile": "gridpath.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 62,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 17029
+    },
+    "tests": 2,
+    "names": [
+     "audit: agrees with an independent computation on random grids",
+     "audit: the grid argument is not modified"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "10/10",
+  "gate": "split-1",
+  "ms": 1493,
+  "files": [
+   {
+    "testFile": "gridpath.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 46,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 51526
+    },
+    "tests": 10,
+    "names": [
+     "the shortest route, not just any route",
+     "rows and columns are not swapped",
+     "same cell, walls at either end",
+     "moves are not diagonal",
+     "unreachable cells inside walls",
+     "a one-cell grid",
+     "a 200 x 200 open grid is fast",
+     "a serpentine corridor",
+     "bad positions are a RangeError",
+     "bad grids are a TypeError"
+    ]
+   }
+  ]
+ }
+}

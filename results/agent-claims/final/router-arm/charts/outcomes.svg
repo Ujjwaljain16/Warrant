@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 710 202" font-family="sans-serif" font-size="11">
+<rect width="710" height="202" fill="white"/>
+<text x="10" y="18" font-size="14" font-weight="bold">Run outcomes by model (share of runs)</text>
+<text x="104" y="50" text-anchor="end">anthropic/claude-haiku-5.5</text>
+<rect x="110" y="36" width="306.22222222222223" height="22" fill="#2a7f62"><title>anthropic/claude-haiku-5.5 TRUE_SUCCESS: 53/90</title></rect>
+<rect x="416.22222222222223" y="36" width="17.333333333333332" height="22" fill="#e5c494"><title>anthropic/claude-haiku-5.5 GATE_FALSE_ACCEPT: 3/90</title></rect>
+<rect x="433.55555555555554" y="36" width="167.55555555555557" height="22" fill="#d95f02"><title>anthropic/claude-haiku-5.5 FALSE_CLAIM: 29/90</title></rect>
+<rect x="601.1111111111111" y="36" width="28.888888888888886" height="22" fill="#555555"><title>anthropic/claude-haiku-5.5 ERROR: 5/90</title></rect>
+<text x="636" y="50">n=90</text>
+<text x="104" y="84" text-anchor="end">openai/gpt-5.4-mini</text>
+<rect x="110" y="70" width="34.666666666666664" height="22" fill="#2a7f62"><title>openai/gpt-5.4-mini TRUE_SUCCESS: 6/90</title></rect>
+<rect x="144.66666666666666" y="70" width="260" height="22" fill="#d95f02"><title>openai/gpt-5.4-mini FALSE_CLAIM: 45/90</title></rect>
+<rect x="404.66666666666663" y="70" width="208" height="22" fill="#8da0cb"><title>openai/gpt-5.4-mini HONEST_CANNOT: 36/90</title></rect>
+<rect x="612.6666666666666" y="70" width="17.333333333333332" height="22" fill="#999999"><title>openai/gpt-5.4-mini TIMEOUT: 3/90</title></rect>
+<text x="636" y="84">n=90</text>
+<text x="104" y="118" text-anchor="end">all models</text>
+<rect x="110" y="104" width="170.44444444444446" height="22" fill="#2a7f62"><title>all models TRUE_SUCCESS: 59/180</title></rect>
+<rect x="280.44444444444446" y="104" width="8.666666666666666" height="22" fill="#e5c494"><title>all models GATE_FALSE_ACCEPT: 3/180</title></rect>
+<rect x="289.11111111111114" y="104" width="213.77777777777777" height="22" fill="#d95f02"><title>all models FALSE_CLAIM: 74/180</title></rect>
+<rect x="502.8888888888889" y="104" width="104" height="22" fill="#8da0cb"><title>all models HONEST_CANNOT: 36/180</title></rect>
+<rect x="606.8888888888889" y="104" width="8.666666666666666" height="22" fill="#999999"><title>all models TIMEOUT: 3/180</title></rect>
+<rect x="615.5555555555555" y="104" width="14.444444444444443" height="22" fill="#555555"><title>all models ERROR: 5/180</title></rect>
+<text x="636" y="118">n=180</text>
+<rect x="110" y="180" width="10" height="10" fill="#2a7f62"/><text x="124" y="189">TRUE_SUCCESS</text>
+<rect x="215" y="180" width="10" height="10" fill="#e5c494"/><text x="229" y="189">GATE_FALSE_ACCEPT</text>
+<rect x="320" y="180" width="10" height="10" fill="#d95f02"/><text x="334" y="189">FALSE_CLAIM</text>
+<rect x="425" y="180" width="10" height="10" fill="#8da0cb"/><text x="439" y="189">HONEST_CANNOT</text>
+<rect x="530" y="180" width="10" height="10" fill="#999999"/><text x="544" y="189">TIMEOUT</text>
+<rect x="635" y="180" width="10" height="10" fill="#555555"/><text x="649" y="189">ERROR</text>
+</svg>

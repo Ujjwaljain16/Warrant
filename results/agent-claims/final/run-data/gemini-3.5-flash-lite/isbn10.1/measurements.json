@@ -1,0 +1,112 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "7/7",
+  "gate": "split-1",
+  "ms": 1100,
+  "files": [
+   {
+    "testFile": "isbn.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 29,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1789
+    },
+    "tests": 7,
+    "names": [
+     "X as the check character",
+     "X anywhere else is invalid",
+     "the check is the weighted sum modulo 11",
+     "length is exactly ten after removing separators",
+     "other characters are invalid",
+     "separators may appear anywhere",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "12/12",
+  "gate": "split-1",
+  "ms": 2263,
+  "files": [
+   {
+    "testFile": "isbn.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 29,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1789
+    },
+    "tests": 7,
+    "names": [
+     "X as the check character",
+     "X anywhere else is invalid",
+     "the check is the weighted sum modulo 11",
+     "length is exactly ten after removing separators",
+     "other characters are invalid",
+     "separators may appear anywhere",
+     "non-strings throw TypeError"
+    ]
+   },
+   {
+    "testFile": "isbn.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 51,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3079
+    },
+    "tests": 5,
+    "names": [
+     "audit: a sum that is divisible by 11 only because X was counted as 10",
+     "audit: exactly one check character in eleven is right for any nine digits",
+     "audit: all zeros",
+     "audit: unicode digits and look-alikes are not accepted",
+     "audit: lower-case x is only valid at the end"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "7/7",
+  "gate": "split-1",
+  "ms": 1194,
+  "files": [
+   {
+    "testFile": "isbn.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 29,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1789
+    },
+    "tests": 7,
+    "names": [
+     "X as the check character",
+     "X anywhere else is invalid",
+     "the check is the weighted sum modulo 11",
+     "length is exactly ten after removing separators",
+     "other characters are invalid",
+     "separators may appear anywhere",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ }
+}

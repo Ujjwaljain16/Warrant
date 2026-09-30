@@ -1,0 +1,115 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1712,
+  "files": [
+   {
+    "testFile": "bizdays.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 41,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2610
+    },
+    "tests": 8,
+    "names": [
+     "from a Friday, the next business day is Monday",
+     "from a weekend, one step forward is Monday",
+     "zero leaves the date alone, even on a weekend",
+     "negative counts move backwards over weekends",
+     "five business days is exactly one week",
+     "month, year and leap-day boundaries",
+     "large counts are fast and right",
+     "invalid dates and counts"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "13/13",
+  "gate": "split-1",
+  "ms": 2879,
+  "files": [
+   {
+    "testFile": "bizdays.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 41,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2610
+    },
+    "tests": 8,
+    "names": [
+     "from a Friday, the next business day is Monday",
+     "from a weekend, one step forward is Monday",
+     "zero leaves the date alone, even on a weekend",
+     "negative counts move backwards over weekends",
+     "five business days is exactly one week",
+     "month, year and leap-day boundaries",
+     "large counts are fast and right",
+     "invalid dates and counts"
+    ]
+   },
+   {
+    "testFile": "bizdays.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 211,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 13534
+    },
+    "tests": 5,
+    "names": [
+     "audit: the result of a nonzero step count is always a weekday",
+     "audit: adding n then -n returns to the start when the start is a weekday",
+     "audit: stepping one at a time equals stepping all at once",
+     "audit: results outside years 1000-9999 are a RangeError",
+     "audit: a year-end Friday"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1651,
+  "files": [
+   {
+    "testFile": "bizdays.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 41,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2610
+    },
+    "tests": 8,
+    "names": [
+     "from a Friday, the next business day is Monday",
+     "from a weekend, one step forward is Monday",
+     "zero leaves the date alone, even on a weekend",
+     "negative counts move backwards over weekends",
+     "five business days is exactly one week",
+     "month, year and leap-day boundaries",
+     "large counts are fast and right",
+     "invalid dates and counts"
+    ]
+   }
+  ]
+ }
+}

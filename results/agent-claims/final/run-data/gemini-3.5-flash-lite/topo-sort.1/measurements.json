@@ -1,0 +1,113 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1123,
+  "files": [
+   {
+    "testFile": "toposort.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 24,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 4735
+    },
+    "tests": 8,
+    "names": [
+     "smallest available node first",
+     "names that only appear as dependencies are nodes",
+     "a diamond",
+     "independent nodes are sorted",
+     "cycles throw an Error with code CYCLE",
+     "duplicates in a list are harmless; the empty graph",
+     "the graph is not modified",
+     "argument checks"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "11/11",
+  "gate": "split-1",
+  "ms": 2455,
+  "files": [
+   {
+    "testFile": "toposort.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 24,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 4735
+    },
+    "tests": 8,
+    "names": [
+     "smallest available node first",
+     "names that only appear as dependencies are nodes",
+     "a diamond",
+     "independent nodes are sorted",
+     "cycles throw an Error with code CYCLE",
+     "duplicates in a list are harmless; the empty graph",
+     "the graph is not modified",
+     "argument checks"
+    ]
+   },
+   {
+    "testFile": "toposort.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 44,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 42683
+    },
+    "tests": 3,
+    "names": [
+     "audit: random acyclic graphs give exactly the specified order",
+     "audit: a long chain and a wide fan-out",
+     "audit: ordering of names is by code unit, so digits and capitals come first"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1078,
+  "files": [
+   {
+    "testFile": "toposort.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 24,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 4735
+    },
+    "tests": 8,
+    "names": [
+     "smallest available node first",
+     "names that only appear as dependencies are nodes",
+     "a diamond",
+     "independent nodes are sorted",
+     "cycles throw an Error with code CYCLE",
+     "duplicates in a list are harmless; the empty graph",
+     "the graph is not modified",
+     "argument checks"
+    ]
+   }
+  ]
+ }
+}

@@ -1,0 +1,116 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1431,
+  "files": [
+   {
+    "testFile": "pool.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 17,
+     "served": 52,
+     "snaps": 28,
+     "bytes": 9258
+    },
+    "tests": 8,
+    "names": [
+     "never more than limit in flight, and all results in order",
+     "a freed slot is reused at once, not at the end of a batch",
+     "jobs start in input order and receive their index",
+     "a limit larger than the list starts everything at once",
+     "a rejection rejects the pool with the same error and stops new starts",
+     "a synchronous throw in the worker is a rejection too",
+     "workers may return plain values",
+     "invalid arguments reject, they do not throw synchronously"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "14/14",
+  "gate": "split-1",
+  "ms": 3188,
+  "files": [
+   {
+    "testFile": "pool.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 17,
+     "served": 51,
+     "snaps": 27,
+     "bytes": 9148
+    },
+    "tests": 8,
+    "names": [
+     "never more than limit in flight, and all results in order",
+     "a freed slot is reused at once, not at the end of a batch",
+     "jobs start in input order and receive their index",
+     "a limit larger than the list starts everything at once",
+     "a rejection rejects the pool with the same error and stops new starts",
+     "a synchronous throw in the worker is a rejection too",
+     "workers may return plain values",
+     "invalid arguments reject, they do not throw synchronously"
+    ]
+   },
+   {
+    "testFile": "pool.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 7,
+     "served": 627,
+     "snaps": 313,
+     "bytes": 392702
+    },
+    "tests": 6,
+    "names": [
+     "audit: limit 1 runs strictly one after another",
+     "audit: a failure after a slow success still rejects, and a later failure does not change the first error",
+     "audit: the results array holds undefined for jobs that return nothing, and the right length",
+     "audit: many quick jobs finish and keep order",
+     "audit: the input array is not modified",
+     "audit: no unhandled rejection from jobs that fail after the pool already rejected"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "8/8",
+  "gate": "split-1",
+  "ms": 1472,
+  "files": [
+   {
+    "testFile": "pool.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 17,
+     "served": 50,
+     "snaps": 26,
+     "bytes": 9048
+    },
+    "tests": 8,
+    "names": [
+     "never more than limit in flight, and all results in order",
+     "a freed slot is reused at once, not at the end of a batch",
+     "jobs start in input order and receive their index",
+     "a limit larger than the list starts everything at once",
+     "a rejection rejects the pool with the same error and stops new starts",
+     "a synchronous throw in the worker is a rejection too",
+     "workers may return plain values",
+     "invalid arguments reject, they do not throw synchronously"
+    ]
+   }
+  ]
+ }
+}

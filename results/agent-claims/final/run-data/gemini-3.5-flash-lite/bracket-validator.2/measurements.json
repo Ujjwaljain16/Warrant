@@ -1,0 +1,119 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1349,
+  "files": [
+   {
+    "testFile": "brackets.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 30,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1853
+    },
+    "tests": 9,
+    "names": [
+     "brackets inside strings are ignored",
+     "escapes inside strings",
+     "brackets inside comments are ignored",
+     "comment markers inside strings are text",
+     "quotes inside comments do not start strings",
+     "unterminated strings and comments",
+     "unexpected closers, mismatches and unclosed brackets",
+     "the first problem wins",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "15/15",
+  "gate": "split-1",
+  "ms": 2636,
+  "files": [
+   {
+    "testFile": "brackets.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 30,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1853
+    },
+    "tests": 9,
+    "names": [
+     "brackets inside strings are ignored",
+     "escapes inside strings",
+     "brackets inside comments are ignored",
+     "comment markers inside strings are text",
+     "quotes inside comments do not start strings",
+     "unterminated strings and comments",
+     "unexpected closers, mismatches and unclosed brackets",
+     "the first problem wins",
+     "non-strings throw TypeError"
+    ]
+   },
+   {
+    "testFile": "brackets.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 10,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 2552
+    },
+    "tests": 6,
+    "names": [
+     "audit: a line comment at the very end without a newline",
+     "audit: a slash that is not a comment",
+     "audit: a block comment immediately closed, and nested-looking comments",
+     "audit: a single-quoted string containing double quotes and brackets",
+     "audit: deep nesting",
+     "audit: carriage return ends a string too"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1501,
+  "files": [
+   {
+    "testFile": "brackets.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 30,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1853
+    },
+    "tests": 9,
+    "names": [
+     "brackets inside strings are ignored",
+     "escapes inside strings",
+     "brackets inside comments are ignored",
+     "comment markers inside strings are text",
+     "quotes inside comments do not start strings",
+     "unterminated strings and comments",
+     "unexpected closers, mismatches and unclosed brackets",
+     "the first problem wins",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ }
+}

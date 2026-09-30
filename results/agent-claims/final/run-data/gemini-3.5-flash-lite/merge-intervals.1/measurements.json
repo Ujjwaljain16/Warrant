@@ -1,0 +1,108 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 1182,
+  "files": [
+   {
+    "testFile": "intervals.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 28,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 5134
+    },
+    "tests": 6,
+    "names": [
+     "touching intervals merge",
+     "a contained interval does not shrink the end",
+     "sorting is numeric",
+     "negative numbers, duplicates and single intervals",
+     "the input is untouched and the result is made of new arrays",
+     "invalid intervals"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "10/10",
+  "gate": "split-1",
+  "ms": 2228,
+  "files": [
+   {
+    "testFile": "intervals.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 28,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 5134
+    },
+    "tests": 6,
+    "names": [
+     "touching intervals merge",
+     "a contained interval does not shrink the end",
+     "sorting is numeric",
+     "negative numbers, duplicates and single intervals",
+     "the input is untouched and the result is made of new arrays",
+     "invalid intervals"
+    ]
+   },
+   {
+    "testFile": "intervals.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 57,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 47457
+    },
+    "tests": 4,
+    "names": [
+     "audit: fractional bounds",
+     "audit: zero-length intervals",
+     "audit: same start, different ends, in both orders",
+     "audit: the output is sorted, disjoint and covers exactly the same points as the input"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 1569,
+  "files": [
+   {
+    "testFile": "intervals.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 28,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 5134
+    },
+    "tests": 6,
+    "names": [
+     "touching intervals merge",
+     "a contained interval does not shrink the end",
+     "sorting is numeric",
+     "negative numbers, duplicates and single intervals",
+     "the input is untouched and the result is made of new arrays",
+     "invalid intervals"
+    ]
+   }
+  ]
+ }
+}

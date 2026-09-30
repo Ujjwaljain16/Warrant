@@ -1,0 +1,118 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1158,
+  "files": [
+   {
+    "testFile": "expr.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 63,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3606
+    },
+    "tests": 9,
+    "names": [
+     "power is right-associative and binds tighter than unary minus",
+     "unary signs may repeat",
+     "left associativity of - / %",
+     "remainder follows JavaScript",
+     "decimals, nesting and whitespace",
+     "division and remainder by zero are a RangeError",
+     "malformed input is a SyntaxError",
+     "the evaluator does not run code",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "14/14",
+  "gate": "split-1",
+  "ms": 2506,
+  "files": [
+   {
+    "testFile": "expr.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 63,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3606
+    },
+    "tests": 9,
+    "names": [
+     "power is right-associative and binds tighter than unary minus",
+     "unary signs may repeat",
+     "left associativity of - / %",
+     "remainder follows JavaScript",
+     "decimals, nesting and whitespace",
+     "division and remainder by zero are a RangeError",
+     "malformed input is a SyntaxError",
+     "the evaluator does not run code",
+     "non-strings throw TypeError"
+    ]
+   },
+   {
+    "testFile": "expr.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 111,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 12043
+    },
+    "tests": 5,
+    "names": [
+     "audit: agrees with JavaScript on random expressions over + - * / and parentheses",
+     "audit: mixed operators",
+     "audit: a long flat expression",
+     "audit: deeply nested parentheses",
+     "audit: a zero divisor produced by an expression, but zero numerators are fine"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "9/9",
+  "gate": "split-1",
+  "ms": 1384,
+  "files": [
+   {
+    "testFile": "expr.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 63,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3606
+    },
+    "tests": 9,
+    "names": [
+     "power is right-associative and binds tighter than unary minus",
+     "unary signs may repeat",
+     "left associativity of - / %",
+     "remainder follows JavaScript",
+     "decimals, nesting and whitespace",
+     "division and remainder by zero are a RangeError",
+     "malformed input is a SyntaxError",
+     "the evaluator does not run code",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ }
+}

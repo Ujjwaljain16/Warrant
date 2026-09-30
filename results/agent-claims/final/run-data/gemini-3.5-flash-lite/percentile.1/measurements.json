@@ -1,0 +1,108 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 1538,
+  "files": [
+   {
+    "testFile": "percentile.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 33,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3706
+    },
+    "tests": 6,
+    "names": [
+     "values are sorted numerically, not as text",
+     "interpolation at other ranks",
+     "negative numbers and duplicates",
+     "a single value is every percentile",
+     "the input is not modified",
+     "invalid p and values"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "pass",
+  "code": "AUDIT_PASS",
+  "detail": "10/10",
+  "gate": "split-1",
+  "ms": 2819,
+  "files": [
+   {
+    "testFile": "percentile.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 33,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3706
+    },
+    "tests": 6,
+    "names": [
+     "values are sorted numerically, not as text",
+     "interpolation at other ranks",
+     "negative numbers and duplicates",
+     "a single value is every percentile",
+     "the input is not modified",
+     "invalid p and values"
+    ]
+   },
+   {
+    "testFile": "percentile.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 7,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 790
+    },
+    "tests": 4,
+    "names": [
+     "audit: p given as exactly 0 and 100 on unsorted multi-digit data",
+     "audit: fractional values and fractional p",
+     "audit: the median of an even count of multi-digit numbers",
+     "audit: large p near the top"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "6/6",
+  "gate": "split-1",
+  "ms": 1514,
+  "files": [
+   {
+    "testFile": "percentile.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 33,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 3706
+    },
+    "tests": 6,
+    "names": [
+     "values are sorted numerically, not as text",
+     "interpolation at other ranks",
+     "negative numbers and duplicates",
+     "a single value is every percentile",
+     "the input is not modified",
+     "invalid p and values"
+    ]
+   }
+  ]
+ }
+}

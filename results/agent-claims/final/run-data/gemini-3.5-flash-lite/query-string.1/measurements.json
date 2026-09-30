@@ -1,0 +1,115 @@
+{
+ "gate": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "7/7",
+  "gate": "split-1",
+  "ms": 1661,
+  "files": [
+   {
+    "testFile": "query.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 27,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1670
+    },
+    "tests": 7,
+    "names": [
+     "percent-decoding as UTF-8, and plus as space",
+     "malformed escapes stay literal and do not disturb valid ones",
+     "empty segments, missing equals signs and empty keys",
+     "only the first equals sign splits",
+     "repeated keys",
+     "keys that would collide with Object.prototype",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ },
+ "audit": {
+  "status": "fail",
+  "code": "AUDIT_FAIL",
+  "detail": "exit 1, 11/12 passed",
+  "failed_tests": [
+   "audit: invalid UTF-8 becomes U+FFFD, valid sequences around it survive"
+  ],
+  "gate": "split-1",
+  "ms": 2828,
+  "files": [
+   {
+    "testFile": "query.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 27,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1670
+    },
+    "tests": 7,
+    "names": [
+     "percent-decoding as UTF-8, and plus as space",
+     "malformed escapes stay literal and do not disturb valid ones",
+     "empty segments, missing equals signs and empty keys",
+     "only the first equals sign splits",
+     "repeated keys",
+     "keys that would collide with Object.prototype",
+     "non-strings throw TypeError"
+    ]
+   },
+   {
+    "testFile": "query.audit.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 9,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 513
+    },
+    "tests": 5,
+    "names": [
+     "audit: invalid UTF-8 becomes U+FFFD, valid sequences around it survive",
+     "audit: four-byte characters and a plus inside an escape sequence run",
+     "audit: only one leading question mark is ignored",
+     "audit: key order is the order of first appearance",
+     "audit: a key that decodes to the same text as another is the same key"
+    ]
+   }
+  ]
+ },
+ "visible": "pass",
+ "engine_gate_result": {
+  "status": "pass",
+  "code": "HIDDEN_TESTS_PASS",
+  "detail": "7/7",
+  "gate": "split-1",
+  "ms": 1463,
+  "files": [
+   {
+    "testFile": "query.gate.test.js",
+    "solutionExit": 137,
+    "verdictExit": 0,
+    "rpc": {
+     "calls": 27,
+     "served": 0,
+     "snaps": 0,
+     "bytes": 1670
+    },
+    "tests": 7,
+    "names": [
+     "percent-decoding as UTF-8, and plus as space",
+     "malformed escapes stay literal and do not disturb valid ones",
+     "empty segments, missing equals signs and empty keys",
+     "only the first equals sign splits",
+     "repeated keys",
+     "keys that would collide with Object.prototype",
+     "non-strings throw TypeError"
+    ]
+   }
+  ]
+ }
+}
