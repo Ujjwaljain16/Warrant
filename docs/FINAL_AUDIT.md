@@ -181,7 +181,9 @@ parent are not tracked); receipts survive a process crash, not power loss.
   tests (54.4%, task-clustered 95% CI 41.9% to 66.0%); the hidden-test gate accepted 3 of 77 wrong claims, the agent's own visible tests 56
   **[verified, regenerated from the recorded results by `scripts/agent-report.js`]**. Read `docs/AGENT_RESULTS.md` for what limits this: router model
   identity is unverified, `gpt-5.4-mini`'s repeats were byte-identical, the tasks are small and synthetic, 142 of 402 judge replies were cut off
-  at the output limit so the LLM judge is not ranked, and the Gemini arm is partial because the free tier was overloaded **[limits]**.
+  at the output limit so the LLM judge is not ranked, and the Gemini arms (flash-lite 39 episodes, Gemma 4) are partial because the free tier was
+  overloaded and then rate-limited. The false-claim rate depends strongly on the model: flash-lite had 2 audit-wrong claims in 36 (5.6%) against
+  37.6% and 88.2% for the router models **[limits]**.
   The sandbox's POSIX permission path was not exercised beyond the Linux CI runner **[not done]**.
 - CI has run on GitHub-hosted runners (`ubuntu-latest` and `windows-latest`, Node 22): the first runs passed, and a later run exposed one
   timing-sensitive MCP test, which was made tolerant of slow machines. The same commands also ran on Windows and in a Linux

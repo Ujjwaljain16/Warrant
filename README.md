@@ -43,11 +43,15 @@ were wrong** (56.6%, 95% CI 44.3% to 68.1%). What each check accepted of the wro
 
 ![false-accept rate by verification strategy](results/agent-claims/final/charts/strategy_false_accept.svg)
 
+**The rate depends heavily on the model.** A partial run of `gemini-3.5-flash-lite` (39 episodes, served directly by Google)
+had 2 wrong claims in 36 (5.6%, CI 0.0% to 14.7%), against 37.6% and 88.2% for the two router models, so the 57% describes
+that pair, not agents in general.
+
 Read these caveats with the numbers. The models were reached through a **third-party router whose model identity is
 unverified**. The tasks are 30 small synthetic JavaScript problems, one setting. The protocol's pre-registered primary arm
 (direct Gemini API) is only **partially run** because the free tier was overloaded, so the figures above pool the router
 arm, which the protocol listed as a separate extra. The three gate misses are named, and the LLM-judge comparison is
-inconclusive (142 of 402 judge replies were cut off). [Everything, including the deviations](docs/AGENT_RESULTS.md).
+inconclusive (142 of 402 judge replies were cut off). [Everything, including the deviations](docs/AGENT_RESULTS.md); generated tables: [router arm](results/agent-claims/final/router-arm/REPORT.md), [all recorded runs](results/agent-claims/final/REPORT.md).
 
 ## Try it (no key, no network, no dependencies)
 
