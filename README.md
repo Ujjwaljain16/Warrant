@@ -16,6 +16,10 @@ be re-audited later, and an irreversible action is never repeated on a guess.
 It also ships the means to doubt all of that: a deterministic fault-injection benchmark, and a study of real models
 whose "done" claims were checked by hidden tests in a Docker sandbox. Both report where the approach loses.
 
+![A 30-second tour: a worker that lies about being done is stopped by the gate, the log verifies, and what real agents did](docs/media/demo.gif)
+
+<sub>Terminal panes are condensed from the real output of the commands; [how the demo is made](tools/demo/README.md).</sub>
+
 ## Results
 
 **Simulated workers: 125,000 runs, held-out seeds, 500 paired trials per cell.** Closest baseline: same deadlines and
@@ -79,7 +83,7 @@ Re-audit a finished log's hash chain and invariants independently of the engine,
 node bin/warrant.js verify-log .warrant/run-pipeline/run.log --spec examples/pipeline/spec.json
 ```
 
-![the run viewer on a lying-worker log](viewer/screenshots/lying-worker-dark.jpg)
+![the run viewer on a lying-worker log: the chain verifies, four false claims were caught, one task ran out of attempts](viewer/screenshots/lying-worker-dark.png)
 
 ## How a run works
 

@@ -5,7 +5,7 @@
 independent re-check of the hash chain and the invariants. It needs no server, no network and no install: open
 the file in a browser, or drop a log on it.
 
-![The lying-worker sample: the chain verifies, the gate caught four false claims](../viewer/screenshots/lying-worker-dark.jpg)
+![The lying-worker sample: the chain verifies, the gate caught four false claims](../viewer/screenshots/lying-worker-dark.png)
 
 ## Using it
 
@@ -21,7 +21,7 @@ to check the invariants that need the spec (I2, I3, I5). A spec is recognised by
 |---|---|
 | Honest run | Six tasks; one crash retried, one ambiguous one-shot effect reconciled, one duplicate delivery ignored. |
 | Lying worker | Workers claim success with wrong output. The gate rejects four claims; one task runs out of attempts and its dependents never start. |
-| Tampered log | The lying-worker log with one verdict edited from fail to pass. The chain breaks at entry 8 and the page says why. |
+| Tampered log | The lying-worker log with one verdict edited from fail to pass. The chain breaks at entry 8 and the page says why ([screenshot](../viewer/screenshots/tampered-dark.png)). |
 | Forged success | A failed task rewritten as succeeded with every hash recomputed. The chain still verifies; the audit reports I1. |
 
 The samples are real engine output (virtual clock, scripted faults), regenerated with
@@ -78,7 +78,7 @@ viewer/src/            canonical.js  states.js  text.js  parse.js  chain.js  aud
                        dom.js  icons.js  timeline.js  views.js  app.js     browser-only UI
                        index.template.html  style.css
 viewer/samples/        generated sample logs and their run spec
-viewer/screenshots/    images for the README
+viewer/screenshots/    2x PNGs for the README and this page (dark and light lying-worker, dark tampered)
 scripts/build-viewer.js          bundles everything into viewer/run-viewer.html (deterministic)
 scripts/gen-viewer-samples.js    regenerates viewer/samples/ from the real engine
 test/viewer.test.js              Node-only, offline
