@@ -60,13 +60,18 @@ jobs:
         with:
           node-version: 22
 
+      - name: Pull the sandbox image (the runner does not have it)
+        run: docker pull node:22-alpine
+
       - name: Replay (offline, no keys in the environment)
         run: |
           if [ ! -d bench/agent-claims/cassettes/final ]; then
             echo "no committed final cassettes yet; nothing to replay"
             exit 0
           fi
-          node scripts/agent-bench.js --stage final --replay --no-judge
+          # --router selects the two agents whose cassettes are committed (the direct Gemini arm has none yet).
+          # The runner compares every replayed episode with the committed run and prints "replay check: N compared, M mismatch(es)".
+          node scripts/agent-bench.js --stage final --replay --router --no-judge
 
       - name: Compare replayed outcomes with the committed run
         run: |
