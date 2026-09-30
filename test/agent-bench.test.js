@@ -262,6 +262,20 @@ test('judge call: a reply cut off by the length limit is invalid, usage is repor
 
 // ---------------------------------------------------------------- runner pieces
 
+test('buildReport with a model list reports only those models, from the committed router-arm results', { skip: !fs.existsSync(path.join(__dirname, '..', 'results', 'agent-claims', 'final', 'runs.jsonl')) }, () => {
+  const { buildReport } = require('../src/bench/agent-report-io');
+  const out = fs.mkdtempSync(path.join(os.tmpdir(), 'warrant-report-'));
+  try {
+    const models = ['anthropic/claude-haiku-5.5', 'openai/gpt-5.4-mini'];
+    const { summary } = buildReport(path.join(__dirname, '..', 'results', 'agent-claims', 'final'), { models, outDir: out });
+    assert.deepEqual(Object.keys(summary.per_model).sort(), models);
+    assert.equal(summary.n_runs, 180);
+    assert.equal(summary.plan.planned, 180); // the plan is filtered too, so nothing from another arm counts as missing
+    assert.equal(summary.plan.recorded, 180);
+    assert.ok(fs.existsSync(path.join(out, 'REPORT.md')) && fs.existsSync(path.join(out, 'charts')));
+  } finally { fs.rmSync(out, { recursive: true, force: true }); }
+});
+
 test('mergePlan: a later invocation adds to the plan instead of replacing it', () => {
   const first = { stage: 'final', models: ['a', 'b'], tasks: ['t1', 't2'], repeats: 3, keys: ['final/a/t1/1', 'final/b/t1/1'] };
   const second = { stage: 'final', models: ['c'], tasks: ['t1', 't2'], repeats: 3, keys: ['final/c/t1/1'] };

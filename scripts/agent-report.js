@@ -9,11 +9,25 @@
 const path = require('node:path');
 const { buildReport } = require('../src/bench/agent-report-io');
 
+//   node scripts/agent-report.js results/agent-claims/final --models a,b --out results/agent-claims/final/some-arm
+// writes a report for those models only (a results directory that several arms fill would otherwise pool arms of different size).
+
 try {
-  const dir = path.resolve(process.argv[2] || '');
-  if (!process.argv[2]) throw new Error('usage: agent-report.js <results-dir>');
-  const { summary } = buildReport(dir);
-  process.stdout.write(`wrote summary.json, REPORT.md and charts/ in ${dir} (${summary.n_runs} runs)\n`);
+  const args = process.argv.slice(2);
+  if (!args[0] || args[0].startsWith('--')) throw new Error('usage: agent-report.js <results-dir> [--models a,b --out <dir>]');
+  const option = (name) => {
+    const i = args.indexOf(name);
+    if (i < 0) return null;
+    if (!args[i + 1]) throw new Error(`${name} needs a value`);
+    return args[i + 1];
+  };
+  const dir = path.resolve(args[0]);
+  const models = option('--models');
+  const out = option('--out');
+  if (models && !out) throw new Error('--models writes a different report, so it needs --out <dir>; the results directory keeps the full report');
+  const outDir = out ? path.resolve(out) : dir;
+  const { summary } = buildReport(dir, { models: models ? models.split(',') : null, outDir });
+  process.stdout.write(`wrote summary.json, REPORT.md and charts/ in ${outDir} (${summary.n_runs} runs)\n`);
 } catch (error) {
   process.stderr.write(`agent-report: ${error.message}\n`);
   process.exitCode = 1;
