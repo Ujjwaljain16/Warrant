@@ -65,8 +65,8 @@ for (const file of files) {
   if (/^\.env($|\.)/.test(name) && name !== '.env.example') problems.push(`secret: ${rel(file)}: env file must not be committed`);
 }
 
-// 4. Provenance: every vendored file must match the hash recorded in UPSTREAM_PROVENANCE.md, and nothing unlisted may hide in third_party/.
-const provenance = fs.readFileSync(path.join(ROOT, 'UPSTREAM_PROVENANCE.md'), 'utf8');
+// 4. Provenance: every vendored file must match the hash recorded in docs/UPSTREAM_PROVENANCE.md, and nothing unlisted may hide in third_party/.
+const provenance = fs.readFileSync(path.join(ROOT, 'docs', 'UPSTREAM_PROVENANCE.md'), 'utf8');
 const recorded = new Map();
 for (const m of provenance.matchAll(/^\| `([^`]+)` \| `([a-f0-9]{64})` \|/gm)) recorded.set(m[1], m[2]);
 const NOT_UPSTREAM = new Set(['core/operations/index.js']);
@@ -74,7 +74,7 @@ const vendorRoot = path.join(ROOT, 'third_party', 'citadel');
 const vendored = walk(vendorRoot).map((f) => path.relative(vendorRoot, f).split(path.sep).join('/'));
 for (const relative of vendored) {
   if (NOT_UPSTREAM.has(relative)) continue;
-  if (!recorded.has(relative)) { problems.push(`provenance: third_party/citadel/${relative} is not listed in UPSTREAM_PROVENANCE.md`); continue; }
+  if (!recorded.has(relative)) { problems.push(`provenance: third_party/citadel/${relative} is not listed in docs/UPSTREAM_PROVENANCE.md`); continue; }
   const actual = crypto.createHash('sha256').update(fs.readFileSync(path.join(vendorRoot, relative))).digest('hex');
   if (actual !== recorded.get(relative)) problems.push(`provenance: third_party/citadel/${relative} was modified (hash ${actual.slice(0, 12)} != recorded ${recorded.get(relative).slice(0, 12)}); vendored files must stay pristine`);
 }

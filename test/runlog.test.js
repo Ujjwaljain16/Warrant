@@ -117,7 +117,7 @@ test('file log: a second live writer is refused', () => {
   forced.close();
 });
 
-test('REGRESSION: a writer that dies holding the lock no longer wedges the log (upstream defect F2 in AUDIT.md)', () => {
+test('REGRESSION: a writer that dies holding the lock no longer wedges the log (upstream defect F2 in docs/AUDIT.md)', () => {
   const dir = tmp('stale-lock');
   const file = path.join(dir, 'run.log');
   const child = spawnSync(process.execPath, ['-e', `
