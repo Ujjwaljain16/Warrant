@@ -7,12 +7,13 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-const ROOT = path.resolve(__dirname, '..');
+// WARRANT_DOCS_ROOT lets the test run this check against a mutated copy of the repository.
+const ROOT = process.env.WARRANT_DOCS_ROOT ? path.resolve(process.env.WARRANT_DOCS_ROOT) : path.resolve(__dirname, '..');
 const problems = [];
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const exists = (rel) => fs.existsSync(path.join(ROOT, rel));
 
-const DOCS = ['README.md', 'SECURITY.md', 'CONTRIBUTING.md',
+const DOCS = ['README.md', 'SECURITY.md', 'CONTRIBUTING.md', 'CHANGELOG.md',
   ...fs.readdirSync(path.join(ROOT, 'docs')).filter((f) => f.endsWith('.md')).map((f) => `docs/${f}`)];
 
 // 1. Relative links resolve.
