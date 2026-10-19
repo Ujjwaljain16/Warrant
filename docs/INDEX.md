@@ -33,3 +33,4 @@ A suggested reading order. Each page says what it claims and what it does not.
 - [UPSTREAM_PROVENANCE](UPSTREAM_PROVENANCE.md): exactly what was taken from Citadel and what changed.
 - [AUDIT](AUDIT.md): the upstream audit and its findings.
 - [FINAL_AUDIT](FINAL_AUDIT.md): the project audit: what was tested, what is verified, what is not done.
+- [CHANGELOG](../CHANGELOG.md): what 0.1.0 contains and its known gaps.
