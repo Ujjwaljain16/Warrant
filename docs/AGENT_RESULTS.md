@@ -87,6 +87,13 @@ loop) explains the gap; this run cannot tell which. It is not pooled with anythi
 
 ## Weaknesses that matter
 
+- **One audit test is timing-sensitive.** In `retry-async`, the audit test "the sleep function is awaited before the next attempt" waits
+  a fixed 20 ms for two calls that go through the cross-container proxy. A CI replay of the same recorded code failed it where the
+  original run passed it ([bench/agent-claims/known-flaky.json](../bench/agent-claims/known-flaky.json)). Three router-arm Haiku runs
+  of that task passed the gate and the audit; if this test had failed them, they would count as gate false accepts, so the router
+  arm's gate false-accept count could be anywhere from 3 to 6 (3.9% to about 7.5% of the wrong claims). The frozen task is not
+  edited; the replay check now names any mismatch and tolerates only the listed one.
+
 - **Model identity is unverified for the two complete arms.** The router's prices are 10 to 40 times below the vendors' lists. Call them "Haiku 5.5 and
   GPT-5.4-mini as served by a third-party router". The directly-served Gemini arms exist to check this and are too small to settle it.
 - **The Gemini arms are partial and unequal.** Flash-lite covers all 30 tasks once and 9 tasks twice; Gemma has 4 runs. Per-model rows for them are descriptive.

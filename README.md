@@ -56,7 +56,7 @@ where the router's model of the same name was wrong on 32 of 85; whether the rou
 Read these caveats with the numbers. The models were reached through a **third-party router whose model identity is
 unverified**. The tasks are 30 small synthetic JavaScript problems, one setting. The protocol's pre-registered primary arm
 (direct Gemini API) is only **partially run** because the free tier was overloaded, so the figures above pool the router
-arm, which the protocol listed as a separate extra. The three gate misses are named, and the LLM-judge comparison is
+arm, which the protocol listed as a separate extra. The three gate misses are named (one timing-sensitive audit test means the true count could be up to 6), and the LLM-judge comparison is
 inconclusive (142 of 402 judge replies were cut off). [Everything, including the deviations](docs/AGENT_RESULTS.md); generated tables: [router arm](results/agent-claims/final/router-arm/REPORT.md), [all recorded runs](results/agent-claims/final/REPORT.md).
 
 ## Try it (no key, no network, no dependencies)

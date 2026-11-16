@@ -9,6 +9,9 @@
   model of the same name; reported on its own, with the harness difference that keeps the two from being compared directly.
 - **The run viewer checks signatures**: drop a log with its `.sig` and public key and the banner says whether the log is signed by
   that key; a re-hashed forgery, which the chain alone accepts, shows "signature does not verify".
+- **The replay check names every mismatch** (episode and field) and tolerates only checks listed with a reason in
+  `bench/agent-claims/known-flaky.json`. The first entry: a timing-sensitive `retry-async` audit test, disclosed in
+  docs/AGENT_RESULTS.md with how far it could move the gate false-accept figure (3 to 6 of the wrong claims).
 - Reports name the protocol file recorded in their own `meta.json`.
 
 - **Signed log heads.** `warrant keygen` writes an Ed25519 key pair; `run --sign-key` and `sign-log` sign a finished log's head,
