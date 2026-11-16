@@ -21,3 +21,6 @@ bench/agent-claims/cassettes/dev/
 
 # demo frames (tools/demo)
 tools/demo/.frames/
+
+# signing keys made by `warrant keygen` (never commit the private key)
+.warrant-keys/
