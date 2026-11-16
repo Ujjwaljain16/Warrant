@@ -1,6 +1,6 @@
 {
   "name": "warrant",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Evidence-gated execution of bounded AI work: a hash-chained, crash-recoverable orchestrator, a fault-injection benchmark, and a hidden-test study of real model claims",
   "license": "MIT",

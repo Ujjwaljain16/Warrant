@@ -139,6 +139,8 @@ retried; `resume` continues from the log after a crash. Design: [ARCHITECTURE](d
 | **Engine and log** | gated execution, state machine, hash-chained log, `resume`, independent `verify-log`; zero npm dependencies |
 | **Simulated benchmark** | 5 policies x 10 fault profiles x 5 workloads, bootstrap CIs, byte-reproducible ([docs](docs/BENCHMARK.md)) |
 | **Agent gate** | model-driven `AgentWorker`; hidden tests run in a split-container Docker sandbox; 43 tasks with audit suites ([protocol](docs/AGENT_CLAIMS_PROTOCOL.md), [results](docs/AGENT_RESULTS.md)) |
+| **Signed logs** | Ed25519 over the log head: `keygen`, `run --sign-key`, `verify-log --pubkey`, and in the viewer; a re-hashed forgery fails |
+| **Agent adapter** | gates any command-line coding agent with hidden tests it never sees ([example](examples/agent-cli/README.md)) |
 | **MCP server** | lets a model run human-approved specs by name, and nothing else ([docs](docs/MCP.md)) |
 | **Run viewer** | offline HTML that re-verifies the chain and invariants in the browser ([docs](docs/VIEWER.md)) |
 | **Multi-agent demo** | planner and parallel workers; gated vs ungated on the same recorded replies ([docs](docs/MULTI_AGENT_DEMO.md)) |
@@ -147,6 +149,8 @@ The full capability table, layout and limitations are in [docs/OVERVIEW.md](docs
 [docs/INDEX.md](docs/INDEX.md).
 
 ## Honest limits
+
+This is version 0.2.0, the current final state; [CHANGELOG](CHANGELOG.md) lists what each version contains and its known gaps.
 
 - The benchmark's workers are simulated and its fault rates are assumptions. The real-model study is small, synthetic and
   routed through an unverifiable third party; see above.

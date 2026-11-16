@@ -189,8 +189,10 @@ parent are not tracked); receipts survive a process crash, not power loss.
   timing-sensitive MCP test, which was made tolerant of slow machines. The same commands also ran on Windows and in a Linux
   container (section 6) **[verified]**; no macOS run **[not done]**.
 - `LICENSE` names "Ujjwaljain16" for new work; replace with your legal name if desired.
-- Remaining work, in order of value: an agent-runtime adapter with `reconcile`; a macOS run; a verified-identity rerun of the agent study with more models;
-  a clean-tree re-run of the partial-requirements experiment; signed run logs; container sandboxing of workers.
+- Remaining work, in order of value (as of 0.2.0, section 13): the real model inside the study's own loop, to separate router serving
+  from harness; gate v2 (an independently written gate suite, re-scored offline); a live run of the command-line agent adapter and
+  `reconcile` for it; a macOS run; a clean-tree re-run of the partial-requirements experiment; container sandboxing of command workers.
+  Signed run logs are done (section 13).
 - The CLI `USAGE` text listed only `--seeds <final|dev>` when this audit was written; it now lists `dev`, `final` and `partial-requirements`.
 
 ## 11. Git history
@@ -235,4 +237,30 @@ node examples/receipt/demo.js                     # crash-after-effect recovery 
 node bin/warrant.js report results/final          # regenerates REPORT.md and charts
 npm run bench:overhead                            # engine overhead (absolute numbers vary by machine)
 node scripts/profile-upstream-scheduler.js ../citadel-upstream   # F3 (needs an upstream clone at that path)
+
+# added in 0.2.0
+node bin/warrant.js keygen && node bin/warrant.js run examples/pipeline/spec.json --dir .warrant/signed --sign-key .warrant-keys/warrant-signing.key
+node bin/warrant.js verify-log .warrant/signed/run-pipeline/run.log --pubkey .warrant-keys/warrant-signing.pub --format text
+node bin/warrant.js run examples/agent-cli/spec.json --format text    # exits 1 by design: the hasty agent fails the hidden tests
+node scripts/agent-report.js results/agent-claims/claude-arm          # regenerates the Claude arm's report (byte-identical)
 ```
+
+## 13. After this audit: version 0.2.0 (2026-11-16)
+
+Added after the sections above were written; each item is in the CHANGELOG with its known gaps.
+
+- **Signed log heads** (`src/log/signing.js`): Ed25519 over the head hash, entry count, spec digest and time. A log rewritten with
+  every hash recomputed, which the chain alone accepts, fails `verify-log --pubkey`; so do a foreign key, an edited record and a
+  truncated log, and entries appended after signing are reported as not covered **[verified, test/signing.test.js]**. The run viewer
+  checks the same signatures in the browser **[verified in Node against the engine's own signatures; not tried by hand in a browser]**.
+- **`--format text`** for `run`, `resume` and `verify-log` **[verified]**.
+- **Adapter for command-line coding agents** (`examples/agent-cli`, `exec.env`, spec-relative `./` in requirements). Offline, two
+  scripted agents both say "done" and both pass the visible tests; only the careful one passes the hidden tests **[verified]**. A live
+  run with Claude Code reached the agent and stopped at its login **[not done]**.
+- **Claude arm of the agent-claims study** (`docs/AGENT_CLAIMS_CLAUDE_ARM.md`): real Claude Haiku 5.5 through Claude Code on the 30
+  held-out tasks, gated by the same Docker gate: 30 of 30 claims right, against 32 of 85 wrong for the router's model of the same name
+  **[verified: the same gate fails the untouched starting code of all 30 tasks]**. The harness differs from the study's, so router
+  serving and harness cannot be separated **[limits]**. Its page and script were written before the run but committed after it.
+- **Replay check** names every mismatch and tolerates only checks listed with a reason in `bench/agent-claims/known-flaky.json`.
+  It found one timing-sensitive audit test, which means the router arm's gate misses could be 3 to 6 rather than 3 **[limits]**.
+- Gate v2 was planned and not started **[not done]**.

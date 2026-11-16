@@ -1,6 +1,9 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 (2026-11-16)
+
+Signed logs, a readable CLI, an adapter for command-line coding agents, signature checking in the run viewer, and a Claude arm
+of the agent-claims study with a model whose identity is known. This is the current final state of the project.
 
 ### Added
 
@@ -13,7 +16,6 @@
   `bench/agent-claims/known-flaky.json`. The first entry: a timing-sensitive `retry-async` audit test, disclosed in
   docs/AGENT_RESULTS.md with how far it could move the gate false-accept figure (3 to 6 of the wrong claims).
 - Reports name the protocol file recorded in their own `meta.json`.
-
 - **Signed log heads.** `warrant keygen` writes an Ed25519 key pair; `run --sign-key` and `sign-log` sign a finished log's head,
   spec digest and length; `verify-log --pubkey` checks it. A log rewritten with every hash recomputed, which the chain alone
   accepts, now fails (`src/log/signing.js`, `test/signing.test.js`). No dependency: `node:crypto`.
@@ -23,6 +25,28 @@
   gated by hidden tests it never sees. Ships with two offline scripted agents and a Claude Code spec (validated, not run in CI).
 - **`exec.env`**: a task may name environment variables it needs (an agent's home directory or API key); only those are passed.
 - **Command requirements resolve `./` arguments against the spec's directory**, so a spec can ship hidden checks next to itself.
+
+### Fixed
+
+- `warrant run` refuses to append a second run to an existing log (it used to produce a log that `verify-log` rejects), and the
+  two shipped pipeline examples now have separate run ids, so the README's commands work in the order shown.
+- Two race and timing problems in the tests: the documentation test's repository copy could meet a folder another test was
+  deleting, and an MCP test assumed a run would finish within 200 ms.
+
+### Known gaps in this release
+
+- **Gate v2 is not done.** The gate's misses cluster in one missing check (`query-string`), and an independently written second
+  gate suite, re-scored over every recorded solution, would measure how much of the gate's accuracy comes from its author. Not started.
+- **The router arm's gate misses could be 3 to 6, not 3**, because one `retry-async` audit test is timing-sensitive
+  (`bench/agent-claims/known-flaky.json`, docs/AGENT_RESULTS.md).
+- **The Claude arm and the router arm cannot be compared directly**: they differ in harness as well as in who serves the model.
+  The real model inside the study's own loop would separate the two and needs an Anthropic API key.
+- **The command-line agent adapter has never completed a live run.** One attempt reached Claude Code and stopped at its login.
+- **The viewer's signature check** is tested in Node against the engine's own signatures; it has not been tried by hand in a
+  regular browser (the in-app preview loads the page without WebCrypto, and the page correctly says it cannot check there).
+- **Running the whole test suite at once with Docker on a Windows laptop can overload Docker Desktop.** Each test file passes on
+  its own, and CI runs the full suite on Linux and Windows; locally, `node --test --test-concurrency=2` is gentler.
+- Unchanged from 0.1.0: command workers are not sandboxed, the Gemini arms are partial, no macOS run.
 
 
 ## 0.1.0
