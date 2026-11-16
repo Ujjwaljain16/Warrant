@@ -7,6 +7,16 @@ the file in a browser, or drop a log on it.
 
 ![The lying-worker sample: the chain verifies, the gate caught four false claims](../viewer/screenshots/lying-worker-dark.png)
 
+## Who wrote the log: signatures
+
+The hash chain shows that no entry was edited, not who wrote the log: anyone can rewrite an entry and recompute every later
+hash (the "Forged success" sample). If the run was signed (`warrant run --sign-key` or `warrant sign-log`), drop the log, its `.sig`
+file and the signer's public key (`.pub`) on the page together. The banner then says "signed", or "signature does not verify" with the
+reason (another key, an edited record, entries removed, or a rewritten log). The check uses the same signed bytes as `verify-log
+--pubkey` (tested against each other in `test/viewer.test.js`) and needs WebCrypto with Ed25519, which current Chrome, Firefox and
+Safari have when the file is opened directly; where it is missing (for example a page loaded from a `data:` URL), the page says it could
+not check, never that the signature passed.
+
 ## Using it
 
 ```bash

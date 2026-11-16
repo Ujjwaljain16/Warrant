@@ -7,6 +7,8 @@
 - **Claude arm of the agent-claims study** (`docs/AGENT_CLAIMS_CLAUDE_ARM.md`, `scripts/claude-arm.js`): real Claude Haiku 5.5
   through Claude Code on the 30 held-out tasks, gated by the same Docker gate. 0 of 30 claims wrong, against 32 of 85 for the router's
   model of the same name; reported on its own, with the harness difference that keeps the two from being compared directly.
+- **The run viewer checks signatures**: drop a log with its `.sig` and public key and the banner says whether the log is signed by
+  that key; a re-hashed forgery, which the chain alone accepts, shows "signature does not verify".
 - Reports name the protocol file recorded in their own `meta.json`.
 
 - **Signed log heads.** `warrant keygen` writes an Ed25519 key pair; `run --sign-key` and `sign-log` sign a finished log's head,
