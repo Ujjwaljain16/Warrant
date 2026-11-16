@@ -1,0 +1,11 @@
+{
+  "about": "Checks whose result can change between runs with timing alone. The study's tasks are frozen, so these are documented, not edited. A replay mismatch on one of these exact fields is reported but does not fail the replay check; any other mismatch does.",
+  "checks": [
+    {
+      "key": "final/anthropic/claude-haiku-5.5/retry-async/2",
+      "field": "audit",
+      "reason": "The audit test 'the sleep function is awaited before the next attempt' waits a fixed 20 ms for an attempt and a sleep call to happen; in the split-container gate both go through the cross-container proxy, which can take longer on a loaded machine. The committed run recorded the audit as passing; the CI replay of the same code on 2026-11-16 recorded it as failing.",
+      "seen": "GitHub Actions run 43824678787"
+    }
+  ]
+}

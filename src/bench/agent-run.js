@@ -557,9 +557,15 @@ async function runBench(options) {
     const liveRuns = new Map(readJsonl(path.join(liveDir, 'runs.jsonl')).map((r) => [r.key, r]));
     const same = (a, b) => a.claim === b.claim && a.agent_outcome === b.agent_outcome && a.steps === b.steps && a.gate.status === b.gate.status && a.audit.status === b.audit.status && a.visible_at_finish === b.visible_at_finish && JSON.stringify(a.usage) === JSON.stringify(b.usage);
     const compared = doneRuns.filter((r) => liveRuns.has(r.key));
-    const mismatches = compared.filter((r) => !same(r, liveRuns.get(r.key))).map((r) => r.key);
-    summary.replay_check = { compared: compared.length, mismatches };
-    if (mismatches.length) exitCode = 1;
+    const fields = (r) => ({ claim: r.claim, outcome: r.agent_outcome, steps: r.steps, gate: r.gate.status, audit: r.audit.status, visible: r.visible_at_finish });
+    const differing = (a, b) => Object.keys(fields(a)).filter((k) => fields(a)[k] !== fields(b)[k]);
+    const mismatches = compared.filter((r) => !same(r, liveRuns.get(r.key))).map((r) => ({ key: r.key, fields: differing(liveRuns.get(r.key), r), committed: fields(liveRuns.get(r.key)), replayed: fields(r) }));
+    // A mismatch on a check listed in known-flaky.json (with the reason it is timing-sensitive) is reported but does not fail the
+    // replay; any other mismatch does. The study's tasks are frozen, so a flaky check is documented rather than edited.
+    const flaky = readKnownFlaky();
+    const tolerated = (m) => m.fields.length > 0 && m.fields.every((f) => flaky.some((k) => k.key === m.key && k.field === f));
+    summary.replay_check = { compared: compared.length, mismatches, unexplained: mismatches.filter((m) => !tolerated(m)).map((m) => m.key) };
+    if (summary.replay_check.unexplained.length) exitCode = 1;
   }
   out('');
   out(`recorded ${done.size}/${items.length} runs; ${remaining.length} remaining`);
@@ -568,8 +574,17 @@ async function runBench(options) {
   if (Object.values(status).some((s) => s.stopped === 'quota') || (judging && Object.values(judging).some((s) => s.stopped === 'quota'))) {
     out(`the daily quota is nearly used; resume after the reset at ${istString(nextPacificReset(now))} with the same command (finished runs are skipped, interrupted ones continue from their cassette)`);
   }
-  if (summary.replay_check) out(`replay check: ${summary.replay_check.compared} compared with the live results, ${summary.replay_check.mismatches.length} mismatch(es)`);
+  if (summary.replay_check) {
+    const rc = summary.replay_check;
+    out(`replay check: ${rc.compared} compared with the live results, ${rc.mismatches.length} mismatch(es), ${rc.unexplained.length} not explained by a known flaky check`);
+    for (const m of rc.mismatches) out(`  ${m.key}: ${m.fields.map((f) => `${f} ${m.committed[f]} -> ${m.replayed[f]}`).join(', ') || 'usage differs'}${rc.unexplained.includes(m.key) ? '' : ' (known flaky, see bench/agent-claims/known-flaky.json)'}`);
+  }
   return { exitCode, summary };
+}
+
+// Checks whose result can change from run to run with timing alone, each with the reason (bench/agent-claims/known-flaky.json).
+function readKnownFlaky() {
+  try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'bench', 'agent-claims', 'known-flaky.json'), 'utf8')).checks || []; } catch (_error) { return []; }
 }
 
 // The plan of a results directory is the union of the plans of every invocation that wrote to it (same stage and repeats).
