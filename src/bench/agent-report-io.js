@@ -33,7 +33,7 @@ function buildReport(dir, { taskDirs, models = null, outDir = dir } = {}) {
   const judgments = readJsonl(path.join(dir, 'judgments.jsonl')).filter((j) => keep(j.run));
   const scopedPlan = plan && wanted ? { ...plan, models: plan.models.filter((m) => wanted.has(m)), keys: plan.keys.filter(keep) } : plan;
   const summary = summarize({ stage, runs, judgments, taskMeta, plan: scopedPlan });
-  const reportMeta = meta ? { git: meta.git, protocol_commit: meta.protocol && meta.protocol.commit } : null;
+  const reportMeta = meta ? { git: meta.git, protocol_commit: meta.protocol && meta.protocol.commit, protocol_file: meta.protocol && meta.protocol.file } : null;
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, 'summary.json'), `${JSON.stringify(summary, null, 1)}\n`);
   fs.writeFileSync(path.join(outDir, 'REPORT.md'), renderReport(summary, reportMeta));
