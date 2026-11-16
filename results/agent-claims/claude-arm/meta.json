@@ -1,0 +1,18 @@
+{
+  "stage": "final",
+  "arm": "claude",
+  "model": "claude-haiku-5-5",
+  "protocol": {
+    "file": "docs/AGENT_CLAIMS_CLAUDE_ARM.md",
+    "sha256": "9c4f8da4f876832e2fa310a5166567a7040dffabe5faeae3da462ad0ddc5f4ca"
+  },
+  "git": {
+    "commit": "7f9de882ca40050317ca8baaaeb33e4edb189d87",
+    "dirty": true,
+    "dirty_paths": [
+      "docs/AGENT_CLAIMS_CLAUDE_ARM.md",
+      "scripts/claude-arm.js"
+    ]
+  },
+  "scored_at": "2026-11-16T06:49:55.799Z"
+}

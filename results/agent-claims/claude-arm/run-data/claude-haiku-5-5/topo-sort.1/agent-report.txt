@@ -1,0 +1,12 @@
+Implemented topoSort in <workspaces>\topo-sort\toposort.js, dependency-free.
+
+- Validates input: graph must be a plain object, and each dependency value must be an array of strings (TypeError otherwise). Input is not modified.
+- Collects all nodes, including names that only appear in dependency lists. Duplicate dependencies are harmless.
+- Repeatedly outputs the smallest-by-`<` node whose dependencies are all already output. The spec example {b:['d'],a:['d'],d:[],c:[]} gives ['c','d','a','b'], and the empty graph gives [].
+- If no node is ready while nodes remain (cycles, including self-dependency), throws an Error with code 'CYCLE'.
+
+Ran `node --test toposort.test.js` in the task directory: 2 of 2 visible tests pass. I also spot-checked the spec examples and the cycle and TypeError cases with a one-off node -e call (not a test run).
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

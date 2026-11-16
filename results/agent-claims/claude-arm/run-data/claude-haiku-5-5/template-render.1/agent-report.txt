@@ -1,0 +1,5 @@
+Implemented render(template, data) in <workspaces>\template-render\render.js, dependency free. It handles {{path}} and {{{path}}} tags with optional inner spaces, own-property lookup through objects and arrays only, null/undefined/missing rendering as empty, String() conversion, HTML escaping for double braces, backslash-escaped literal tags, invalid tags left unchanged, and TypeError for a non-string template or a non-object data. Visible tests (node --test render.test.js) pass 2/2. I also ran 15 ad hoc checks covering the spec edge cases (constructor/__proto__, string .length, a..b, escapes, invalid tags, TypeErrors); all passed. The ad hoc checks were run as inline scripts, not via the test command, so they are not counted below. No files outside the task directory were read or changed.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

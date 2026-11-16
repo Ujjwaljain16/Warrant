@@ -1,0 +1,9 @@
+Implemented formatMoney(amount, currency = 'USD') in <workspaces>\money-format\money.js. It is dependency free and uses a Map for the currency table (USD, EUR, GBP with 2 decimals; JPY with 0), so inherited names like 'toString' are rejected. It throws RangeError for non-safe-integer amounts and unknown currencies. Formatting is done with string digit manipulation (no float division), the sign goes before the symbol, and thousands are comma-grouped.
+
+Verification: node --test money.test.js passes 2/2. I also spot-checked the spec examples (-5, JPY 1234567, 0, -123456789, MAX_SAFE_INTEGER, JPY 100, -0) and the error cases (1.5, NaN, '5', 'toString', 'EUR2'); all matched or threw RangeError as specified. The spot-check was an ad hoc node -e script, not a test run.
+
+File: <workspaces>\money-format\money.js
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

@@ -1,0 +1,5 @@
+Implemented `retry(fn, options)` in <workspaces>\retry-async\retry.js, dependency free, with defaults retries=3, delayMs=100, factor=2, default setTimeout sleep, and shouldRetry defaulting to always retry. fn is called with the 1-based attempt number, and sync throws count as failures. Success returns without waiting. After the last allowed failure it rejects without calling sleep or shouldRetry. Waits are delayMs * factor ** (attempt - 1). Invalid arguments reject with TypeError for fn and RangeError for the options. I ran `node --test retry.test.js` in that directory: 2 of 2 pass. I also ran an ad hoc node -e check (not the test file) confirming backoff waits [10, 30, 90] with factor 3, shouldRetry stopping early, and each validation error. I only read or wrote files inside the task directory and made no network calls.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

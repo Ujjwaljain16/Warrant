@@ -1,0 +1,9 @@
+Fixed flatten.js in <workspaces>\flatten-depth. The original code recursed with the same depth instead of depth - 1, so any positive depth flattened everything. It also had no argument validation.
+
+The new version validates items (TypeError if not an array) and depth (RangeError unless a non-negative integer or Infinity). It walks the input with an inner recursive helper that decrements the remaining depth, pushes elements one at a time (no spread, so large arrays cannot overflow the stack), and never mutates the input. Still dependency free.
+
+Verification: node --test flatten.test.js passes both visible tests. I also spot-checked the spec examples with a node -e call (not the test runner): depth 1, depth 2, depth 0 (new top-level array, nested arrays kept as the same objects), and Infinity all match. Invalid depths (-1, 1.5, NaN, '2', null) throw RangeError, and an array-like object throws TypeError.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

@@ -1,0 +1,13 @@
+Implemented compareSemver(a, b) in <workspaces>\semver-compare\semver.js, dependency free.
+
+- Validates input: non-strings throw TypeError; malformed versions (leading v, spaces, leading zeros in core or numeric pre-release identifiers, empty identifiers, bad characters, missing core parts) throw SyntaxError.
+- Compares MAJOR, MINOR, PATCH as digit strings (length, then lexicographic), so values beyond 15 digits are exact.
+- A release ranks above any pre-release of the same core version.
+- Pre-release identifiers compare left to right: numeric as numbers, text in ASCII order, numeric below text, and more identifiers ranks higher when the shared prefix is equal.
+- Build metadata is validated but ignored.
+
+The visible suite (node --test semver.test.js) passes. I also ran ad hoc checks of the spec examples (alpha < alpha.1 < alpha.beta < beta < beta.2 < beta.11 < rc.1 < release, build metadata equality, large-number precision, error cases). Those were run via node -e, not the test file, so they are not counted below.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

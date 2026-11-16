@@ -1,0 +1,5 @@
+Implemented isValidIsbn10 in <workspaces>\isbn10\isbn.js. It strips hyphens and spaces, requires exactly nine digits followed by a digit or X/x, computes the weighted sum (weights 10 to 1, X = 10), and returns sum % 11 === 0. Non-strings throw TypeError; all other invalid input returns false. No dependencies. The visible suite (node --test isbn.test.js) passes 2/2. Spot checks also confirmed 080442957X and lowercase x are valid, X in a non-final position is rejected, and inputs with the wrong length or non-digits return false. Only files inside the task directory were read or written.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

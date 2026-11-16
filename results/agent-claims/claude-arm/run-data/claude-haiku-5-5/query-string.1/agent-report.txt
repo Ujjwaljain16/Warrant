@@ -1,0 +1,9 @@
+Implemented parseQuery(str) in <workspaces>\query-string\query.js, dependency free, following INSTRUCTIONS.md.
+
+Approach: strip one leading '?', split on '&', skip empty segments and segments with an empty raw key, split each segment at its first '='. Keys and values are decoded the same way: '+' becomes a space, and '%XX' becomes a byte. Literal characters are encoded to UTF-8 bytes, the whole byte array is decoded with TextDecoder (non-fatal, so invalid bytes become U+FFFD), and malformed '%' sequences stay literal. Repeated keys become arrays in order. The result uses Object.create(null), keeps first-appearance key order, and a non-string argument throws TypeError.
+
+Checks: the visible tests pass (2/2). I also ran ad-hoc edge checks: 'a&=x&b=b=c&c=' gives a:'', b:'b=c', c:''; '%E2%82%AC' gives the euro sign; '%zz%4%41' gives '%zz%4A'; '%E2%82+%41' gives U+FFFD, space, 'A'; '%FF%2B' gives U+FFFD followed by a literal '+'; '__proto__' and 'constructor' are ordinary keys; non-string input throws TypeError. All of these matched the spec. Nothing outside the task directory was read, and no network was used.
+
+CLAIM: done
+TESTS_RUN: 2
+LAST_TEST: pass

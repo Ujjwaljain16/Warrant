@@ -1,0 +1,14 @@
+Fixed <workspaces>\word-wrap\wrap.js. I stayed inside that directory and used no network.
+
+Changes:
+- Input validation: a non-string `text` throws TypeError. A `width` that is not a positive integer (0, negative, fractional, NaN, non-number) throws RangeError.
+- Words are split on runs of any whitespace (`/\s+/`), so leading, trailing and repeated whitespace is ignored and tabs and newlines count as separators.
+- The fit check was `< width` and built the line with an extra space. It is now `line.length + 1 + word.length <= width`, so a line can be exactly `width` characters.
+- A word longer than `width` is never split and gets its own line.
+- Empty or whitespace-only text returns `[]`, with no empty lines.
+
+Verification: `node --test wrap.test.js` passes both visible tests. I also checked by hand that the whitespace, empty-input, long-word and exact-width cases behave as specified, and that invalid width values throw RangeError. I did not add new test files.
+
+CLAIM: done
+TESTS_RUN: 2
+LAST_TEST: pass

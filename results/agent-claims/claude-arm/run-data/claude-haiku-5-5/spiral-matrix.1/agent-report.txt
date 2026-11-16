@@ -1,0 +1,14 @@
+Fixed spiral.js in <workspaces>\spiral-matrix.
+
+Bugs found in the original:
+- Single row or single column input double-counted elements. After the top pass, the bottom and left passes ran without checking that the remaining range was still valid.
+- `[]` threw because it read `matrix[0].length` without a guard.
+- No input validation: non-array input and ragged or non-array rows did not throw TypeError.
+
+Changes: added validation (matrix must be an array; every row must be an array of the same length; otherwise TypeError), returned [] for an empty matrix, and guarded the bottom-row and left-column passes with range checks. The input is not modified and there are no dependencies.
+
+Verification: `node --test spiral.test.js` passes both visible tests. Spot checks gave the expected results for [[1,2,3,4]] -> [1,2,3,4], [[1],[2],[3]] -> [1,2,3], [] -> [], [[]] -> [], [[1,2,3],[4,5,6]] -> [1,2,3,6,5,4], [[1],[2]] -> [1,2], and [[1,2],[3,4],[5,6]] -> [1,2,4,6,5,3]. I did not add a test file or separately test the TypeError paths by running them.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 300" font-family="sans-serif" font-size="11">
+<rect width="380" height="300" fill="white"/>
+<text x="10" y="18" font-size="14" font-weight="bold">False-accept rate: share of wrong claims each strategy accepts (lower is better; whiskers = task-clustered 95% CI)</text>
+<line x1="60" y1="226" x2="370" y2="226" stroke="#444"/>
+<line x1="60" y1="36" x2="60" y2="226" stroke="#444"/>
+<text x="56" y="229" text-anchor="end">0%</text><line x1="60" y1="226" x2="370" y2="226" stroke="#ddd"/>
+<text x="56" y="181.5" text-anchor="end">25%</text><line x1="60" y1="178.5" x2="370" y2="178.5" stroke="#ddd"/>
+<text x="56" y="134" text-anchor="end">50%</text><line x1="60" y1="131" x2="370" y2="131" stroke="#ddd"/>
+<text x="56" y="86.5" text-anchor="end">75%</text><line x1="60" y1="83.5" x2="370" y2="83.5" stroke="#ddd"/>
+<text x="56" y="39" text-anchor="end">100%</text><line x1="60" y1="36" x2="370" y2="36" stroke="#ddd"/>
+<text x="77" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="99" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="121" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="143" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="165" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="187" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="132" y="242" text-anchor="middle">claude-haiku-5-5</text>
+<text x="227" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="249" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="271" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="293" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="315" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="337" y="222" text-anchor="middle" font-size="8" fill="#999">n/a</text>
+<text x="282" y="242" text-anchor="middle">all models</text>
+<rect x="60" y="264" width="10" height="10" fill="#fc8d62"/><text x="74" y="273">trust the claim</text>
+<rect x="260" y="264" width="10" height="10" fill="#e5c494"/><text x="274" y="273">agent's own visible tests</text>
+<rect x="460" y="264" width="10" height="10" fill="#8da0cb"/><text x="474" y="273">LLM judge A (code only)</text>
+<rect x="60" y="280" width="10" height="10" fill="#66a3c2"/><text x="74" y="289">LLM judge B (code + test output)</text>
+<rect x="260" y="280" width="10" height="10" fill="#b3a2c7"/><text x="274" y="289">LLM judge, injected comment</text>
+<rect x="460" y="280" width="10" height="10" fill="#2a7f62"/><text x="474" y="289">warrant hidden-test gate</text>
+</svg>

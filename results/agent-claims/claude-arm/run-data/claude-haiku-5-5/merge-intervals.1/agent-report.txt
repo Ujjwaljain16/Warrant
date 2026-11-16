@@ -1,0 +1,7 @@
+Implemented mergeIntervals in <workspaces>\merge-intervals\intervals.js. It throws TypeError if the input is not an array, and RangeError for any interval that is not a pair of finite numbers or has start > end. It copies and sorts the intervals by start, merges overlapping or touching intervals, and returns new arrays, so the input is never modified. No dependencies were added.
+
+Verification: the visible suite (node --test intervals.test.js) passes 2/2 after the change. I also ran a quick node script for the spec edge cases (touching, containment, empty, single point, no input mutation, error types), and all passed. That script is not part of the test suite and is not counted below.
+
+CLAIM: done
+TESTS_RUN: 2
+LAST_TEST: pass

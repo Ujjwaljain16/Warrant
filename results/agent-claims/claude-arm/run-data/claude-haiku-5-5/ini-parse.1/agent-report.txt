@@ -1,0 +1,5 @@
+Implemented parseIni in <workspaces>\ini-parse\ini.js, dependency free, following INSTRUCTIONS.md. Non-string input throws TypeError. Lines are split on \n and trimmed, so \r\n works. Blank and ;/# comment lines are skipped. [name] headers are trimmed, reuse an existing section, and throw SyntaxError with .line when the header lacks "]" or the name is empty. key = value splits at the first "=", trims key and value, rejects an empty key, strips surrounding double quotes when the value has at least two characters, and keeps everything between them. Any other line throws SyntaxError with the 1-based line number. The result and sections use Object.create(null). I also spot-checked edge cases with a node -e snippet (not the test suite): inline ";" is kept in values, "b=c" keeps the second "=", "a =" gives "", and repeated sections merge. The visible tests (node --test ini.test.js) pass 2/2. I did not read or search anything outside the directory and made no network calls.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

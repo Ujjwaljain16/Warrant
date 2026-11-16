@@ -1,0 +1,11 @@
+Fixed bounds.js in <workspaces>\bounds.
+
+The bug: both functions set hi = sorted.length - 1, so the search never considered index sorted.length. For any x greater than every element, lowerBound and upperBound returned length - 1 instead of length. Changed to a half-open range (hi = sorted.length) with >>> 1 for mid, which keeps the O(log n) search and never reads out of bounds.
+
+Also added validation in a shared checkArgs helper: sorted must pass Array.isArray, and x must be a number that is not NaN; otherwise a TypeError is thrown. The input array is not modified. The module is still dependency free.
+
+Verification: node --test bounds.test.js passes both visible tests. A manual spot-check on [1,3,3,3,5] gave the expected results for x = 0, 3 and 9, and for the empty array. Each bad-argument case threw a TypeError. I did not add new test cases to the test file.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

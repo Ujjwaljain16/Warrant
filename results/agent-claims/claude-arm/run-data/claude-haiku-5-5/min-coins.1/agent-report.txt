@@ -1,0 +1,7 @@
+Implemented minCoins in <workspaces>\min-coins\mincoins.js as an unbounded coin-change DP (O(amount x coins)). It returns the minimum coin count or -1 when the amount is unreachable, and throws RangeError for an empty or non-array coins list, non-positive or non-integer coin values, or a negative or non-integer amount. No dependencies were added.
+
+Verification: the visible tests (node --test mincoins.test.js) pass 2/2. Extra checks: minCoins([1,2,5],11)=3, minCoins([2],3)=-1, minCoins([1,2,5],0)=0, minCoins([3,7],10000) returns quickly (about 0 ms for [1,3,7,11,13] at 10000), and the invalid-input cases throw RangeError.
+
+CLAIM: done
+TESTS_RUN: 2
+LAST_TEST: pass

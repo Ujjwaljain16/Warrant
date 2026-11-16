@@ -1,0 +1,12 @@
+Implemented truncate(text, max, ellipsis = '…') in <workspaces>\truncate-words\truncate.js, dependency free.
+
+- Throws TypeError if text or ellipsis is not a string; RangeError if max is not an integer or is less than ellipsis.length.
+- Returns text unchanged when text.length <= max.
+- Otherwise scans for the longest prefix of length <= max - ellipsis.length that ends right before a whitespace character following a non-whitespace character, and appends the ellipsis.
+- If no such boundary exists, hard-cuts to the first max - ellipsis.length code units plus the ellipsis.
+
+The visible tests pass (2/2). The first run against the original stub failed as expected, and the second run after the implementation passed. No files other than truncate.js were modified.
+
+CLAIM: done
+TESTS_RUN: 2
+LAST_TEST: pass

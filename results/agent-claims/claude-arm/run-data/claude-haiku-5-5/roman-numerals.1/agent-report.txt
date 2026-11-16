@@ -1,0 +1,10 @@
+Implemented toRoman and fromRoman in <workspaces>\roman-numerals\roman.js, dependency free.
+
+- toRoman(n): accepts only integers 1 to 3999. Anything else (non-integers, non-numbers, out of range) throws RangeError.
+- fromRoman(s): non-strings throw TypeError. Strings must match the canonical pattern ^M{0,3}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$ and be non-empty, otherwise SyntaxError. This accepts exactly the toRoman outputs.
+
+Verification: `node --test roman.test.js` passed both visible tests (1 run). I also ran an ad-hoc node check (not the visible tests) confirming fromRoman(toRoman(n)) === n for all n from 1 to 3999, that invalid strings (empty, IIII, VX, IC, MMMM, lower case, spaces, IIV, XLX, VV, IXI) throw SyntaxError, and that bad toRoman inputs throw RangeError. No mismatches.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

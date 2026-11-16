@@ -1,0 +1,9 @@
+Implemented camelToSnake in <workspaces>\camel-to-snake\snake.js (dependency free, no other files touched).
+
+Approach: iterate characters; for each ASCII capital A-Z, insert "_" if the previous char is a-z or 0-9, or if the previous char is A-Z and the next char is a-z (last capital of an acronym run starts a word). Capitals are lowercased by hand, so only ASCII letters change. Underscores are never doubled since "_" is not a word-start trigger. Non-string input throws TypeError; empty string returns "".
+
+Test run: `node --test snake.test.js` gave 2 pass, 0 fail. The spec examples (parseHTTPResponse, HTTPServer, ABTest, utf8Decode, sha256, html5Parser, foo_Bar, _privateField) were checked by tracing the logic, not by running them, since the visible suite does not cover them.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

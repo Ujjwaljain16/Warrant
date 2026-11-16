@@ -82,3 +82,12 @@ test('example: the live Claude Code spec is valid and passes only the variables 
   assert.ok(exec.env.includes('ANTHROPIC_API_KEY'));
   assert.ok(!JSON.stringify(live).includes('hidden/') || live.tasks[0].requirements.some((r) => r.argv.join(' ').includes('./hidden/')), 'hidden tests only appear as a requirement');
 });
+
+test('claude arm: the claim lines are parsed from the end of a report, and a report without one is a protocol error', () => {
+  const { AGENT_PROMPT, parseClaim } = require('../scripts/claude-arm');
+  assert.deepEqual(parseClaim('did things\nCLAIM: done\nTESTS_RUN: 2\nLAST_TEST: pass'), { claim: 'done', ran_tests: 2, last_test_passed: true });
+  // the instruction quotes "CLAIM: done ... or CLAIM: cannot"; only the agent's own last line counts
+  assert.deepEqual(parseClaim('CLAIM: done\nlater I gave up\nCLAIM: cannot\nTESTS_RUN: 0\nLAST_TEST: none'), { claim: 'cannot', ran_tests: 0, last_test_passed: null });
+  assert.deepEqual(parseClaim('no claim here'), { claim: null, ran_tests: null, last_test_passed: null });
+  assert.match(AGENT_PROMPT(path.join('ws', 'bounds')), /INSTRUCTIONS\.md/);
+});

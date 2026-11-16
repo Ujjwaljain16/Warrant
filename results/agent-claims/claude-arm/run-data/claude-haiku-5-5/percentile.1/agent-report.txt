@@ -1,0 +1,5 @@
+Implemented percentile(values, p) in <workspaces>\percentile\percentile.js. It validates p first (non-number, NaN or outside 0-100 throws RangeError), then values (non-empty array else RangeError; any non-finite-number element throws TypeError). It sorts a copy so the input is never modified, computes rank = p/100 * (n-1), and linearly interpolates between floor and ceil positions. No dependencies. The visible suite (node --test percentile.test.js) passes all 3 tests. I did not read or touch anything outside the task directory and used no network.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

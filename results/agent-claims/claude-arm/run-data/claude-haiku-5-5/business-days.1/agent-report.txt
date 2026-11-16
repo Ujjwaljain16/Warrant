@@ -1,0 +1,13 @@
+Implemented addBusinessDays(date, n) in <workspaces>\business-days\bizdays.js, dependency free.
+
+- Input date must be a string matching exactly YYYY-MM-DD and a real calendar day. Non-string throws TypeError. Bad format, impossible day, or year outside 1000-9999 throws RangeError.
+- n must be a safe integer, otherwise RangeError. n = 0 returns the input unchanged (after date validation), even on a weekend.
+- For n != 0, each of the |n| steps moves one calendar day in the sign's direction, then keeps moving until it lands on Monday to Friday. The day-of-week uses day numbers from 1970-01-01 (a Thursday), so it is UTC and proleptic Gregorian.
+- The resulting year must be 1000-9999, otherwise RangeError.
+- Performance: a plain loop of up to |n| steps, so n = 100000 runs quickly.
+
+Verification: the visible suite (node --test bizdays.test.js) passes 2/2. I also ran an ad hoc node -e spot check (not the test suite, so not counted below) covering the spec's weekend and Friday/Monday examples, n = 100000 and -100000, the error cases, and the year boundaries. All matched expectations.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

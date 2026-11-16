@@ -1,0 +1,11 @@
+Implemented rotate(items, k) in <workspaces>\rotate-array\rotate.js, dependency free.
+
+- Throws TypeError if items is not an array, RangeError if k is not an integer (Number.isInteger, so NaN and fractions are rejected).
+- Returns [] for an empty array. Otherwise normalises k to a right shift in [0, n) with ((k % n) + n) % n, so negative k rotates left and k larger than the length wraps.
+- Builds a new array from two slices, so the input is never modified and k = 0 still returns a copy.
+
+Verification: node --test rotate.test.js passes 3/3. I also spot-checked by inline node script (not the test suite): rotate([1..5], -1) gives [2,3,4,5,1], k=5 and k=12 behave as expected, empty and single-item inputs work, the result is a new array, and the error types are correct.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

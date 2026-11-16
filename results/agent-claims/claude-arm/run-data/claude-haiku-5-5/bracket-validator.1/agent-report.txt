@@ -1,0 +1,7 @@
+Implemented checkBrackets(text) in <workspaces>\bracket-validator\brackets.js, dependency free. It scans left to right with a bracket stack, skips line comments, block comments and single/double-quoted strings (backslash escapes the next character, strings cannot span a line break), and returns { ok: true } or { ok: false, reason, index } with reasons unexpected-closer, mismatch, unterminated-string, unterminated-comment and unclosed. A non-string input throws TypeError.
+
+Verification: node --test brackets.test.js ran once, 3/3 pass. I also spot-checked the spec edge cases with a one-off node -e script (comments, strings with embedded brackets, escaped quotes, unterminated string/comment, mismatch, unclosed, unexpected closer, TypeError). All matched the spec, except one check where my own expected value was wrong: the input "a\"(" is a closed string, so ok: true is correct.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

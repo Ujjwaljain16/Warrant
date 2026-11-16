@@ -1,0 +1,12 @@
+Implemented cronMatches(expression, date) in <workspaces>\cron-match\cron.js, dependency free, evaluated in UTC.
+
+- Validates types first: non-string expression or invalid Date throws TypeError.
+- Splits on whitespace (trimmed), requires exactly 5 fields, and parses every field before matching, so malformed expressions throw SyntaxError regardless of the date.
+- Supports *, N, A-B, */S and A-B/S with comma lists. Range checks per field (dow 0-6, 7 rejected). Rejects N/S, reversed ranges, step 0, empty or malformed items.
+- Minute, hour and month must match. Day uses OR when neither dom nor dow starts with "*", otherwise AND.
+
+Verification: the visible suite (node --test cron.test.js) passes 3/3. I also ran a short node -e spot-check (not the suite) confirming the day rule (0 0 13 * 5 matches Sept 13 and Sept 6 2024 but not Sept 12), the N/S and reversed-range SyntaxErrors, and the TypeErrors. Hidden-test edge cases beyond these were not separately verified.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

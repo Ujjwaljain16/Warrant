@@ -1,0 +1,10 @@
+Implemented topK(items, k) in <workspaces>\top-k-frequent\topk.js, dependency free.
+
+- Validation: throws TypeError if items is not an array or contains a non-string; throws RangeError if k is not a non-negative integer. Items are checked first.
+- Counts with a Map, sorts the distinct entries by count descending, then by plain `<` string comparison, and returns the first k. Input is not mutated. k = 0 gives [] and k larger than the distinct count returns all of them.
+
+Ran `node --test topk.test.js` in the task directory: both visible tests pass (2 pass, 0 fail). I did not read or access anything outside the task directory and made no network calls.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

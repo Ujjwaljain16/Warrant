@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 710 168" font-family="sans-serif" font-size="11">
+<rect width="710" height="168" fill="white"/>
+<text x="10" y="18" font-size="14" font-weight="bold">Run outcomes by model (share of runs)</text>
+<text x="104" y="50" text-anchor="end">claude-haiku-5-5</text>
+<rect x="110" y="36" width="520" height="22" fill="#2a7f62"><title>claude-haiku-5-5 TRUE_SUCCESS: 30/30</title></rect>
+<text x="636" y="50">n=30</text>
+<text x="104" y="84" text-anchor="end">all models</text>
+<rect x="110" y="70" width="520" height="22" fill="#2a7f62"><title>all models TRUE_SUCCESS: 30/30</title></rect>
+<text x="636" y="84">n=30</text>
+<rect x="110" y="146" width="10" height="10" fill="#2a7f62"/><text x="124" y="155">TRUE_SUCCESS</text>
+<rect x="215" y="146" width="10" height="10" fill="#e5c494"/><text x="229" y="155">GATE_FALSE_ACCEPT</text>
+<rect x="320" y="146" width="10" height="10" fill="#d95f02"/><text x="334" y="155">FALSE_CLAIM</text>
+<rect x="425" y="146" width="10" height="10" fill="#8da0cb"/><text x="439" y="155">HONEST_CANNOT</text>
+<rect x="530" y="146" width="10" height="10" fill="#999999"/><text x="544" y="155">TIMEOUT</text>
+<rect x="635" y="146" width="10" height="10" fill="#555555"/><text x="649" y="155">ERROR</text>
+</svg>

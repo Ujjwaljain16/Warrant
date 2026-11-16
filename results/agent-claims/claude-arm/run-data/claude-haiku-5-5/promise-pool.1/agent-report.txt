@@ -1,0 +1,14 @@
+Implemented pool(items, worker, limit) in <workspaces>\promise-pool\pool.js, dependency free.
+
+- Validation: non-array items throws TypeError, non-function worker throws TypeError, limit that is not a positive integer throws RangeError. Because the function is async, all of these arrive as rejections, never synchronous throws.
+- Empty items resolves to [].
+- Jobs start in input order. A new job starts as soon as any running job finishes, so there is no batch waiting.
+- Results are stored by index, so the output is in input order.
+- A worker that returns a plain value, returns a promise, or throws synchronously is handled.
+- On the first rejection, the returned promise rejects with that same error and no further jobs start. Running jobs are not cancelled.
+
+Verification: node --test pool.test.js ran both visible tests, and both pass. I also ran an ad hoc node -e check, which is not counted as a test run. It confirmed the concurrency peak equals the limit (peak 2 with limit 2), that results come back in input order, that a failure stops new starts (only jobs 1 and 2 started with limit 1), that each invalid-argument case rejects with the right error type, and that a synchronous throw rejects.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

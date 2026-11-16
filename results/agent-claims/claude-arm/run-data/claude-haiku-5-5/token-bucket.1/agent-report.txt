@@ -1,0 +1,12 @@
+Implemented TokenBucket in <workspaces>\token-bucket\bucket.js (dependency free, no other files touched).
+
+- Constructor validates capacity and refillPerSecond as finite numbers > 0 (RangeError otherwise); the bucket starts full.
+- _advance(nowMs) throws TypeError for non-finite time. The first timed call only sets the starting time. Later calls refill linearly as elapsed * refill / 1000, capped at capacity. Earlier times cause no refill and do not move the latest time.
+- tryTake(nowMs, n = 1) throws RangeError unless n is a positive integer. It takes n tokens and returns true if at least n are available, otherwise returns false and takes nothing.
+- available(nowMs) returns the fractional token count and consumes nothing. It advances the clock like any other timed call, which is equivalent for linear capped refill.
+
+Verification: node --test bucket.test.js ran once, 2 of 2 tests pass. I did not run extra edge-case checks beyond the visible tests.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass

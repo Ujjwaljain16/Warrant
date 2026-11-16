@@ -1,0 +1,13 @@
+Fixed daysbetween.js in <workspaces>\days-between. The old version used Date.parse and floor division, which is wrong for the required inclusive counting and calendar validation.
+
+The new version:
+- Validates each argument with the regex /^(\d{4})-(\d{2})-(\d{2})$/ and throws RangeError for a bad format, a month outside 1-12, or a day that does not exist (Gregorian leap rules applied).
+- Throws TypeError for non-string arguments.
+- Converts each date to a day number with integer arithmetic (no Date objects, no timezone effects), throws RangeError if `to` is earlier than `from`, and returns the difference plus 1.
+- Has no dependencies.
+
+Verification: the visible tests pass (node --test daysbetween.test.js, 2/2). Spot checks via node -e gave the expected results: 2024-01-01 to 2024-01-10 = 10, 2024-02-28 to 2024-03-01 = 3, same day = 1, 1999-12-31 to 2000-01-01 = 2, 1900-02-28 to 1900-03-01 = 2 (1900 is not leap), reversed range = RangeError, 2023-02-29 and 2024-04-31 = RangeError, malformed string = RangeError, numeric argument = TypeError.
+
+CLAIM: done
+TESTS_RUN: 1
+LAST_TEST: pass
