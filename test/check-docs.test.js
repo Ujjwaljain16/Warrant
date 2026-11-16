@@ -26,7 +26,8 @@ test('documentation: the check fails on a changed headline number, a broken link
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'warrant-docs-'));
   try {
     const skip = new Set(['.git', 'node_modules', '.warrant', 'run-data', 'cassettes', 'raw.jsonl.gz']);
-    fs.cpSync(REPO, root, { recursive: true, filter: (src) => !skip.has(path.basename(src)) });
+    // results-test-*: bench.test.js makes and deletes these inside the repository while this copy may be running in parallel.
+    fs.cpSync(REPO, root, { recursive: true, filter: (src) => !skip.has(path.basename(src)) && !path.basename(src).startsWith('results-test-') });
     const readme = path.join(root, 'README.md');
     const original = fs.readFileSync(readme, 'utf8');
 
