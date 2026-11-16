@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **Signed log heads.** `warrant keygen` writes an Ed25519 key pair; `run --sign-key` and `sign-log` sign a finished log's head,
+  spec digest and length; `verify-log --pubkey` checks it. A log rewritten with every hash recomputed, which the chain alone
+  accepts, now fails (`src/log/signing.js`, `test/signing.test.js`). No dependency: `node:crypto`.
+- **`--format text`** for `run`, `resume` and `verify-log`: one line per task with what the gate passed and failed, colour only
+  on a terminal and never with `NO_COLOR`. JSON stays the default.
+- **Adapter for command-line coding agents** (`examples/agent-cli`): the agent gets the prompt and visible tests, its output is
+  gated by hidden tests it never sees. Ships with two offline scripted agents and a Claude Code spec (validated, not run in CI).
+- **`exec.env`**: a task may name environment variables it needs (an agent's home directory or API key); only those are passed.
+- **Command requirements resolve `./` arguments against the spec's directory**, so a spec can ship hidden checks next to itself.
+
+
 ## 0.1.0
 
 The first tagged release. Everything below exists in the repository and is reproducible with the commands in

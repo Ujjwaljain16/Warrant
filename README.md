@@ -66,11 +66,16 @@ npm test                # 400+ tests, including a crash-at-every-log-boundary ch
 npm run check           # syntax, hygiene, secret scan, vendored-file provenance
 ```
 
-`npm run example:lying` exits 1 and prints a JSON report; the part that matters (trimmed):
+`npm run example:lying` exits 1. The CLI prints a JSON report for scripts; `--format text` prints it for people:
 
-```json
-"sort":      { "status": "failed",  "code": "GATE_FAILED", "verification": { "failed": ["exact", "is-sorted"] } },
-"summarize": { "status": "blocked", "code": "DEPENDENCY_NOT_SUCCEEDED", "attempts": 0 }
+```
+$ node bin/warrant.js run examples/pipeline/spec-lying.json --format text
+run run-pipeline-lying
+✔ fetch      succeeded  1 attempt   gate passed: exact, shape
+✘ sort       failed     2 attempts  GATE_FAILED: gate failed: exact, is-sorted
+○ summarize  blocked    0 attempts  never ran: a dependency did not succeed
+
+failed: 1 succeeded, 1 failed, 1 blocked
 ```
 
 Each run writes one log under `.warrant/<run_id>/run.log`. Running the same example again says that its log already exists
@@ -80,7 +85,28 @@ Re-audit a finished log's hash chain and invariants independently of the engine,
 [run viewer](docs/VIEWER.md) (`viewer/run-viewer.html`, one static file, no server):
 
 ```bash
-node bin/warrant.js verify-log .warrant/run-pipeline/run.log --spec examples/pipeline/spec.json
+node bin/warrant.js verify-log .warrant/run-pipeline/run.log --spec examples/pipeline/spec.json --format text
+```
+
+The hash chain shows that nothing was edited, but not **who** wrote the log: someone who rewrites an entry can recompute every
+later hash. Sign the head with an Ed25519 key and that forgery fails too:
+
+```bash
+node bin/warrant.js keygen                                      # .warrant-keys/warrant-signing.key and .pub
+node bin/warrant.js run examples/pipeline/spec.json --dir .warrant/signed --sign-key .warrant-keys/warrant-signing.key
+node bin/warrant.js verify-log .warrant/signed/run-pipeline/run.log --pubkey .warrant-keys/warrant-signing.pub --format text
+```
+
+### Gate a real coding agent
+
+[examples/agent-cli](examples/agent-cli/README.md) wraps any command-line agent (Claude Code, Codex, your own script): the agent
+gets the prompt and the visible tests, and its output is gated by hidden tests it never saw. Offline, with two scripted agents that
+both say "done" and both pass the visible tests:
+
+```
+$ node bin/warrant.js run examples/agent-cli/spec.json --format text
+✔ careful-agent  succeeded  1 attempt   gate passed: visible-tests, hidden-tests
+✘ hasty-agent    failed     1 attempt   GATE_FAILED: gate failed: hidden-tests (passed: visible-tests)
 ```
 
 ![the run viewer on a lying-worker log: the chain verifies, four false claims were caught, one task ran out of attempts](viewer/screenshots/lying-worker-dark.png)

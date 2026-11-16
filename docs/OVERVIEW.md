@@ -25,8 +25,9 @@ What exists, what each piece is for, and what it does not do. The README is the 
 | MCP server: lets a model run human-approved specs by name | implemented, [docs](MCP.md); not tested against a live Claude Code session |
 | Offline run viewer: re-verifies the hash chain in the browser | implemented, [docs](VIEWER.md) |
 | Multi-agent demo: planner + parallel workers, gated vs ungated, offline replay | implemented, [docs](MULTI_AGENT_DEMO.md); scripted agents, not a measurement |
-| Adapters for a specific agent runtime (Claude Code, Codex) | planned |
-| Signed log / receipts | planned |
+| Adapter for command-line coding agents ([examples/agent-cli](../examples/agent-cli/README.md)): prompt and visible tests in, output gated by hidden tests, `exec.env` passes only named variables | implemented; tested offline with scripted agents; the Claude Code spec is validated but **not run** by tests or CI; one manual run reached Claude Code and stopped at its login, so there is no live result yet |
+| Signed log heads (Ed25519, `keygen`, `run --sign-key`, `sign-log`, `verify-log --pubkey`) | implemented; receipts are still unsigned |
+| Human-readable CLI output (`--format text` for `run`, `resume`, `verify-log`) | implemented |
 | OS-level sandboxing of general command workers | planned (see [threat model](THREAT_MODEL.md)); model-written code in the agent study is already Docker-sandboxed |
 
 ## A minimal task

@@ -160,7 +160,15 @@ their parent are not tracked. Writes are atomic against a process crash (temp fi
 The receipt is not authenticated: a command can write a false one. It is not a sandbox. Tested with real subprocesses
 through the real engine in `test/receipt-worker.test.js`; runnable example in `examples/receipt`.
 
+## Signed log heads
+
+`src/log/signing.js` signs `warrant-log-head:v1`, the key id, the run's spec digest, the entry count, the head hash and a
+timestamp with Ed25519 and writes the record to `<log>.sig`. `verify-log --pubkey` checks the signature, that the signed entry
+count does not exceed the log, and that the entry at that position has the signed head; entries appended after signing are
+reported as not covered. The chain makes a log tamper-evident; the signature makes a consistent forgery require the private key.
+
 ## Configuration authority
 
 The run spec is the single source of execution policy (deadlines, retry budgets, requirements, effect classes).
-CLI flags may only lower concurrency below the spec's cap. Environment variables never change policy.
+CLI flags may only lower concurrency below the spec's cap. Environment variables never change policy. A task's `exec.env` lists the
+variables its command may receive (names only, chosen by the spec author); everything else is scrubbed.

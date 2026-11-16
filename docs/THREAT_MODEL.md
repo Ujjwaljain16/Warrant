@@ -78,6 +78,16 @@ spec file. It does not cover the security of any model provider.
 - **Process-tree kill on Windows** relies on `taskkill /T /F`; descendants that detach can survive.
 - **The gate cannot check what the spec does not require.** Missing requirements mean missing guarantees.
 - **Predicate verifiers run in-process** and are trusted code supplied by the host, not by the worker.
-- The log hash chain detects tampering after the fact; it is not signed, so someone who can rewrite the whole log can forge a consistent one. The invariant audit (T20) is the second line: it catches a forgery that tells an impossible story, not one that is internally coherent (a consistent log of events that never happened).
+- The log hash chain detects tampering after the fact. On its own it is not authentic: someone who can rewrite the whole log can forge a consistent one. A signed head (`run --sign-key`, `verify-log --pubkey`, `src/log/signing.js`) closes that for anyone without the private key: a forged log whose chain verifies fails the signature (tested in `test/signing.test.js`). It is only as strong as the key handling (whoever holds the private key can sign anything) and the channel the public key came through, a log extended after signing is reported as partly unsigned, and receipts are still unsigned. The invariant audit (T20) is the second line: it catches a forgery that tells an impossible story, not one that is internally coherent (a consistent log of events that never happened).
 - **Receipts (T14)** still trust the command: it can write a false receipt, or an intent file late. The host's own record of an attempt now lives next to the attempt directory instead of inside it, and receipt digests bind the bytes of an output (a non-UTF-8 output is refused by name), but a command that goes looking for that sibling file can still write to it. A hostile state directory owner is out of scope.
 - **Unreproduced.** Real Linux/macOS behaviour of the sandbox (uid mapping with Docker bind mounts is no longer relevant: nothing is mounted) and the POSIX temp-directory permission fix (the workspaces are no longer made world-writable; verified on Windows only).
+
+## Adapter for command-line agents (examples/agent-cli)
+
+- **Secrets given to an agent.** `exec.env` passes named environment variables (for example an API key) to that task's command and
+  to nothing else; names are validated, at most 32, and values never enter the spec or the log. Any variable named there is fully
+  available to the agent and to whatever it runs.
+- **Hidden tests on the same machine.** The adapter copies only `task/` into the agent's directory, but the agent runs as your user
+  and can read `hidden/` if it looks, and the hidden tests import the agent's code in a host process. Use it with agents you
+  already run on your machine; for untrusted agents use the Docker split-container gate (`scripts/agent-gate.js`) as the
+  requirement and run the agent in a container or VM.
