@@ -4,6 +4,11 @@
 
 ### Added
 
+- **Claude arm of the agent-claims study** (`docs/AGENT_CLAIMS_CLAUDE_ARM.md`, `scripts/claude-arm.js`): real Claude Haiku 5.5
+  through Claude Code on the 30 held-out tasks, gated by the same Docker gate. 0 of 30 claims wrong, against 32 of 85 for the router's
+  model of the same name; reported on its own, with the harness difference that keeps the two from being compared directly.
+- Reports name the protocol file recorded in their own `meta.json`.
+
 - **Signed log heads.** `warrant keygen` writes an Ed25519 key pair; `run --sign-key` and `sign-log` sign a finished log's head,
   spec digest and length; `verify-log --pubkey` checks it. A log rewritten with every hash recomputed, which the chain alone
   accepts, now fails (`src/log/signing.js`, `test/signing.test.js`). No dependency: `node:crypto`.

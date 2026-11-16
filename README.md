@@ -49,7 +49,9 @@ were wrong** (56.6%, 95% CI 44.3% to 68.1%). What each check accepted of the wro
 
 **The rate depends heavily on the model.** A partial run of `gemini-3.5-flash-lite` (39 episodes, served directly by Google)
 had 2 wrong claims in 36 (5.6%, CI 0.0% to 14.7%), against 37.6% and 88.2% for the two router models, so the 57% describes
-that pair, not agents in general.
+that pair, not agents in general. A later arm with **real Claude Haiku 5.5** (served by Anthropic, run through Claude Code) made **0 wrong claims in 30**,
+where the router's model of the same name was wrong on 32 of 85; whether the router or the harness explains that gap is open
+([details](docs/AGENT_CLAIMS_CLAUDE_ARM.md)).
 
 Read these caveats with the numbers. The models were reached through a **third-party router whose model identity is
 unverified**. The tasks are 30 small synthetic JavaScript problems, one setting. The protocol's pre-registered primary arm

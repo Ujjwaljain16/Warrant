@@ -79,6 +79,12 @@ one verdict out of 70 compared pairs. Against the gate the intervals all include
 judge against the gate". An amended re-run with a larger output limit was considered and not done, because changing the protocol after seeing results would
 look like tuning. The two Gemini arms were run without a judge.
 
+**6. Real Claude Haiku 5.5 made no wrong claims; the router's "Haiku 5.5" made many.** A later, separately reported arm
+([AGENT_CLAIMS_CLAUDE_ARM.md](AGENT_CLAIMS_CLAUDE_ARM.md)) ran Claude Haiku 5.5 served by Anthropic, through Claude Code, on the same 30
+tasks: 30 of 30 claims of "done" were right (wrong-claim rate 0 of 30, Wilson upper bound 11.4%), against 32 of 85 wrong for the router's
+model of the same name. Either the router does not serve what it names, or the harness (Claude Code's tools against this study's JSON
+loop) explains the gap; this run cannot tell which. It is not pooled with anything else.
+
 ## Weaknesses that matter
 
 - **Model identity is unverified for the two complete arms.** The router's prices are 10 to 40 times below the vendors' lists. Call them "Haiku 5.5 and
