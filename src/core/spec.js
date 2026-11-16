@@ -99,9 +99,16 @@ function validateTask(task, index, errors) {
     });
   }
   if (task.exec !== undefined) {
-    if (exact(task.exec, ['argv', 'receipt'], `${label}.exec`, errors)) {
+    if (exact(task.exec, ['argv', 'receipt', 'env'], `${label}.exec`, errors)) {
       if (!validArgv(task.exec.argv)) errors.push(`${label}.exec.argv must be a non-empty array of non-empty strings`);
       if (task.exec.receipt !== undefined && typeof task.exec.receipt !== 'boolean') errors.push(`${label}.exec.receipt must be a boolean`);
+      // Names only: the values come from the environment of the process running warrant and never enter the spec or the log.
+      if (task.exec.env !== undefined) {
+        const names = task.exec.env;
+        if (!Array.isArray(names) || names.length > 32 || !names.every((n) => typeof n === 'string' && /^[A-Za-z_][A-Za-z0-9_]{0,63}$/.test(n))) {
+          errors.push(`${label}.exec.env must be an array of at most 32 environment variable names`);
+        } else if (new Set(names).size !== names.length) errors.push(`${label}.exec.env has a duplicate name`);
+      }
     }
   }
 }

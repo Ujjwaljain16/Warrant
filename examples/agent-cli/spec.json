@@ -1,0 +1,91 @@
+{
+  "spec_version": "1",
+  "run_id": "agent-cli-offline",
+  "max_concurrency": 2,
+  "tasks": [
+    {
+      "id": "careful-agent",
+      "deps": [],
+      "effect": "workspace-reversible",
+      "deadline_ms": 60000,
+      "max_attempts": 1,
+      "outputs": [
+        "slugify.js"
+      ],
+      "exec": {
+        "argv": [
+          "node",
+          "./run-agent.js",
+          "--",
+          "node",
+          "./fake-agent.js",
+          "careful"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "visible-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "--test",
+            "visible.test.js"
+          ],
+          "timeout_ms": 30000
+        },
+        {
+          "id": "hidden-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "--test",
+            "./hidden/slugify.hidden.test.js"
+          ],
+          "timeout_ms": 30000
+        }
+      ]
+    },
+    {
+      "id": "hasty-agent",
+      "deps": [],
+      "effect": "workspace-reversible",
+      "deadline_ms": 60000,
+      "max_attempts": 1,
+      "outputs": [
+        "slugify.js"
+      ],
+      "exec": {
+        "argv": [
+          "node",
+          "./run-agent.js",
+          "--",
+          "node",
+          "./fake-agent.js",
+          "hasty"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "visible-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "--test",
+            "visible.test.js"
+          ],
+          "timeout_ms": 30000
+        },
+        {
+          "id": "hidden-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "--test",
+            "./hidden/slugify.hidden.test.js"
+          ],
+          "timeout_ms": 30000
+        }
+      ]
+    }
+  ]
+}

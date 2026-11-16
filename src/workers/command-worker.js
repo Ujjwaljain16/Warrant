@@ -18,6 +18,13 @@ const { redact } = require('../util/redact');
  *
  * Not a sandbox: the process runs as the current user (docs/THREAT_MODEL.md, residual risks).
  */
+// Variables the spec explicitly lets this task see (exec.env), e.g. the HOME and API key a command-line agent needs.
+function passThrough(names = []) {
+  const env = {};
+  for (const name of names) if (process.env[name] !== undefined) env[name] = process.env[name];
+  return env;
+}
+
 class CommandWorker {
   constructor({ baseDir, specDir = null, maxOutputBytes = 1 << 20 }) {
     if (typeof baseDir !== 'string' || !baseDir) throw new TypeError('baseDir is required');
@@ -71,6 +78,7 @@ class CommandWorker {
       onSpawn: (pid) => this._onSpawn(info, dir, pid),
       env: {
         ...scrubbedEnv(),
+        ...passThrough(task.exec.env),
         WARRANT_ATTEMPT_DIR: dir,
         WARRANT_TASK: taskId,
         WARRANT_ATTEMPT: String(info.attemptNo),

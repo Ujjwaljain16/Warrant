@@ -31,6 +31,7 @@ class Engine {
     this.clock = opts.clock || realClock;
     this.predicates = opts.predicates || {};
     this.workDirFor = opts.workDirFor || (() => undefined);
+    this.specDir = opts.specDir || null; // where ./ arguments of command requirements resolve
     this.gateCostMs = opts.gateCostMs || 0;
     this.backoffMs = opts.backoffMs || ((n) => 20 * n);
     this.observer = opts.observer || noop;
@@ -300,7 +301,7 @@ class Engine {
     }
     const verdict = await evaluateGate({
       task, attemptId: att.id, artifacts,
-      ctx: { predicates: this.predicates, workDir: this.workDirFor({ runId: this.spec.run_id, attemptId: att.id, taskId: att.taskId }), signal: att.gctl.signal },
+      ctx: { predicates: this.predicates, specDir: this.specDir, workDir: this.workDirFor({ runId: this.spec.run_id, attemptId: att.id, taskId: att.taskId }), signal: att.gctl.signal },
     });
     if (att.dead) return;
     this._emit('gate_verdict', {

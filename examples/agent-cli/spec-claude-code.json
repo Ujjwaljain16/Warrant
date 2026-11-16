@@ -1,0 +1,60 @@
+{
+  "spec_version": "1",
+  "run_id": "agent-cli-claude",
+  "max_concurrency": 1,
+  "tasks": [
+    {
+      "id": "claude-code",
+      "deps": [],
+      "effect": "workspace-reversible",
+      "deadline_ms": 900000,
+      "max_attempts": 1,
+      "outputs": [
+        "slugify.js"
+      ],
+      "exec": {
+        "argv": [
+          "node",
+          "./run-agent.js",
+          "--",
+          "claude",
+          "-p",
+          "{prompt}",
+          "--permission-mode",
+          "acceptEdits",
+          "--allowedTools",
+          "Read,Write,Edit,Bash(node:*)"
+        ],
+        "env": [
+          "HOME",
+          "USERPROFILE",
+          "APPDATA",
+          "LOCALAPPDATA",
+          "ANTHROPIC_API_KEY"
+        ]
+      },
+      "requirements": [
+        {
+          "id": "visible-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "--test",
+            "visible.test.js"
+          ],
+          "timeout_ms": 30000
+        },
+        {
+          "id": "hidden-tests",
+          "kind": "command",
+          "argv": [
+            "node",
+            "--test",
+            "./hidden/slugify.hidden.test.js"
+          ],
+          "timeout_ms": 30000
+        }
+      ]
+    }
+  ]
+}

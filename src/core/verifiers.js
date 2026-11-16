@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const path = require('node:path');
 const { runProcess } = require('../util/proc');
 const { findForbiddenKey } = require('./ids');
 
@@ -47,8 +48,11 @@ const CHECKS = {
 
   async command(req, ctx) {
     if (!ctx.workDir) return { status: 'error', code: 'NO_WORKDIR' };
+    // Like a worker's exec argv, an argument beginning with ./ or ../ names a file next to the spec (a hidden test, a checker),
+    // so a spec can ship its checks without the worker ever seeing them. Without a spec directory, arguments are passed as written.
+    const argv = ctx.specDir ? req.argv.map((arg, i) => (i > 0 && /^\.\.?[\\/]/.test(arg) ? path.resolve(ctx.specDir, arg) : arg)) : req.argv;
     const result = await runProcess({
-      argv: req.argv, cwd: ctx.workDir, timeoutMs: req.timeout_ms ?? 10_000, signal: ctx.signal,
+      argv, cwd: ctx.workDir, timeoutMs: req.timeout_ms ?? 10_000, signal: ctx.signal,
     });
     if (result.spawnError) return { status: 'error', code: 'SPAWN_ERROR', detail: result.spawnError };
     if (result.timedOut) return { status: 'error', code: 'VERIFIER_TIMEOUT' };
