@@ -7,6 +7,7 @@ const { LIMITS, classifyText } = require('./parse');
 const { clear, h } = require('./dom');
 const { icon } = require('./icons');
 const { clip } = require('./text');
+const { verifySignature } = require('./signature');
 const { renderLegend, renderTimeline, MAX_LANES } = require('./timeline');
 const views = require('./views');
 const SAMPLES = require('./samples');
@@ -17,6 +18,7 @@ const state = {
   analysis: null, source: '', logText: null, specValue: null, specName: null,
   selected: null, mode: 'seq', zoom: 1, filters: { query: '', type: '', task: '' }, limit: views.PAGE,
   theme: 'auto', token: 0, eventBySeq: new Map(), openIndex: null,
+  sigRecord: null, pubKeyText: null, // a dropped <log>.sig and public key; checked against the open log
 };
 
 function setStatus(text, tone = 'info') {
@@ -69,7 +71,15 @@ async function load(text, { source, specValue = null, specName = null, keepSelec
   state.filters = { query: '', type: '', task: '' };
   state.limit = views.PAGE;
   setStatus('');
+  await checkSignature();
   renderAll();
+}
+
+// Attaches the signature verdict to the analysis, so the banner can show who signed the log (or that the signature fails).
+async function checkSignature() {
+  const a = state.analysis;
+  if (!a) return;
+  a.signature = state.sigRecord && state.pubKeyText ? await verifySignature(a.parsed.entries, state.sigRecord, state.pubKeyText) : null;
 }
 
 function loadSample(id) {
@@ -78,6 +88,8 @@ function loadSample(id) {
   let specValue = null;
   try { specValue = JSON.parse(sample.spec); } catch (_error) { specValue = null; }
   markSamples(id);
+  state.sigRecord = null;
+  state.pubKeyText = null;
   return load(sample.log, { source: `${sample.title} (built-in sample)`, specValue, specName: 'nightly-etl.spec.json' });
 }
 
@@ -92,6 +104,7 @@ async function handleFiles(fileList) {
   if (!files.length) return;
   let log = null;
   let spec = null;
+  let sigOrKey = false;
   const notes = [];
   for (const f of files) {
     if (f.size > LIMITS.maxBytes) { notes.push(`${clip(f.name, 60)} is ${fmtBytes(f.size)}; files over ${fmtBytes(LIMITS.maxBytes)} are not opened.`); continue; }
@@ -100,6 +113,8 @@ async function handleFiles(fileList) {
     const cls = classifyText(text);
     if (cls.kind === 'spec') { if (!spec) spec = { value: cls.value, name: f.name }; else notes.push(`Extra spec ${clip(f.name, 60)} ignored.`); }
     else if (cls.kind === 'log') { if (!log) log = { text, name: f.name, size: f.size }; else notes.push(`Extra log ${clip(f.name, 60)} ignored; open one log at a time.`); }
+    else if (cls.kind === 'signature') { state.sigRecord = cls.value; sigOrKey = true; }
+    else if (cls.kind === 'pubkey') { state.pubKeyText = text; sigOrKey = true; }
     else if (cls.kind === 'empty') notes.push(`${clip(f.name, 60)} is empty.`);
     else notes.push(`${clip(f.name, 60)} is neither a run log (JSONL) nor a run spec.`);
   }
@@ -109,7 +124,11 @@ async function handleFiles(fileList) {
   } else if (spec) {
     if (state.logText !== null) await load(state.logText, { source: state.source, specValue: spec.value, specName: spec.name, keepSelection: true });
     else notes.push('Spec noted, but no log is open yet.');
+  } else if (sigOrKey) {
+    if (state.analysis) { await checkSignature(); views.renderBanner($('banner'), state.analysis, state.source); }
+    else notes.push('Signature or key noted; open the log it belongs to.');
   }
+  if (sigOrKey && !(state.sigRecord && state.pubKeyText)) notes.push(state.sigRecord ? 'Now add the public key (.pub) to check the signature.' : 'Now add the log\u2019s signature file (.sig) to check it.');
   if (notes.length) setStatus(notes.join(' '), log || spec ? 'info' : 'bad');
 }
 

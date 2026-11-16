@@ -614,3 +614,35 @@ test('the built page has the structure the viewer needs', () => {
   assert.match(html, /:focus-visible/);
   for (const sample of ['honest', 'lying-worker', 'tampered', 'forged-success']) assert.ok(html.includes(`"id":"${sample}"`), `sample ${sample} is embedded`);
 });
+
+test('viewer signature check: agrees with the engine on a signed head, and rejects a re-hashed forgery and a foreign key', async () => {
+  const { buildEntry } = require('../src/log/runlog');
+  const { signHead } = require('../src/log/signing');
+  const { verifySignature } = require('../viewer/src/signature');
+  const { classifyText } = require('../viewer/src/parse');
+  const entries = fs.readFileSync(path.join(__dirname, '..', 'viewer', 'samples', 'lying-worker.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  const { privateKey, publicKey } = crypto.generateKeyPairSync('ed25519');
+  const pem = publicKey.export({ type: 'spki', format: 'pem' });
+  const record = signHead(entries, privateKey);
+  assert.equal(classifyText(JSON.stringify(record)).kind, 'signature');
+  assert.equal(classifyText(pem).kind, 'pubkey');
+  assert.equal((await verifySignature(entries, record, pem)).valid, true, 'a record the engine signed verifies in the viewer: the signed bytes are the same');
+  // re-hash the whole log after flipping a failed verdict: the chain is consistent again, the signature is not
+  let prev = null;
+  const forged = entries.map((e) => {
+    const data = e.type === 'gate_verdict' && e.data.status === 'fail' ? { ...e.data, status: 'pass' } : e.data;
+    const fields = { data };
+    if (e.task !== undefined) fields.task = e.task;
+    if (e.attempt !== undefined) fields.attempt = e.attempt;
+    const rebuilt = buildEntry(e.seq, prev, e.type, fields, e.t);
+    prev = rebuilt.hash;
+    return rebuilt;
+  });
+  const bad = await verifySignature(forged, record, pem);
+  assert.equal(bad.valid, false);
+  assert.match(bad.reason, /rewritten/);
+  const other = crypto.generateKeyPairSync('ed25519').publicKey.export({ type: 'spki', format: 'pem' });
+  assert.equal((await verifySignature(entries, record, other)).valid, false);
+  assert.equal((await verifySignature(entries, { ...record, signed_at: 'x' }, pem)).valid, false);
+  assert.equal((await verifySignature(entries, record, pem, null)).valid, null, 'without WebCrypto the page says it cannot check, never that it passed');
+});

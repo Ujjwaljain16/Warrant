@@ -34,6 +34,9 @@ function renderBanner(host, a, source) {
   else if (chain.status === 'empty') { tone = 'warn'; iconName = 'question'; title = 'Empty log'; }
   else if (chain.torn) { tone = 'ok'; iconName = 'link'; title = 'Chain valid · torn final line tolerated'; }
   else { tone = 'ok'; iconName = 'link'; title = 'Chain valid'; }
+  // A chain can be re-hashed by anyone; only a signature says the log is the one its key holder wrote.
+  if (a.signature && a.signature.valid === false && chain.status !== 'broken') { tone = 'bad'; iconName = 'unlink'; title = 'Chain valid · signature does not verify'; }
+  else if (a.signature && a.signature.valid === true && chain.status === 'valid') title = 'Chain valid · signed';
 
   host.setAttribute('class', `banner tone-${tone}`);
   const badge = h('div', { class: 'badge', role: 'status' }, icon(iconName, 22), h('span', { class: 'badge-text' }, title));
@@ -68,6 +71,10 @@ function renderBanner(host, a, source) {
   if (a.specError) notes.push(['bad', `The spec file was not used: ${clip(a.specError, 160)}.`]);
   if (a.spec && a.specMatch === false) notes.push(['bad', 'The spec you loaded is not the one this run recorded (its digest differs from the log’s run_started entry).']);
   if (a.spec && a.specMatch === true) notes.push(['ok', 'The loaded spec matches the digest recorded in the log.']);
+  if (a.signature && a.signature.valid === true) notes.push([a.signature.unsigned_entries ? 'warn' : 'ok', `Signed by key ${clip(String(a.signature.key_id), 20)}${a.signature.unsigned_entries ? `; the last ${a.signature.unsigned_entries} entries were added after signing and are not covered` : ': nobody without that key could have produced this log'}.`]);
+  else if (a.signature && a.signature.valid === false) notes.push(['bad', `Signature: ${clip(a.signature.reason, 200)}.`]);
+  else if (a.signature && a.signature.valid === null) notes.push(['warn', `Signature not checked: ${clip(a.signature.reason, 200)}.`]);
+  else notes.push(['mute', 'Not checked for a signature. The chain shows the log was not edited, not who wrote it: drop the log\u2019s .sig file and the signer\u2019s public key to check that.']);
   if (notes.length) host.appendChild(h('ul', { class: 'notes' }, notes.map(([t, text]) => h('li', { class: `tone-${t}` }, icon(t === 'ok' ? 'check' : t === 'bad' ? 'cross' : 'bang', 14), h('span', null, text)))));
 }
 

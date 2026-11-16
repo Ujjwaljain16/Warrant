@@ -20,7 +20,7 @@ const OUT = path.join(ROOT, 'viewer', 'run-viewer.html');
 // Order is irrelevant to correctness (modules load on first require) but fixed for a reproducible output.
 const MODULES = [
   'states', 'text', 'canonical', 'parse', 'chain', 'audit-core', 'audit', 'model', 'summary', 'analysis', 'describe',
-  'dom', 'icons', 'timeline', 'views', 'app',
+  'dom', 'icons', 'timeline', 'signature', 'views', 'app',
 ];
 
 const SAMPLE_META = [

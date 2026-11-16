@@ -53,10 +53,12 @@ function classifyText(text) {
   const raw = String(text);
   const trimmed = (raw.charCodeAt(0) === 0xFEFF ? raw.slice(1) : raw).trim();
   if (trimmed === '') return { kind: 'empty' };
+  if (/^-----BEGIN PUBLIC KEY-----/.test(trimmed)) return { kind: 'pubkey' };
   let whole;
   try { whole = JSON.parse(trimmed); } catch (_error) { whole = undefined; }
   if (whole && typeof whole === 'object' && !Array.isArray(whole)) {
     if (Array.isArray(whole.tasks) && (whole.spec_version !== undefined || whole.run_id !== undefined)) return { kind: 'spec', value: whole };
+    if (whole.alg === 'ed25519' && typeof whole.signature === 'string' && typeof whole.head === 'string') return { kind: 'signature', value: whole };
     if (typeof whole.seq === 'number' && typeof whole.type === 'string') return { kind: 'log' };
     return { kind: 'unknown' };
   }

@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-WFDszw1uSxeXhLlfTqQMCJ7fcA9Dh0wXxxnAHI4bnww='; style-src 'sha256-M04f9tk8GdLMWWyA90LVmq7wzsAwCT3U0qgmqWZZrDc='; img-src data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-I5SFQRCKyrlPbpSZfjXHuYJ2pW80bdPwQ482gAE8Q8o='; style-src 'sha256-M04f9tk8GdLMWWyA90LVmq7wzsAwCT3U0qgmqWZZrDc='; img-src data:; base-uri 'none'; form-action 'none'">
 <meta name="color-scheme" content="light dark">
 <meta name="referrer" content="no-referrer">
 <title>Warrant run viewer</title>
@@ -380,7 +380,7 @@ pre.raw {
     <button type="button" class="btn" id="btn-spec">Add run spec&hellip;</button>
     <button type="button" class="btn" id="btn-theme" aria-label="Colour theme">Theme</button>
   </div>
-  <input type="file" id="file-log" class="sr-only" tabindex="-1" aria-hidden="true" accept=".jsonl,.log,.json,.txt,application/json,text/plain" multiple>
+  <input type="file" id="file-log" class="sr-only" tabindex="-1" aria-hidden="true" accept=".jsonl,.log,.json,.txt,.sig,.pub,.pem,application/json,text/plain" multiple>
   <input type="file" id="file-spec" class="sr-only" tabindex="-1" aria-hidden="true" accept=".json,application/json">
 </header>
 
@@ -744,10 +744,12 @@ function classifyText(text) {
   const raw = String(text);
   const trimmed = (raw.charCodeAt(0) === 0xFEFF ? raw.slice(1) : raw).trim();
   if (trimmed === '') return { kind: 'empty' };
+  if (/^-----BEGIN PUBLIC KEY-----/.test(trimmed)) return { kind: 'pubkey' };
   let whole;
   try { whole = JSON.parse(trimmed); } catch (_error) { whole = undefined; }
   if (whole && typeof whole === 'object' && !Array.isArray(whole)) {
     if (Array.isArray(whole.tasks) && (whole.spec_version !== undefined || whole.run_id !== undefined)) return { kind: 'spec', value: whole };
+    if (whole.alg === 'ed25519' && typeof whole.signature === 'string' && typeof whole.head === 'string') return { kind: 'signature', value: whole };
     if (typeof whole.seq === 'number' && typeof whole.type === 'string') return { kind: 'log' };
     return { kind: 'unknown' };
   }
@@ -2046,6 +2048,72 @@ function renderLegend(host) {
 
 module.exports = { MAX_LANES, renderLegend, renderTimeline };
 };
+defs["signature"] = function (module, exports, require) {
+'use strict';
+
+// Signed-head check in the browser: the same rules as src/log/signing.js (verifyHead), with Ed25519 from WebCrypto.
+// The signed message must stay byte-identical to the engine's; test/viewer.test.js checks a record the engine signed.
+
+const DOMAIN = 'warrant-log-head:v1';
+
+function message(r) {
+  return [DOMAIN, `key=${r.key_id}`, `spec=${r.spec_digest}`, `entries=${r.entries}`, `head=${r.head}`, `at=${r.signed_at}`].join('\n');
+}
+
+function looksLikeSignature(value) {
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value) && value.alg === 'ed25519' && typeof value.signature === 'string' && typeof value.head === 'string';
+}
+
+function looksLikePublicKey(text) {
+  return /^-----BEGIN PUBLIC KEY-----/.test(String(text).trim());
+}
+
+function base64ToBytes(b64) {
+  const bin = atob(b64.replace(/\s+/g, ''));
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+function pemToDer(text) {
+  const m = /-----BEGIN PUBLIC KEY-----([\s\S]*?)-----END PUBLIC KEY-----/.exec(String(text));
+  if (!m) throw new Error('not a PEM public key');
+  return base64ToBytes(m[1]);
+}
+
+function hex(buffer) {
+  return [...new Uint8Array(buffer)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * entries: the parsed log entries; record: the parsed .sig JSON; pemText: the public key file.
+ * Returns { valid: true|false|null, reason, key_id, unsigned_entries }. null means this browser cannot check Ed25519.
+ */
+async function verifySignature(entries, record, pemText, subtle = (globalThis.crypto && globalThis.crypto.subtle) || null) {
+  const out = { valid: false, reason: null, key_id: record && record.key_id, unsigned_entries: 0 };
+  if (!looksLikeSignature(record) || record.version !== 1) return { ...out, reason: 'the signature file is not a warrant signature record' };
+  if (!subtle) return { ...out, valid: null, reason: 'this page has no WebCrypto, so the signature cannot be checked here' };
+  let der;
+  try { der = pemToDer(pemText); } catch (_error) { return { ...out, reason: 'the public key file could not be read' }; }
+  let key;
+  try { key = await subtle.importKey('spki', der, { name: 'Ed25519' }, false, ['verify']); } catch (_error) {
+    return { ...out, valid: null, reason: 'this browser cannot check Ed25519 signatures (or the key is not an Ed25519 key)' };
+  }
+  const id = hex(await subtle.digest('SHA-256', der)).slice(0, 16);
+  if (record.key_id !== id) return { ...out, reason: `signed with key ${record.key_id}, not with the loaded key ${id}` };
+  let ok = false;
+  try { ok = await subtle.verify({ name: 'Ed25519' }, key, base64ToBytes(record.signature), new TextEncoder().encode(message(record))); } catch (_error) { ok = false; }
+  if (!ok) return { ...out, reason: 'the signature does not verify: the record was edited or made with another key' };
+  if (!Number.isInteger(record.entries) || record.entries < 1 || record.entries > entries.length) {
+    return { ...out, reason: `the signature covers ${record.entries} entries but the log has ${entries.length}: entries were removed` };
+  }
+  const at = entries[record.entries - 1];
+  if (!at || at.hash !== record.head) return { ...out, reason: `entry ${record.entries} does not have the signed head: the log was rewritten` };
+  return { ...out, valid: true, unsigned_entries: entries.length - record.entries };
+}
+
+module.exports = { looksLikePublicKey, looksLikeSignature, message, verifySignature };
+};
 defs["views"] = function (module, exports, require) {
 'use strict';
 
@@ -2083,6 +2151,9 @@ function renderBanner(host, a, source) {
   else if (chain.status === 'empty') { tone = 'warn'; iconName = 'question'; title = 'Empty log'; }
   else if (chain.torn) { tone = 'ok'; iconName = 'link'; title = 'Chain valid · torn final line tolerated'; }
   else { tone = 'ok'; iconName = 'link'; title = 'Chain valid'; }
+  // A chain can be re-hashed by anyone; only a signature says the log is the one its key holder wrote.
+  if (a.signature && a.signature.valid === false && chain.status !== 'broken') { tone = 'bad'; iconName = 'unlink'; title = 'Chain valid · signature does not verify'; }
+  else if (a.signature && a.signature.valid === true && chain.status === 'valid') title = 'Chain valid · signed';
 
   host.setAttribute('class', `banner tone-${tone}`);
   const badge = h('div', { class: 'badge', role: 'status' }, icon(iconName, 22), h('span', { class: 'badge-text' }, title));
@@ -2117,6 +2188,10 @@ function renderBanner(host, a, source) {
   if (a.specError) notes.push(['bad', `The spec file was not used: ${clip(a.specError, 160)}.`]);
   if (a.spec && a.specMatch === false) notes.push(['bad', 'The spec you loaded is not the one this run recorded (its digest differs from the log’s run_started entry).']);
   if (a.spec && a.specMatch === true) notes.push(['ok', 'The loaded spec matches the digest recorded in the log.']);
+  if (a.signature && a.signature.valid === true) notes.push([a.signature.unsigned_entries ? 'warn' : 'ok', `Signed by key ${clip(String(a.signature.key_id), 20)}${a.signature.unsigned_entries ? `; the last ${a.signature.unsigned_entries} entries were added after signing and are not covered` : ': nobody without that key could have produced this log'}.`]);
+  else if (a.signature && a.signature.valid === false) notes.push(['bad', `Signature: ${clip(a.signature.reason, 200)}.`]);
+  else if (a.signature && a.signature.valid === null) notes.push(['warn', `Signature not checked: ${clip(a.signature.reason, 200)}.`]);
+  else notes.push(['mute', 'Not checked for a signature. The chain shows the log was not edited, not who wrote it: drop the log\u2019s .sig file and the signer\u2019s public key to check that.']);
   if (notes.length) host.appendChild(h('ul', { class: 'notes' }, notes.map(([t, text]) => h('li', { class: `tone-${t}` }, icon(t === 'ok' ? 'check' : t === 'bad' ? 'cross' : 'bang', 14), h('span', null, text)))));
 }
 
@@ -2399,6 +2474,7 @@ const { LIMITS, classifyText } = require('./parse');
 const { clear, h } = require('./dom');
 const { icon } = require('./icons');
 const { clip } = require('./text');
+const { verifySignature } = require('./signature');
 const { renderLegend, renderTimeline, MAX_LANES } = require('./timeline');
 const views = require('./views');
 const SAMPLES = require('./samples');
@@ -2409,6 +2485,7 @@ const state = {
   analysis: null, source: '', logText: null, specValue: null, specName: null,
   selected: null, mode: 'seq', zoom: 1, filters: { query: '', type: '', task: '' }, limit: views.PAGE,
   theme: 'auto', token: 0, eventBySeq: new Map(), openIndex: null,
+  sigRecord: null, pubKeyText: null, // a dropped <log>.sig and public key; checked against the open log
 };
 
 function setStatus(text, tone = 'info') {
@@ -2461,7 +2538,15 @@ async function load(text, { source, specValue = null, specName = null, keepSelec
   state.filters = { query: '', type: '', task: '' };
   state.limit = views.PAGE;
   setStatus('');
+  await checkSignature();
   renderAll();
+}
+
+// Attaches the signature verdict to the analysis, so the banner can show who signed the log (or that the signature fails).
+async function checkSignature() {
+  const a = state.analysis;
+  if (!a) return;
+  a.signature = state.sigRecord && state.pubKeyText ? await verifySignature(a.parsed.entries, state.sigRecord, state.pubKeyText) : null;
 }
 
 function loadSample(id) {
@@ -2470,6 +2555,8 @@ function loadSample(id) {
   let specValue = null;
   try { specValue = JSON.parse(sample.spec); } catch (_error) { specValue = null; }
   markSamples(id);
+  state.sigRecord = null;
+  state.pubKeyText = null;
   return load(sample.log, { source: `${sample.title} (built-in sample)`, specValue, specName: 'nightly-etl.spec.json' });
 }
 
@@ -2484,6 +2571,7 @@ async function handleFiles(fileList) {
   if (!files.length) return;
   let log = null;
   let spec = null;
+  let sigOrKey = false;
   const notes = [];
   for (const f of files) {
     if (f.size > LIMITS.maxBytes) { notes.push(`${clip(f.name, 60)} is ${fmtBytes(f.size)}; files over ${fmtBytes(LIMITS.maxBytes)} are not opened.`); continue; }
@@ -2492,6 +2580,8 @@ async function handleFiles(fileList) {
     const cls = classifyText(text);
     if (cls.kind === 'spec') { if (!spec) spec = { value: cls.value, name: f.name }; else notes.push(`Extra spec ${clip(f.name, 60)} ignored.`); }
     else if (cls.kind === 'log') { if (!log) log = { text, name: f.name, size: f.size }; else notes.push(`Extra log ${clip(f.name, 60)} ignored; open one log at a time.`); }
+    else if (cls.kind === 'signature') { state.sigRecord = cls.value; sigOrKey = true; }
+    else if (cls.kind === 'pubkey') { state.pubKeyText = text; sigOrKey = true; }
     else if (cls.kind === 'empty') notes.push(`${clip(f.name, 60)} is empty.`);
     else notes.push(`${clip(f.name, 60)} is neither a run log (JSONL) nor a run spec.`);
   }
@@ -2501,7 +2591,11 @@ async function handleFiles(fileList) {
   } else if (spec) {
     if (state.logText !== null) await load(state.logText, { source: state.source, specValue: spec.value, specName: spec.name, keepSelection: true });
     else notes.push('Spec noted, but no log is open yet.');
+  } else if (sigOrKey) {
+    if (state.analysis) { await checkSignature(); views.renderBanner($('banner'), state.analysis, state.source); }
+    else notes.push('Signature or key noted; open the log it belongs to.');
   }
+  if (sigOrKey && !(state.sigRecord && state.pubKeyText)) notes.push(state.sigRecord ? 'Now add the public key (.pub) to check the signature.' : 'Now add the log\u2019s signature file (.sig) to check it.');
   if (notes.length) setStatus(notes.join(' '), log || spec ? 'info' : 'bad');
 }
 
