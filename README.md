@@ -1,4 +1,9 @@
-# warrant
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/media/logo-dark.png">
+    <img src="docs/media/logo-light.png" alt="warrant" width="320">
+  </picture>
+</h1>
 
 [![CI](https://github.com/Ujjwaljain16/Warrant/actions/workflows/ci.yml/badge.svg)](https://github.com/Ujjwaljain16/Warrant/actions/workflows/ci.yml)
 ![node](https://img.shields.io/badge/node-%E2%89%A522-339933)
