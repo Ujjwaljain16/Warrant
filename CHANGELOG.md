@@ -42,8 +42,6 @@ of the agent-claims study with a model whose identity is known. This is the curr
 - **The Claude arm and the router arm cannot be compared directly**: they differ in harness as well as in who serves the model.
   The real model inside the study's own loop would separate the two and needs an Anthropic API key.
 - **The command-line agent adapter has never completed a live run.** One attempt reached Claude Code and stopped at its login.
-- **The viewer's signature check** is tested in Node against the engine's own signatures; it has not been tried by hand in a
-  regular browser (the in-app preview loads the page without WebCrypto, and the page correctly says it cannot check there).
 - **Running the whole test suite at once with Docker on a Windows laptop can overload Docker Desktop.** Each test file passes on
   its own, and CI runs the full suite on Linux and Windows; locally, `node --test --test-concurrency=2` is gentler.
 - Unchanged from 0.1.0: command workers are not sandboxed, the Gemini arms are partial, no macOS run.

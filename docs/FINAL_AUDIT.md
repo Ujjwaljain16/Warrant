@@ -252,7 +252,9 @@ Added after the sections above were written; each item is in the CHANGELOG with 
 - **Signed log heads** (`src/log/signing.js`): Ed25519 over the head hash, entry count, spec digest and time. A log rewritten with
   every hash recomputed, which the chain alone accepts, fails `verify-log --pubkey`; so do a foreign key, an edited record and a
   truncated log, and entries appended after signing are reported as not covered **[verified, test/signing.test.js]**. The run viewer
-  checks the same signatures in the browser **[verified in Node against the engine's own signatures; not tried by hand in a browser]**.
+  checks the same signatures in the browser **[verified in Node against the engine's own signatures, and in Chromium on 2026-11-22 with
+  the unmodified viewer served from localhost: a signed log showed "signed", a re-hashed forgery and a foreign key both showed
+  "signature does not verify" with the right reason]**.
 - **`--format text`** for `run`, `resume` and `verify-log` **[verified]**.
 - **Adapter for command-line coding agents** (`examples/agent-cli`, `exec.env`, spec-relative `./` in requirements). Offline, two
   scripted agents both say "done" and both pass the visible tests; only the careful one passes the hidden tests **[verified]**. A live
